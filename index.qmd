@@ -15,7 +15,7 @@ These notes were written by [Michael Linderman](https://www.cs.middlebury.edu/~m
 
 ## Source Texts
 
-We rely a lot on @vanderplas2016python. 
+We rely a lot on @vanderplasPythonDataScience2016. 
 
 ## Acknowledgements
 
