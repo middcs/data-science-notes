@@ -1,0 +1,26 @@
+# Welcome {.unnumbered}
+
+This is a set of notes developed for an undergraduate course in data science. The target audience for these notes are students who have completed a first course in either programming or data science. 
+
+## Pedagogical Features
+
+These notes are explicitly designed for undergraduate instruction. For this reason: 
+
+- Computational examples are integrated into the text and shown throughout. 
+- Live versions of lecture notes are supplied via Google Colab, with certain code components removed. The purpose is to facilitate live-coding in lectures. 
+
+## Use and Reuse
+
+These notes were written by [Michael Linderman](https://www.cs.middlebury.edu/~mlinderman/) and [Phil Chodrow](www.philchodrow.prof) for the course CSCI 1010: Applied Data Science at Middlebury College. All are welcome to use them for educational purposes. Attribution is appreciated but not expected. 
+
+## Source Texts
+
+Fill in...
+
+## Acknowledgements
+
+This site was generated using the [Quarto](https://quarto.org/) publishing system. It is hosted on GitHub and published via GitHub Pages. Google Colab provides free access to interactive Python environments for live coding.
+
+## References
+
+

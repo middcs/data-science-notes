@@ -1,0 +1,40 @@
+project:
+  type: book
+  output-dir: docs
+
+book: 
+  title: "Applied Data Science"
+  author: "Michael Linderman and Phil Chodrow"
+  date: "01/15/2024"
+  body-footer: |
+        <br> <br> <span style="color:grey;">&#169; Michael Linderman and Phil Chodrow, 2025</span>
+  sidebar: 
+    search: false
+
+bibliography: refs.bib
+
+format:
+  html:
+    theme: [cosmo, custom.scss]
+    css: styles.css
+    toc: true
+    number-depth: 0
+    reference-location: margin
+    callout-icon: false;
+    callout-appearance: simple
+    fig-cap-location: margin
+    highlight-style: atom-one
+
+    
+
+# jupyter: conda-env-ml-0451-py
+
+execute: 
+  cache: false
+
+profile:
+  group: 
+    - [preview, publish]
+
+mermaid: 
+  theme: neutral

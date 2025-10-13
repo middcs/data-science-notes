@@ -1,0 +1,8 @@
+book: 
+  chapters:
+    - index.qmd
+    - part: "Examples"
+      chapters: 
+        - chapters/01-data-and-models.qmd
+        - chapters/02-black-box-classification.qmd
+    
