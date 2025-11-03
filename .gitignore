@@ -4,3 +4,5 @@ env
 *.pyc
 /env/
 /.quarto/
+
+**/*.quarto_ipynb

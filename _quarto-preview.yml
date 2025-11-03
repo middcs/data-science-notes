@@ -5,3 +5,4 @@ book:
       chapters: 
         - source/01-data-and-models.qmd
         - source/02-black-box-classification.qmd
+        - source/20-introduction-prediction.qmd
