@@ -221,7 +221,7 @@ model_df
 #---
 ```
 
-The mse identifies model `python model_df.index[0]` as the best model among our candidates. Comparing to @fig-candidate-linear-models suggests that the preferred model under the MSE does indeed seem to be one that fits the data better. 
+The mse identifies model `{python} model_df.index[0]` as the best model among our candidates. Comparing to @fig-candidate-linear-models suggests that the preferred model under the MSE does indeed seem to be one that fits the data better. 
 
 ## Working With Real Data: Abalone Age Prediction
 
@@ -241,7 +241,7 @@ url = "https://raw.githubusercontent.com/middcs/data-science-notes/refs/heads/ma
 df = pd.read_csv(url)
 ```
 
-The `abalone` data set [@abalone_1] contains measurements for `python df.shape[0]` individual abalones. Here's how the data looks: [We have unscaled the numerical columns back to their original units.]{.aside}
+The `abalone` data set [@abalone_1] contains measurements for `{python} df.shape[0]` individual abalones. Here's how the data looks: [We have unscaled the numerical columns back to their original units.]{.aside}
 
 ```{python}
 #---
@@ -297,7 +297,7 @@ df['rings_pred'] = w_1_guess * df['diameter (mm)'] + w_2_guess * df['shucked_wei
 mse_value = mse(df['rings'], df['rings_pred'])
 ```
 
-This model has an MSE of `python mse_value:.2f`. Now that we're done with the `rings_pred` column, let's drop it and the `summed_weight` column we created earlier:
+This model has an MSE of `{python} mse_value:.2f`. Now that we're done with the `rings_pred` column, let's drop it and the `summed_weight` column we created earlier:
 
 ```{python}
 df.drop(columns=['rings_pred', 'summed_weight (g)'], inplace=True)
@@ -340,15 +340,19 @@ This is an *optimization* problem. The challenge of finding an optimal value for
 The `scikit-learn` package in Python, also called `sklearn`, is one such package. 
 
 ```{python}
+#---
 from sklearn.linear_model import LinearRegression
+#---
 ```
 
 We'll use this model to fit a linear regression model to predict `rings` from *all* the other features in the abalone data set. First, we need to convert the qualitative `sex` column into numerical columns using one-hot encoding:
 
 ```{python}
+#---
 df = pd.get_dummies(df, columns=['sex'], drop_first=True, dtype=int)
 
 df.columns
+#---
 ```
 
 Now instead of a single column for `sex`, we have two binary columns: `sex_I` and `sex_M`, indicating with a 1 whether the abalone is an infant or male. If both colummns are zero, then the abalone is female instead.  
@@ -356,27 +360,35 @@ Now instead of a single column for `sex`, we have two binary columns: `sex_I` an
 The `scikit-learn` API expects that we pass in a data frame `X` containing the features (inputs) and a series `y` containing the target (output). Let's create these now:
 
 ```{python}
+#---
 X = df.drop(columns=['rings'])
 y = df['rings']
+#---
 ```
 
 Now, finally, we are ready to fit the linear regression model. Finding the model that has the best values of the parameters is as simple as calling the `fit` method on a `LinearRegression` object:
 
 ```{python}
+#---
 LR = LinearRegression()
 fit = LR.fit(X, y)
+#---
 ```
 
 We can extract *predictions* for the model using the `predict` method:
 
 ```{python}
+#---
 y_pred = LR.predict(X)
+#---
 ```
 
 Once we have the predictions, we can also extract the MSE for the model:
 
 ```{python}
+#---
 mse(y, y_pred)
+#---
 ```
 
 This MSE is considerably smaller than the MSE we made with our by-hand model earlier! 
