@@ -18,9 +18,21 @@ for f in os.listdir("source"):
     notebook = nb.read(out_path, as_version = 4)
     
     for cell in notebook["cells"]:
+        # remove code content designed to be hidden
         cell["source"] = re.sub(r"#---[\S\s]*?#---", "", cell["source"])
+        
+        # delete quarto metadata on individual cells
+        cell["source"] = re.sub(r"#\|.*\n", "", cell["source"])
+        
+        # delete YAML metadata in notebook header 
+        cell["source"] = re.sub(r"---[\S\s]*?---", "", cell["source"])
+        
+        # clear outputs
         cell["outputs"] = []
+        
+        # reset execution count
         cell["execution_count"] = None
+        
     nb.write(notebook, out_path)
     
 
