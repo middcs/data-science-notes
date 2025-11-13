@@ -2,7 +2,7 @@
 
 SHELL = /bin/zsh
 
-PYTHON = env/bin/python3
+PYTHON ?= env/bin/python3
 
 stage: 
 	$(PYTHON) scripts/prep-qmd.py

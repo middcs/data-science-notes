@@ -297,7 +297,7 @@ df['rings_pred'] = w_1_guess * df['diameter (mm)'] + w_2_guess * df['shucked_wei
 mse_value = mse(df['rings'], df['rings_pred'])
 ```
 
-This model has an MSE of `{python} mse_value:.2f`. Now that we're done with the `rings_pred` column, let's drop it and the `summed_weight` column we created earlier:
+This model has an MSE of `{python} f"{mse_value=:.2}"`. Now that we're done with the `rings_pred` column, let's drop it and the `summed_weight` column we created earlier:
 
 ```{python}
 df.drop(columns=['rings_pred', 'summed_weight (g)'], inplace=True)
