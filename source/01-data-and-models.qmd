@@ -18,8 +18,8 @@ Broadly, machine learning is the science and practice of building algorithms tha
 
 import numpy as np
 from matplotlib import pyplot as plt
-
-plt.style.use("seaborn-v0_8-whitegrid")
+import seaborn as sns
+sns.set_style("whitegrid")
 
 def plot_fig(pattern = False):
 

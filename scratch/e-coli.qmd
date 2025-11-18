@@ -1,0 +1,83 @@
+## Case Study: E. coli Prediction
+
+```{python}
+import pandas as pd
+import seaborn as sns
+
+
+url = "https://raw.githubusercontent.com/middcs/data-science-notes/refs/heads/main/data/e-coli/ecoli-huntington.csv"
+df = pd.read_csv(url)
+df.columns
+```
+
+From the data dictionary: 
+
+- `EcoliAve_CFU`: Escherichia coli concentration measured in a discrete sample collected by Cuyahoga County Board of Health, Ohio, and analyzed by the Northeast Ohio Regional Sewer District, Ohio, USGS parameter codes 90902 or 50468. 
+- `Lake_Temp_C`: Lake temperature in degrees Celsius
+- `WaveHt_Ft`: Wave height, measured with a yardstick at the site at the same time the E. coli sample was collected, USGS parameter code 70224.  
+- `Lake_Turb_NTRU`: *Turbidity, measured with a portable turbidimeter from a sample collected at the same time the E. coli sample was collected. *
+- `LL_PreDay`: Lake level change over the last 24 hours (8 a.m. today-8 a.m. yesterday), NOAA Station 9063063 at Cleveland, Ohio., accessed at https://tidesandcurrents.noaa.gov/
+- `AirportRain48W_in`: Rainfall, cumulated sums for the past 48 hours, giving the most weight to the most recent value, as follows: (2 * Dm1) + Dm2.  DM1 is the 24-hour total up to 8 a.m. on the day the E. coli sample was collected; DM2 is the rain 2 days ago, Cleveland-Hopkins International Airport, Ohio, site USW00014820, accessed at https://www.ncdc.noaa.gov/. 
+
+
+```{python}
+df["log_ecoli"] = np.log(1 + df["EcoliAve_CFU"])
+df.columns
+sns.pairplot(df, diag_kind="kde")
+```
+
+```{python}
+predictor_columns = ['Lake_Temp_C', 'Lake_Turb_NTRU', 'WaveHt_Ft',
+       'LL_PreDay', 'AirportRain48W_in']
+X = df[predictor_columns]
+y = df['log_ecoli']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+```
+
+
+```{python}
+# from sklearn.preprocessing import PolynomialFeatures
+# from sklearn.pipeline import Pipeline
+
+# max_deg = 4
+
+# deg = np.arange(0, max_deg)
+# train_mses      = []
+# validation_mses = []
+
+# for deg in range(0, max_deg):
+#     pipeline = Pipeline(steps=[
+#         ('preprocessor', PolynomialFeatures(degree=deg, include_bias=True)),
+#         ('estimator', LinearRegression())
+#     ])
+
+#     model = pipeline.fit(X_train, y_train)
+
+#     mse_train = mse(y_train, model.predict(X_train))
+#     mse_val   = mse(y_test, model.predict(X_test))
+
+
+#     train_mses.append(mse_train)
+
+#     validation_mses.append(mse_val)
+```
+
+```{python}
+
+# import matplotlib.pyplot as plt
+
+# fig, ax = plt.subplots(figsize=(8, 5))
+
+# sns.lineplot(x=np.arange(0, max_deg), y=train_mses, marker='o', label='Train', ax=ax)
+# sns.lineplot(x=np.arange(0, max_deg), y=validation_mses, marker='o', label='Validation', ax=ax)
+# ax.set_xlabel('Polynomial Degree')
+# ax.set_ylabel('Model score (mse)')
+# ax.set_title('Impact of Overfitting')
+# ax.legend()
+# plt.show()
+```
+
+
+
+

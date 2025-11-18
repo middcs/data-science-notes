@@ -1,0 +1,37 @@
+
+We're looking at some traffic stops!
+
+```{python}
+import pandas as pd
+from matplotlib import pyplot as plt
+
+df = pd.read_csv("../data/burlington-police-stops/stops.csv")
+```
+
+
+```{python}
+cols = ["subject_age", "subject_race", "subject_sex", "search_conducted", "reason_for_stop"]
+
+df = df[cols]
+df.dropna(inplace=True)
+
+y = df["search_conducted"].astype(int)
+X = pd.get_dummies(df[["subject_age", "subject_race", "subject_sex", "reason_for_stop"]], drop_first=True)
+
+
+
+
+
+```
+
+```{python}
+from sklearn.linear_model import LogisticRegression
+
+y.mean()
+
+
+model = LogisticRegression(max_iter=1000)
+model.fit(X, y)
+model.score(X, y)
+
+```
