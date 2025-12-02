@@ -1,0 +1,131 @@
+
+
+```{python}
+import pandas as pd
+
+df = pd.read_csv("../data/nyc-stop-and-frisk/sqf-2024.csv")
+
+df[df == "(null)"] = pd.NA
+df[df == "Y"] = 1
+df[df == "N"] = 0
+
+
+
+cols = [
+    "FRISKED_FLAG", 
+    "SEARCHED_FLAG",
+    "WEAPON_FOUND_FLAG",
+    "SUSPECTS_ACTIONS_DECRIPTION_FLAG",
+    "SUSPECT_SEX", 
+    "SUSPECT_REPORTED_AGE", 
+    "SUSPECT_RACE_DESCRIPTION",
+    "DEMEANOR_OF_PERSON_STOPPED",
+    'PHYSICAL_FORCE_CEW_FLAG', 'PHYSICAL_FORCE_DRAW_POINT_FIREARM_FLAG',
+       'PHYSICAL_FORCE_HANDCUFF_SUSPECT_FLAG',
+       'PHYSICAL_FORCE_OC_SPRAY_USED_FLAG', 'PHYSICAL_FORCE_OTHER_FLAG',
+       'PHYSICAL_FORCE_RESTRAINT_USED_FLAG',
+       'PHYSICAL_FORCE_WEAPON_IMPACT_FLAG',]
+
+
+df = df[cols]
+
+df["PHYSICAL_FORCE"] = df[[
+    'PHYSICAL_FORCE_CEW_FLAG', 'PHYSICAL_FORCE_DRAW_POINT_FIREARM_FLAG',
+       'PHYSICAL_FORCE_HANDCUFF_SUSPECT_FLAG',
+       'PHYSICAL_FORCE_OC_SPRAY_USED_FLAG', 'PHYSICAL_FORCE_OTHER_FLAG',
+       'PHYSICAL_FORCE_RESTRAINT_USED_FLAG',
+       'PHYSICAL_FORCE_WEAPON_IMPACT_FLAG',]].max(axis=1)
+
+df.drop(columns=[
+    'PHYSICAL_FORCE_CEW_FLAG', 'PHYSICAL_FORCE_DRAW_POINT_FIREARM_FLAG',
+       'PHYSICAL_FORCE_HANDCUFF_SUSPECT_FLAG',
+       'PHYSICAL_FORCE_OC_SPRAY_USED_FLAG', 'PHYSICAL_FORCE_OTHER_FLAG',
+       'PHYSICAL_FORCE_RESTRAINT_USED_FLAG',
+       'PHYSICAL_FORCE_WEAPON_IMPACT_FLAG',], inplace=True)
+
+df["PHYSICAL_FORCE"] = df["PHYSICAL_FORCE"].fillna(0)
+
+df = df[df["SUSPECT_REPORTED_AGE"].notna()]
+
+df["SUSPECT_REPORTED_AGE"] = df["SUSPECT_REPORTED_AGE"].astype("float")
+
+```
+
+## Likelihood of search? 
+
+```{python}
+
+y = df["SEARCHED_FLAG"].astype(int)
+
+
+X = df.drop(columns=["SUSPECTS_ACTIONS_DECRIPTION_FLAG", "DEMEANOR_OF_PERSON_STOPPED", "SEARCHED_FLAG", "PHYSICAL_FORCE", "WEAPON_FOUND_FLAG", "FRISKED_FLAG"])
+
+X = pd.get_dummies(X, drop_first=False)
+
+
+LM = LogisticRegression(max_iter=1000)
+LM.fit(X, y)
+
+coef_df = pd.DataFrame({
+    "feature": X.columns,
+    "coefficient": LM.coef_[0]
+})
+
+coef_df = coef_df.sort_values(by="coefficient", ascending=False)
+
+coef_df
+
+```
+
+## Likelihood of frisk?
+
+```{python}
+y = df["FRISKED_FLAG"].astype(int)
+
+X = df.drop(columns=["SUSPECTS_ACTIONS_DECRIPTION_FLAG", "DEMEANOR_OF_PERSON_STOPPED", "SEARCHED_FLAG", "PHYSICAL_FORCE", "WEAPON_FOUND_FLAG", "FRISKED_FLAG"])
+X = pd.get_dummies(X, drop_first=False)
+
+LM = LogisticRegression(max_iter=1000)
+LM.fit(X, y)
+
+coef_df = pd.DataFrame({
+    "feature": X.columns,
+    "coefficient": LM.coef_[0]
+})
+
+coef_df = coef_df.sort_values(by="coefficient", ascending=False)
+coef_df
+```
+
+## Physical Force? 
+
+```{python}
+from sklearn.linear_model import LogisticRegression
+df = df[df["SUSPECT_REPORTED_AGE"].notna()]
+
+ix = df["FRISKED_FLAG"] + df["SEARCHED_FLAG"] >= 1 
+df = df[ix]
+
+y = df["PHYSICAL_FORCE"]
+
+
+df["SUSPECT_REPORTED_AGE"] = df["SUSPECT_REPORTED_AGE"].astype("float")
+
+X = df.drop(columns=["SUSPECTS_ACTIONS_DECRIPTION_FLAG", "DEMEANOR_OF_PERSON_STOPPED", "PHYSICAL_FORCE", "SEARCHED_FLAG", "FRISKED_FLAG"])
+
+X = pd.get_dummies(X, drop_first=True)
+
+
+LM = LogisticRegression(max_iter=1000)
+LM.fit(X, y)
+
+coef_df = pd.DataFrame({
+    "feature": X.columns,
+    "coefficient": LM.coef_[0]
+})
+
+coef_df = coef_df.sort_values(by="coefficient", ascending=False)
+
+coef_df
+
+```
