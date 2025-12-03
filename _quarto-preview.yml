@@ -8,3 +8,4 @@ book:
         - source/20-introduction-prediction.qmd
         - source/21-feature-engineering-and-overfitting.qmd
         - source/22-dissecting-bias.qmd
+        - source/25-classification.qmd
