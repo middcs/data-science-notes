@@ -11,11 +11,11 @@ These notes are explicitly designed for undergraduate instruction. For this reas
 
 ## Use and Reuse
 
-These notes were written by [Michael Linderman](https://www.cs.middlebury.edu/~mlinderman/) and [Phil Chodrow](www.philchodrow.prof) for the course CSCI 1010: Applied Data Science at Middlebury College. All are welcome to use them for educational purposes. Attribution is appreciated but not expected. 
+These notes were written by [Michael Linderman](https://go.middlebury.edu/linderman) and [Phil Chodrow](www.philchodrow.prof) for the course CSCI 1010: Applied Data Science at Middlebury College. All are welcome to use them for educational purposes. Attribution is appreciated but not expected. 
 
 ## Source Texts
 
-We rely a lot on @vanderplasPythonDataScience2016. 
+These notes are intended to used alongside @vanderplasPythonDataScience2016 and we extensively draw on that resource.
 
 ## Acknowledgements
 

@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>1&nbsp; Introduction to Python Data Science – Applied Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/01-data-and-models.html" rel="next">
+<link href="../index.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-da5d8d89f6dce618f5587771a6e0de62.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/00-intro-python-datascience.html">Examples</a></li><li class="breadcrumb-item"><a href="../chapters/00-intro-python-datascience.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Python Data Science</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Applied Data Science</a> 
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Examples</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/00-intro-python-datascience.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Python Data Science</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01-data-and-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data, Patterns, and Models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02-black-box-classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Classification as a Black Box</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/20-introduction-prediction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introducing Prediction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/21-feature-engineering-and-overfitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Features and Overfitting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/22-dissecting-bias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Dissecting Bias in Medical Risk Prediction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/25-classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introducing Classification</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#working-with-ipython-notebooks" id="toc-working-with-ipython-notebooks" class="nav-link active" data-scroll-target="#working-with-ipython-notebooks">Working with IPython notebooks</a></li>
+  <li><a href="#python-data-science-ecosystem" id="toc-python-data-science-ecosystem" class="nav-link" data-scroll-target="#python-data-science-ecosystem">Python Data Science Ecosystem</a></li>
+  <li><a href="#vector-execution-and-numerical-python-numpy" id="toc-vector-execution-and-numerical-python-numpy" class="nav-link" data-scroll-target="#vector-execution-and-numerical-python-numpy">“Vector” execution and Numerical Python (NumPy)</a></li>
+  <li><a href="#vectorization-example-standard-deviation" id="toc-vectorization-example-standard-deviation" class="nav-link" data-scroll-target="#vectorization-example-standard-deviation">Vectorization example: Standard deviation</a></li>
+  <li><a href="#what-makes-numpy-useful" id="toc-what-makes-numpy-useful" class="nav-link" data-scroll-target="#what-makes-numpy-useful">What makes NumPy useful?</a>
+  <ul class="collapse">
+  <li><a href="#so-should-i-always-use-numpy" id="toc-so-should-i-always-use-numpy" class="nav-link" data-scroll-target="#so-should-i-always-use-numpy">So, should I always use NumPy?</a></li>
+  </ul></li>
+  <li><a href="#a-more-complex-example-stock-market-simulation" id="toc-a-more-complex-example-stock-market-simulation" class="nav-link" data-scroll-target="#a-more-complex-example-stock-market-simulation">A more complex example, stock market simulation</a>
+  <ul class="collapse">
+  <li><a href="#including-continual-investment" id="toc-including-continual-investment" class="nav-link" data-scroll-target="#including-continual-investment">Including continual investment</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/00-intro-python-datascience.html">Examples</a></li><li class="breadcrumb-item"><a href="../chapters/00-intro-python-datascience.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Python Data Science</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Python Data Science</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+<p><i><a href="http://colab.research.google.com/github/middcs/data-science-notes/blob/main/docs/live-notebooks/00-intro-python-datascience.ipynb">Open the live notebook</a> in Google Colab or <a href="https://www.midccs.github.io/data-science-notes/live-notebooks/00-intro-python-datascience.ipynb">download the live notebook</a></i></p>.
+
+
+<p>These notes were written for students with both introductory Computer Science experience in Python, and introductory data science experience using R. The former may not familiar with common data science tools like notebooks, Data Frames, etc., while the latter may not be familiar with Python, our goal in this class is to build a common foundation using data science tools in Python.</p>
+<p>If you are coming from R, keep an eye out for special callouts identifying the equivalent techniques in R. I hope you fill find this transition is not as hard as you might expect. In fact, I think you’ll find that the Python data science ecosystem is very familiar. That’s not an accident. Python data science tools share inspiration with their R counterparts (or are even directly modeled on tools available within R). In some respects, it may be more challenging to transition from using Python as a general purpose language to using the Python data science ecosystem the way we will in this class.</p>
+<p>Why Python (and not R, or some other tool)? That is a complicated and fraught question. But the short answer is machine learning. Python is the lingua franca of machine learning, and that is our ultimate focus.</p>
+<section id="working-with-ipython-notebooks" class="level2">
+<h2 class="anchored" data-anchor-id="working-with-ipython-notebooks">Working with IPython notebooks</h2>
+<p>The primary computing environment for our class will be a Jupyter/IPython notebooks. These are very similar to R markdown or other notebook-style computing environments you might have used in other settings. Compared to writing a stand-alone program or scripts, notebooks are designed to be interactive computational documents that combine code, visualizations and narrative text.</p>
+<p>A quick orientation:</p>
+<ul>
+<li>Notebooks combine executable code cells and rich Markdown/LaTeX text cells. Use Markdown cells for explanatory text, headings, and equations.</li>
+<li>A typical approach to is to iteratively run and re-run your code cells as your develop. Common actions when doing so: Shift+Enter (⇧+⏎) runs the current cell and moves to the next; Ctrl+Enter (⌃+⏎) runs the cell and stays; Alt/Option+Enter (⎇/⌥+⏎) runs and inserts a new cell below.</li>
+<li>The state of your computation (variables) is maintained in the backing “kernel”. This is analogous to the shell/console sessions (more formally REPLs) you might have used previously. Restarting the kernel clears that state.</li>
+<li>Your code cells can contain Python code and IPython magic commands, e.g., <code>%run</code>, which extend Python’s capabilities.</li>
+</ul>
+<div class="callout callout-style-simple callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Get in the habit of restarting the kernel and re-running from top-to-bottom
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A common issue is that your kernel environment, the current state of your Python session, can be out of sync with the current code in your notebook. Keep in mind, the kernel is an interactive environment that has accumulated all of the computations you have performed so far. That may or may not be the same as the environment created if you ran your notebook from top-to-bottom in a fresh session. To avoid problems, get in the habit of restarting your kernel to get a fresh session and running your notebook from top-to-bottom to ensure it is still a valid and coherent program. Especially make sure you do so before submitting any work.</p>
+</div>
+</div>
+<p>While you can run notebooks locally (and we’re happy to show you how to do so) the primary computing environment we will use in class is Google Colab. Colab is cloud-based compute environment that provides the libraries and computing resources “out of the box” (for free!) and enables rich forms of collaboration.</p>
+</section>
+<section id="python-data-science-ecosystem" class="level2">
+<h2 class="anchored" data-anchor-id="python-data-science-ecosystem">Python Data Science Ecosystem</h2>
+<p>There is a rich data science ecosystem in Python. Some of the libraries we will be using include:</p>
+<ul>
+<li><a href="https://numpy.org/">NumPy</a>: N-dimensional numerical arrays and vectorized operations.</li>
+<li><a href="https://pandas.pydata.org/">pandas</a>: Flexible DataFrame data structures and I/O for tabular data.</li>
+<li><a href="https://matplotlib.org/">Matplotlib</a>: Low-level plotting library for producing 2-D figures.</li>
+<li><a href="https://seaborn.pydata.org/">Seaborn</a>: High-level statistical visualization built on Matplotlib (with some similarities to <code>ggplot2</code> in R).</li>
+<li><a href="https://scipy.org/">SciPy</a>: Scientific computing routines: optimization, integration, signal processing, etc.</li>
+<li><a href="https://scikit-learn.org/">scikit-learn</a>: General-purpose machine learning: classification, regression, clustering, pipelines.</li>
+<li><a href="https://pytorch.org/">PyTorch</a>: Widely-used deep learning framework.</li>
+</ul>
+</section>
+<section id="vector-execution-and-numerical-python-numpy" class="level2">
+<h2 class="anchored" data-anchor-id="vector-execution-and-numerical-python-numpy">“Vector” execution and Numerical Python (NumPy)</h2>
+<p>The <a href="https://numpy.org/"><code>numpy</code> (<strong>Num</strong>erical <strong>Py</strong>thon) package</a> is an extensive set of tools for working with N-dimensional <em>arrays</em> in Python. <code>numpy</code>, which we will write as NumPy, is at the heart of efficient data science and scientific computation in Python and is common building block for many of the tools we will use.</p>
+<p>Similar to R and other data intensive computing environment, NumPy encourages us to think about our computations in terms of “vector” or “array” operations, i.e., performing computations across multiple values instead of using loops. This “vectorized” style of computation and can be much faster (and more concise) than directly iterating (with <code>for</code> loops, etc.) because we can leverage NumPy’s highly optimized native implementations (i.e., implemented in C, not Python). Many operations in R, Matlab, etc. are similarly wrappers around high-performance native libraries. In this context, we use “vector” in the linear algebra sense of the term, i.e.&nbsp;a 1-D matrix of values, instead of a description of magnitude and direction (like you might see in Physics). More generally, we are aiming for largely “loop-free” implementations, that is all loops are implicit in the vector operations and thus implemented in native code.</p>
+<p>Let’s get started by importing the relevant package. Here we import all the types and functions in the <code>numpy</code> package with a <code>np</code> prefix, i.e., make them available to our program as <code>np.&lt;something&gt;</code>. Another common format is <code>import numpy</code>, which is shorthand for <code>import numpy as numpy</code>. We typically want to use the prefixed imports to avoid naming conflicts, i.e., identically named functions from different packages colliding. Many of the packages we will use in class have conventions for import naming (like <code>np</code> for <code>numpy</code>) that we will try to follow.</p>
+<div id="372d0650" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the typical import style/prefix. It makes all the NumPy types and functions</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># available with a `np` prefix.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"NumPy version:"</span>, np.__version__)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NumPy version: 2.2.3</code></pre>
+</div>
+</div>
+<p>Even if you have never used NumPy, vectorized computations are likely not new. For example, a first implementation of <code>mean</code> in Python might look like:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mean(data):</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return mean of non-empty sequence data"""</span></span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> <span class="dv">0</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> val <span class="kw">in</span> data:</span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>        <span class="co"># result += ... equivalent to result = result + ...</span></span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-hidden="true" tabindex="-1"></a>        result <span class="op">+=</span> val</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-7" class="code-annotation-target"><a href="#annotated-cell-2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result <span class="op">/</span> <span class="bu">len</span>(data)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="1" data-code-annotation="1"><code>def</code> is used to define a function, here named <code>mean</code> with one positional argument <code>data</code>. The body of function is indented (typically 4 spaces, but any indentation is allowed as long as it is consistent).</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="4" data-code-annotation="2">A python <code>for</code> loop defines a loop variable (here <code>val</code>) that is assigned values from from a loop sequence. Here <code>data</code> is likely a <code>list</code>, but any ordered sequence will work. In each iteration the loop variable is assigned to the next value from the sequence.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="7" data-code-annotation="3">Python requires an explicit <code>return</code> statement (unlike R which implicitly returns the value of the last expression in a function), which terminates execution and “returns” a value to the caller. Functions without a <code>return</code> statement are permitted. In that case, the function implicitly returns a special value <code>None</code>.</span>
+</dd>
+</dl>
+<p>A more typical implementation might be:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mean(data):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>(data) <span class="op">/</span> <span class="bu">len</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Here the loop inherent to the sum operation is implicit within the <code>sum</code> function, i.e., we would describe it as “vectorized”.</p>
+</section>
+<section id="vectorization-example-standard-deviation" class="level2">
+<h2 class="anchored" data-anchor-id="vectorization-example-standard-deviation">Vectorization example: Standard deviation</h2>
+<p>In a more complex example, let’s consider a standard deviation computation. Here is a typical implementation with an explicit loop. How can we vectorize this function?</p>
+<div id="16e0dde5" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> stddev(data):</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    mean <span class="op">=</span> <span class="bu">sum</span>(data) <span class="op">/</span> <span class="bu">len</span>(data)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> d <span class="kw">in</span> data:</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        result <span class="op">+=</span> (d <span class="op">-</span> mean) <span class="op">**</span> <span class="dv">2</span> <span class="co"># ** is the power operator</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> math.sqrt(result <span class="op">/</span> (<span class="bu">len</span>(data) <span class="op">-</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Here is the corresponding implementation using NumPy. Notice there are no more <code>for</code> loops!</p>
+<div id="e70030a9" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>, <span class="fl">4.0</span>]) <span class="co"># Square brackets create a list literal</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>np.sqrt(np.<span class="bu">sum</span>((data <span class="op">-</span> np.mean(data))<span class="op">**</span><span class="dv">2</span>)<span class="op">/</span>(<span class="bu">len</span>(data) <span class="op">-</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>np.float64(1.2909944487358056)</code></pre>
+</div>
+</div>
+<p>For our example input, this code performs the following operations:</p>
+<ol type="1">
+<li><p>Creates a 1-D array from a list.</p></li>
+<li><p>Performs a “reduction”, computing the mean, to produce the scalar 2.5.</p></li>
+<li><p>Performs an element-wise subtraction to compute the difference from the mean. Note that the scalar argument, the mean, is “broadcasted” to be the same size as the vector.</p>
+<p><span class="math display">\[ \begin{bmatrix} 1.0 \\ 2.0 \\ 3.0 \\ 4.0 \end{bmatrix} - \begin{bmatrix} 2.5 \\ 2.5 \\ 2.5 \\ 2.5 \end{bmatrix} \]</span></p></li>
+<li><p>Performs an element-wise “squaring” via the <code>**</code> operator.</p>
+<p><span class="math display">\[ \begin{bmatrix} -1.5^2 \\ -0.5^2 \\ 0.5^2 \\ 1.5^2 \end{bmatrix} \]</span></p></li>
+<li><p>Performs a sum reduction of the intermediate vector, producing the scalar 5.</p>
+<p><span class="math display">\[ 2.25 + 0.25 + 0.25 + 2.25 \]</span></p></li>
+<li><p>Performs the division and square root operations over scalar values.</p>
+<p><span class="math display">\[ \sqrt{\frac{5}{4-1}} \]</span></p></li>
+</ol>
+<p>Let’s summarize the NumPy features we used here:</p>
+<dl>
+<dt>NumPy array (ndarray)</dt>
+<dd>
+Efficient N‑dimensional array type created from Python sequences (e.g., <code>np.array([1.0,2.0,3.0])</code>) or generated directory by NumPy functions. <code>ndarray</code>s compactly (e.g.&nbsp;contiguously) store data of a uniform type using native representations (e.g., <code>double</code> 64-bit floating point) and supports vectorized operations.
+</dd>
+<dt>Vectorized arithmetic</dt>
+<dd>
+Element‑wise operations (e.g., <code>data - np.mean(data)</code>, <code>(data - mean) ** 2</code>) applied to whole arrays without explicit Python <code>for</code> loops.
+</dd>
+<dt>Reduction functions</dt>
+<dd>
+Aggregation routines like <code>np.mean</code> and <code>np.sum</code> that compute scalars from arrays efficiently.
+</dd>
+<dt>Broadcasting</dt>
+<dd>
+Automatic expansion of smaller operands (here the scalar mean) to match an array’s shape so element‑wise arithmetic works without manual replication.
+</dd>
+<dt>Vectorized universal functions (ufuncs)</dt>
+<dd>
+Fast, element‑wise functions implemented in C (e.g., <code>np.sqrt</code>, arithmetic operators) that operate on arrays efficiently.
+</dd>
+</dl>
+</section>
+<section id="what-makes-numpy-useful" class="level2">
+<h2 class="anchored" data-anchor-id="what-makes-numpy-useful">What makes NumPy useful?</h2>
+<p>The above implementation is more concise, but also much faster!</p>
+<div id="b44f69a2" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> stddev_numpy(data):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.sqrt(np.<span class="bu">sum</span>((data <span class="op">-</span> np.mean(data))<span class="op">**</span><span class="dv">2</span>)<span class="op">/</span>(<span class="bu">len</span>(data) <span class="op">-</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="1e6d0d88" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create random input data sampled from a normal distribution</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.random.normal(size<span class="op">=</span><span class="dv">1000</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>data_list <span class="op">=</span> <span class="bu">list</span>(data)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the %timeit magic command to benchmark this code by running it several times</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit stddev_numpy(data)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit stddev(data_list)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>3.7 μs ± 36.4 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+79.2 μs ± 2.11 μs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)</code></pre>
+</div>
+</div>
+<p>Notice how much faster the NumPy version is! Why is that? Both implementations are performing the same arithmetic operations. The difference is that NumPy is doing so with highly optimized native libraries that are working with the machine’s underlying data representation, i.e., directly with the underlying double precision floating point values, compactly stored in continuous memory. In contrast, the Python implementation is working with Python’s highly flexible data types and loop structures. For examples, Python lists store references to the values contiguously, but not the values themselves. As a result more and less performant memory accesses are required. Further, numerous operations are required to access the underlying floating point value to actually perform the calculation.</p>
+<section id="so-should-i-always-use-numpy" class="level3">
+<h3 class="anchored" data-anchor-id="so-should-i-always-use-numpy">So, should I always use NumPy?</h3>
+<p>If you will operate on large, regularly structured, data with uniform type and are considering writing <code>for</code> loops or Python <code>list</code>s, etc., ask yourself whether you can achieve your task with <code>numpy</code> arrays instead. Often the vectorized code is more concise and faster, especially as the dimensionality increases (i.e., your data is a 2 or 3 or more dimensional array). But, “always” is a strong word. What we will see is that “general purpose” Python is used as the orchestrator, i.e., to setup the computation. But the “heavy lifting”, the computationally intensive portions, are performed with NumPy. And when we do work with NumPy we want to minimize the use of <code>for</code> loops and maximize the use of vectorized operations.</p>
+</section>
+</section>
+<section id="a-more-complex-example-stock-market-simulation" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="a-more-complex-example-stock-market-simulation">A more complex example, stock market simulation</h2>
+<p>A <a href="https://en.wikipedia.org/wiki/Random_walk">random walk</a> is a path composed of a succession of random steps, e.g.&nbsp;that path of molecule as it travels in a liquid of gas. Another application of that tool is simulating the stock market (<a href="https://bestinterest.blog/five-charts/">inspiration</a>). A common rule of thumb is that the stock market as a whole will yield 7% a year, but that simplistic model doesn’t capture the variability in returns observed in practice. For example, the S&amp;P 500, a large-cap stock index increased 27% in 2021, but dropped 19.4% in 2022.</p>
+<div class="page-columns page-full"><p>An alternate model<span class="citation" data-cites="malkielRandomWalk2015">(<a href="#ref-malkielRandomWalk2015" role="doc-biblioref">Malkiel 2015</a>)</span> (although perhaps not any more accurate) is that that stock market increases 1% per month on average, but with a 4.5 percentage point standard deviation, i.e., on average the market goes up, but there is high variance in those returns. Let’s leverage our new numerical computing tools to efficiently simulate the stock market.</p><div class="no-row-height column-margin column-container"><span class="margin-aside">Not investing advice! Our focus here is the implementation. I don’t make any claims about the accuracy of this model. Instead, we exploring how to use the computational tools we are learning about for different purposes.</span></div></div>
+<p>Let’s assume we start with a portfolio of $100 and simulate 20 years, e.g., 240 months. Each month we observe a random return with a mean of 1% and standard deviation of 4.5% (the random walk). The compounded product of those returns gives our final portfolio amount. The random steps in our walk are samples from a distribution of possible returns (with a mean of 1% and standard deviation of 4.5%). When we sample from a distribution, we are generating random values with a probability that matches the target distribution. In our case, most samples will be around 1%, with some outliers as described by the standard deviation.</p>
+<p>One immediate question is what distribution to use. The probability density function for a Gaussian and Laplace distribution with means of 1.01 (the multiplier for a yield of 1%) and a standard deviation of 4.5% shown below. The details are not so relevant for this portion of the course, but the Laplace distribution offers a better model of the “fat” tails (increased likelihood of outlier events) and asymmetry observed in the stock market. We can use the <a href="https://numpy.org/doc/stable/reference/random/generated/numpy.random.laplace.html#numpy.random.laplace"><code>numpy.random.laplace</code> function</a> to generate random samples from a Laplace distribution. That function is parameterized by the mean and scale (the latter is derived from the standard deviation).</p>
+<div id="cell-dist" class="cell page-columns page-full" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> norm, laplace</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="fl">0.6</span>, <span class="fl">1.4</span>, <span class="dv">100</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>plt.plot(x, norm.pdf(x, <span class="fl">1.01</span>, <span class="fl">0.045</span>), label<span class="op">=</span><span class="st">"Gaussian"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>plt.plot(x, laplace.pdf(x, <span class="fl">1.01</span>, <span class="fl">0.045</span> <span class="op">/</span> math.sqrt(<span class="dv">2</span>)), label<span class="op">=</span><span class="st">"Laplace"</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="dist" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="00-intro-python-datascience_files/figure-html/dist-output-1.png" class="figure-img" width="566" height="411"></p>
+<figcaption class="margin-caption">Probability density functions for Gaussian and Laplace distributions</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>We are interested in the cumulative product of the monthly returns, which we can compute with the <a href="https://numpy.org/doc/stable/reference/generated/numpy.cumprod.html#numpy-cumprod"><code>cumprod</code> function</a>, which as its name suggests computes <span class="math inline">\(x_1, x_1\cdot x_2, x_1\cdot x_2 \cdot x_3,...\)</span>. We will start with a single simulation:</p>
+<div id="48d39c53" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial portfolio</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>initial <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Model parameters</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>mean <span class="op">=</span> <span class="fl">0.01</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>std <span class="op">=</span> <span class="fl">0.045</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>scale <span class="op">=</span> std <span class="op">/</span> math.sqrt(<span class="dv">2</span>) <span class="co"># Scale parameter for Laplace distribution</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute cumulative returns by month</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>steps <span class="op">=</span> np.random.laplace(<span class="dv">1</span><span class="op">+</span>mean, scale, <span class="dv">240</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ---</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>returns <span class="op">=</span> np.cumprod(steps)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>portfolio <span class="op">=</span> initial <span class="op">*</span> returns</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co"># ---</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-one-portfolio-sim" class="cell page-columns page-full" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(portfolio)<span class="op">+</span><span class="dv">1</span>), portfolio)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Month"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Portfolio ($)"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Simulate an investment portfolio of $"</span> <span class="op">+</span> <span class="bu">str</span>(initial) <span class="op">+</span> <span class="st">" as a random walk"</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="one-portfolio-sim" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="00-intro-python-datascience_files/figure-html/one-portfolio-sim-output-1.png" class="figure-img" width="602" height="449"></p>
+<figcaption class="margin-caption">Simulated balance in an investment portfolio</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The above just performed a single simulation. We typically want to perform the walk many times, e.g., 5000, to get a distribution of outcomes. Here is where the vectorized approach can be particularly helpful (for both conciseness and performance). We can think of 5000 random walks of length 240 as working with a 2-D array with 5000 rows and 240 columns where each row is a different walk and each column is a month (a step in our walk). To simplify our approach we will just focus on the total yield, i.e., compute the product of the returns (with <a href="https://numpy.org/doc/stable/reference/generated/numpy.prod.html#numpy.prod"><code>np.prod</code></a>) not the cumulative product.</p>
+<div id="0da64cf9" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>num_sim <span class="op">=</span> <span class="dv">5000</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Providing a tuple for size to laplace produces num_simx240 values. We then compute</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># the product along axis=1, i.e., along the rows, to get the final return.</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ---</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>steps <span class="op">=</span> np.random.laplace(<span class="dv">1</span><span class="op">+</span>mean, scale, (num_sim, <span class="dv">240</span>))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>returns <span class="op">=</span> np.prod(steps, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>portfolios <span class="op">=</span> initial <span class="op">*</span> returns</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ---</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We observe a broad distribution of returns including a subset of simulations that underperformed the simplistic model of 7% return per year (shown with the dashed line).</p>
+<div id="cell-multi-portfolio-sim" class="cell page-columns page-full" data-execution_count="10">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>plt.hist(portfolios, bins<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>plt.axvline(x<span class="op">=</span>initial <span class="op">*</span> (<span class="fl">1.07</span> <span class="op">**</span> <span class="dv">20</span>), color<span class="op">=</span><span class="st">'r'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Portfolio ($)"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Frequency"</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribution of portfolios for "</span> <span class="op">+</span> <span class="bu">str</span>(num_sim) <span class="op">+</span> <span class="st">" simulations"</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="multi-portfolio-sim" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="00-intro-python-datascience_files/figure-html/multi-portfolio-sim-output-1.png" class="figure-img" width="601" height="449"></p>
+<figcaption class="margin-caption">Distribution of final balance in simulated portfolios with 7% return per year shown as dotted line</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="page-columns page-full"><p>What is different about this version? Notice that we provide a length 2 tuple to <code>np.random.laplace</code>.  This creates a 2-D array of size 5000×240. We can access the size tuple of a NumPy array with the <code>shape</code> attribute. The dimensions correspond to the indices in <code>shape</code>, i.e., dimension 0 is 5000, dimension 1 is 240 and so on.</p><div class="no-row-height column-margin column-container"><span class="margin-aside">A Python tuple is a heterogenous sequence of fixed length.</span></div></div>
+<div id="73283e21" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>steps.shape</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>(5000, 240)</code></pre>
+</div>
+</div>
+<div class="page-columns page-full"><p>We also added an <code>axis</code> argument to the <code>np.prod</code> reduction. By default, reductions like <code>prod</code> are performed “across” the entire entire array “flattened” into a 1-D vector. If we only want to reduce across a specific dimension, e.g., just the columns, we specify that with the <code>axis</code> argument. The axes are numbered according to the shape, i.e., index 0 of the shape is axis 0, index 1 is axis 1, … If the shape is 5000×240, summing across axis 1 sums across the 240 dimension. </p><div class="no-row-height column-margin column-container"><span class="margin-aside"><code>axis</code> is an example of a Python optional keyword argument. We don’t need to provide a value for that argument, and when we do, we do so by name instead of position</span></div></div>
+<section id="including-continual-investment" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="including-continual-investment">Including continual investment</h3>
+<p>We assumed an initial investment of $100 with no further investments. However a more realistic scenario might be to simulate regular contributions, e.g., contributing a fixed amount each month. How would you extend our previous approach to to model regular contributions?</p>
+<p>Let’s start with the underlying expression for a single simulation, shown below where <span class="math inline">\(r_i\)</span> is the rate of return for month <span class="math inline">\(i\)</span>.</p>
+<p><span class="math display">\[
+\begin{align}
+P_{240} &amp;= \sum_{m=1}^{240} \$100 \prod_{i=m}^{240} r_i
+\end{align}
+\]</span></p>
+<p>Our first instinct might be to convert the product (<span class="math inline">\(\prod\)</span>) and sum (<span class="math inline">\(\sum\)</span>) operations into <code>for</code> loops, as they are iterative computations over our 240 month time period. As we saw already, we can implement the product operation as a vectorized operation across a 2-D array. Could we do so with the sum as well?</p>
+<p>Consider the following refactoring of <span class="math inline">\(P_{240}\)</span>: <span class="math display">\[
+\begin{align}
+P_{240} &amp;= \sum_{m=1}^{240} \$100 \prod_{i=m}^{240} r_i \\
+        &amp;= \$100 \sum_{m=1}^{240} \prod_{i=m}^{240} r_i \\
+        &amp;= \$100 (\prod_{i=1}^{240} r_i + \prod_{i=2}^{240} r_i + ... + r_{240}) \\
+        &amp;= \$100 (r_{240} + (r_{240}\cdot r_{239}) + ... \prod_{i=1}^{240} r_i) \\
+        &amp;= \$100 (r_1 + (r_1\cdot r_2) + ... \prod_{i=1}^{240} r_i) \\
+\end{align}
+\]</span></p>
+<p>The sequence <span class="math inline">\(r_1, (r_1\cdot r_2), ..., \prod_{i=1}^{240} r_i\)</span> is the cumulative product! That is the right hand side of the last expression is the sum of the cumulative product of the monthly returns! The corresponding vectorized implementation would be:</p>
+<div id="bb996367" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We do exactly the same initial steps as before, but now we think of the returns</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># as the total return for each month's investment (albeit in reverse). The first</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># column is the return on the the amount that has been invested for 1 month, the </span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># second column is the return on the amount invested for 2 months, all the way to</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># the initial amount invested for 240 months.</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>returns <span class="op">=</span> np.cumprod(np.random.laplace(<span class="dv">1</span><span class="op">+</span>mean, scale, (num_sim, <span class="dv">240</span>)), axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># `portfolios_monthly` captures the final portfolio value with the iterative investment for all simulations</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>portfolios_monthly <span class="op">=</span> initial <span class="op">*</span> np.<span class="bu">sum</span>(returns, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ---</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We can then plot the distribution of our portfolios with continual investment. That continual investment makes a big difference!</p>
+<div id="cell-cont-invest-multi-portfolio-sim" class="cell page-columns page-full" data-execution_count="13">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>sns.histplot(portfolios, bins<span class="op">=</span><span class="dv">30</span>, log_scale<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="st">"Initial investment"</span>, color<span class="op">=</span><span class="st">"blue"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>sns.histplot(portfolios_monthly, bins<span class="op">=</span><span class="dv">30</span>, log_scale<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="st">"Continual investment"</span>, color<span class="op">=</span><span class="st">"red"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Portfolio ($)"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Frequency"</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribution of portfolios for "</span> <span class="op">+</span> <span class="bu">str</span>(num_sim) <span class="op">+</span> <span class="st">" simulations"</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="cont-invest-multi-portfolio-sim" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="00-intro-python-datascience_files/figure-html/cont-invest-multi-portfolio-sim-output-1.png" class="figure-img" width="602" height="451"></p>
+<figcaption class="margin-caption">Distribution of final balance in simulated portfolios with both a single initial investment and a continual investment</figcaption>
+</figure>
+</div>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-malkielRandomWalk2015" class="csl-entry" role="listitem">
+Malkiel, B. G. 2015. <em>A Random Walk down Wall Street: The Time-Tested Strategy for Successful Investing</em>. Norton.
+</div>
+</div>
+</section>
+</section>
+
+<p><br> <br> <span style="color:grey;">© Michael Linderman and Phil Chodrow, 2025-2026</span></p></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../index.html" class="pagination-link" aria-label="Welcome">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Welcome</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/01-data-and-models.html" class="pagination-link" aria-label="Data, Patterns, and Models">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data, Patterns, and Models</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
