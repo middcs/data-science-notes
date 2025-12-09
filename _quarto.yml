@@ -5,9 +5,9 @@ project:
 book: 
   title: "Applied Data Science"
   author: "Michael Linderman and Phil Chodrow"
-  date: "01/15/2024"
+  date: "01/05/2026"
   body-footer: |
-        <br> <br> <span style="color:grey;">&#169; Michael Linderman and Phil Chodrow, 2025</span>
+        <br> <br> <span style="color:grey;">&#169; Michael Linderman and Phil Chodrow, 2025-2026</span>
   sidebar: 
     search: false
 

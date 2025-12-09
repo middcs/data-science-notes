@@ -1,0 +1,309 @@
+---
+jupyter: python3
+title: Data Wrangling with Python
+subtitle: Getting started with Pandas Data Frames
+---
+
+[Data wrangling](https://en.wikipedia.org/wiki/Data_wrangling) is a broad term for transforming data from one form into another. It some times is synonymous with "data cleaning", i.e., preparing "messy" raw data for further analysis, but data wrangling can also refer the analysis itself (including data transformation, visualization, aggregation). Today we will focus on the data structures and techniques used to store, transform and aggregate tabular data. These tools build on the vectorized approaches, and specifically NumPy packages, we just learned about.
+
+## Pandas
+
+The `pandas` Python package offers a rich set of powerful tools for working with tabular data. The name "pandas" is originally derived from the common term "panel data." While different users pronounce the package name in different ways, for cuteness reasons we prefer to pronounce it like the plural of "panda [bears]".
+
+![[Image credit](https://commons.wikimedia.org/wiki/File:Giant_Panda_eating_Bamboo.JPG)](/assets/img/panda.jpg){width=50%}
+
+Our standard imports. Note the new addition of `import pandas as pd`.
+```{python}
+import numpy as np
+# pd is the prefix convention for pandas
+import pandas as pd
+
+print(pd.__version__)
+```
+
+The two key data structures offered by Pandas are `Series`, a 1-D array, and `DataFrame`, a 2-D table with rows and columns.
+
+## What is a DataFrame?
+
+If you have used Microsoft Excel, Google Sheets, or other similar spreadsheet, you have effectively used a Pandas `DataFrame` (which is modeled on R's dataframe).
+
+What are the key properties of a spreadsheet table:
+
+* 2-D table (i.e. rows and columns) with rows typically containing different observations/entities and columns representing different variables
+* Columns (and sometimes rows as well) have names (i.e. "labels")
+* Columns can have different types, e.g. one column may be a string, another a float, but any given column is typically of uniform type
+* Most computations are performed on a subset of columns, e.g. sum all quiz scores for all students, for all the data in those columns (i.e., "for each" row)
+
+The pandas [DataFrame](https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html#dataframe) type is designed for this kind of data.
+
+There are lot of different ways to conceptually think about `DataFrame`s including (but not limited to) as a spreadsheet, or a database table, or as a list/dictionary of 1-D `Series` (the columns) with the column label as the key. The last is closer to the underlying implementation and a common way to create `DataFrame`s.
+
+Let's get started by loading some example data with physiological measurements and species labels for several populations of Adelie, Chinstrap, and Gentoo penguins (the "Palmer Penguins" data.)[The Palmer Penguins data was originally collected by @gormanEcologicalSexualDimorphism2014 and was nicely packaged and released for use in the data science community by @horstAllisonhorstPalmerpenguinsV02020.]{.aside}
+
+```{python}
+URL = "https://raw.githubusercontent.com/PhilChodrow/ml-notes/main/data/palmer-penguins/palmer-penguins.csv"
+```
+
+```{python}
+# df is a common variable name for data frames
+#---
+df = pd.read_csv(URL)
+type(df)
+#---
+```
+
+Checking out the resulting data, we see a lot happened in that one function call! Pandas downloaded the data from the provided URL, parsed the CSV file and constructed a `DataFrame` of size `{python} df.shape` (rows × columns).[We can access the size with `df.shape`.]{.aside}
+```{python}
+df
+```
+
+We noted above that `DataFrame` columns can have different types. We can query the types for each column with the `dtypes` attribute. The `object` type is the default when Pandas can't infer a numeric type. This is very common when the columns contain strings. You can [give string columns a dedicated data type](https://pandas.pydata.org/pandas-docs/stable/user_guide/text.html), but we won't focus on that here.
+
+```{python}
+df.dtypes
+```
+
+Some other commonly used methods[A method is a function called on the specific instance of an object. In Python we call methods and access instance attributes with the dot operator, `.`. The object instance to the left of the dot is the receiver, the object on which we want to call the method. You can think of a calling a method as a calling function that takes the receiver as the first argument, i.e., `df.head()` is equivalent to `pd.DataFrame.head(df)`.]{.aside} for data inspection:
+
+* `df.head()`: Display first 5 rows
+* `df.info()`: Display column names and types, along with non-null counts
+* `df.describe()`: Generate statistical summary of data
+
+The key parts of the `DataFrame`:
+
+* The index. The index is used to refer to **rows**, i.e., serves as "row labels". It is the 0, 1, 2, ... at the far left above.
+* The column names. These name or label the specific **columns**, i.e., are "column labels", and are typically used to select data during computation.
+* The data itself. You can think of the data as a set of different 1-D arrays or `Series`, one for each column. Each array has the same length. Many of the operations on these arrays will be familiar from NumPy.
+
+## Selecting data
+
+We could anticipate wanting to select data using both sets of labels, i.e., by column and by row. Recall we described a `DataFrame` as a dictionary of columns, and we can indeed, use the indexing operator `[]`, to select columns by name.
+
+```{python}
+# Select a single column
+#---
+df["Region"].head()
+#---
+```
+
+```{python}
+# Select and optionally reorder columns with a list
+#---
+df[["Species", "Region", "Island", "Culmen Length (mm)"]].head()
+#---
+```
+
+To access rows (and columns) via their labels we use the `loc` attribute. It exposes as flexible indexing capability, e.g.
+
+```{python}
+# Select rows by label (using the index)
+#---
+df.loc[0:3].head()
+#---
+```
+Here we select the rows with indices [0,3] inclusive (using Python's slicing operator). While it may look like we are selecting rows *at* indices [0,3], that is not the case. We are selecting based on the label, not the position. Consider the following example:
+```{python}
+#---
+df.loc[3:6].loc[0:3].head()
+#---
+```
+Notice we only get a single row, with index 3. The first operation retries rows with labels 3, 4, 5, 6, and the latter selects rows with labels 0, 1, 2, 3.
+
+To select rows by position, e.g., as you might select values in a list, we use the `iloc` attribute. We can again uses slices, but the ranges are position and are exclusive, i.e., the end index is *excluded*. Notice here we get 3 rows, with indices 3, 4, and 5. The first operation selects those rows (at positions 3, 4, 5 but not including 6), which are now at position 0, 1, and 2 (but not 3) in the result `DataFrame`. The second selection returns those rows. Note each row keeps its label throughout the various selection operations.
+```{python}
+#---
+df.iloc[3:6].iloc[0:3].head()
+#---
+```
+
+Alongside label and position we can also select data via boolean masks (i.e., data-driven filtering). The following filters the data to just those rows where the condition is `True`. To do so, we are computing an array (vector) of booleans using a vectorized comparison and then selecting those rows with `True`. Any boolean vector can be used, that is the computation used to generate the boolean index can be arbitrarily complex, incorporating different element-wise comparisons and bit-wise `&` (and) and `|` (or) or `~` (not) operations.
+
+```{python}
+# Since slicing and filtering rows is common, slices or boolean arrays inside [] apply to rows, i.e.,
+# is shorthand for df.loc[df["Culmen Length (mm)"] < 40].head()
+#---
+df[df["Culmen Length (mm)"] < 40].head()
+#---
+```
+
+::: {.content-hidden}
+PI Questions 1
+:::
+
+## Mutation
+
+The process of creating and modifying columns often described as "mutation".
+
+Just as we create new or update existing key-value pairs in a Python Dictionary with assignment, we can do the same with columns in a Pandas DataFrame. For example, the following add a column with the culmen length in centimeters (you may need to scroll to the right to see it). The division is an element-wise "vectorized" operation like those we saw with NumPy (and in many bases Pandas is actually storing the column as NumPy array).
+
+```{python}
+df["Culmen Length (cm)"] = df["Culmen Length (mm)"] / 10
+df.head()
+```
+
+### Vectorized operations on strings
+
+We can perform similar vectorized operations on the string columns, but need to expose them via the `str` attribute, e.g.,
+```{python}
+df["Species"].str.upper()
+```
+
+For example, to improve readability we might want just the first part the species name, i.e., "Adelie" instead of "Adelie Penguin (Pygoscelis adeliae)". This is the first part of the name up to the space. We can get it by splitting the string by whitespace and select the value at index 0 in the resulting list. Note that we can chain those operations, but need a `str` before each one to apply the resulting operation element-wise.
+```{python}
+df["Species"] = df["Species"].str.split().str.get(0)
+df.head()
+```
+
+## Split-Apply-Combine
+
+One of the fundamental pattern in tabular data analysis is to perform computation by/across groups. In our penguins data, for example, a very natural thing to do is to compute summary statistics by species, or perhaps by habitat (or both!). We can contextualize this task in three stages:
+
+* Split the data data frame into pieces, one for each species.
+* Apply an aggregation function to each piece, yielding a single number.
+* Combine the results into a new data frame.
+
+This pattern is so common that the phrase "split-apply-combine" now appears in many texts on data analysis. This phrase was originally coined by Hadley Wickham, who is famous for developing many of the modern tools for data analysis in the R programming language.
+
+![Schematic of split-apply-combine. Image credit: @vanderplasPythonDataScience2016](/assets/img/03.08-split-apply-combine.png)
+
+Pandas implements this pattern with the `groupby` method. For example, we can compute the mean of the numeric columns as a function of species using 
+```{python}
+df.groupby("Species").mean(numeric_only=True)
+```
+Compare these values to the overall means. We now readily observe that Adelie penguins have much shorter bills ("Culmen length (mm)") than Chinstrap and Gentoo penguins.
+```{python}
+df.mean(numeric_only=True)
+```
+Conceptually Pandas collected or "grouped" together all the data into subsets of rows with same value for the specified variable(s), then applied the aggregation function to each subset. We can think of the `groupby` method as returning a special "view" of the `DataFrame`, such that any aggregation functions used will by applied to each of the individual "groups" (i.e. species).
+
+Split-Apply-Combine enables sophisticated aggregations with very little code. Consider computing multiple statistics for all combinations of Species and Island. Note that we use a different approach to efficiently perform different aggregation operation on the same subsets (instead repeating the grouping operation). The `aggregate` method is a general approach to apply multiple functions to each group. It does not have a `numeric_only` argument, so we subset the groups to just the column(s) of interest.
+
+```{python}
+#---
+summary = df.groupby(["Species", "Island"])[["Culmen Length (mm)","Culmen Depth (mm)"]].aggregate(["mean", "std"])
+summary
+#---
+```
+
+### Hierarchical indexing
+
+Complex data summary tables like the one above are useful and powerful, but it is also non-obvious how we can extract specific data of interest. For example, how can I get the mean culmen (bill) length for Chinstrap penguins on Dream island? To extract this kind of data, we leverage Pandas' hierarchical indices, in which we pass multiple keys to the `.loc` attribute as a tuple.
+
+```{python}
+# Provide tuples for row and column index
+#---
+summary.loc[("Chinstrap", "Dream"),("Culmen Length (mm)", "mean")]
+#---
+```
+
+More generally, we can think of each value provided for an index drops us one level in the hierarchy. For example, the following returns a `DataFrame` with row indices for just island and column indices for just the aggregates of the "Culmen Length (mm)" column.
+
+```{python}
+# Tuple literals are created with parentheses, but parentheses with a single element (no comma) are interpreted
+# a grouping (in the PEMDAS sense), not a tuple. To create a single element tuple we add a trailing comma.
+#---
+summary.loc[("Chinstrap",),("Culmen Length (mm)",)]
+#---
+```
+
+## Apply split-apply-combine
+
+The following data is birth weight data (in ounces) for a cohort of babies along with other data about the baby and mother, including whether the mother smoked during pregnancy[@adhikariInferentialThinking2022]. Our hypothesis is that birth weight is negatively associated with whether the mother smoked during pregnancy (i.e., that babies born to mothers who smoked will be smaller on average).
+
+```{python}
+baby = pd.read_csv("https://www.inferentialthinking.com/data/baby.csv")
+baby
+```
+
+Here we see a sample of the data (1174 observations total). We are most interested in the "Birth Weight" and "Maternal Smoker" columns. We can use split-apply-combine technique, via the `groupby` method, to quickly figure out how many smokers and non-smokers are in the data. That helps us answer the question "Do we have enough data to do a meaningful analysis of that variable?". Fortunately it appears we do!
+
+```{python}
+baby.groupby("Maternal Smoker").size()
+```
+
+Let's check out the means for smokers and non-smokers. Again we can use `groupby`.
+
+```{python}
+#---
+means = baby.groupby("Maternal Smoker")["Birth Weight"].mean()
+means
+#---
+```
+
+Notice the over 9 ounce difference in average birth weight! That is suggestive of a significant difference. Specifically:
+```{python}
+# Compute the difference to the previous value. We expect the first to have NaN (not a number)
+# since there is not previous value.
+means.diff()
+```
+
+In contrast, the other attributes seem similar between the two groups.
+
+```{python}
+#---
+baby.groupby("Maternal Smoker").mean()
+#---
+```
+
+However, is that difference in average birth weight actually meaningful or did it just arise by chance? That is, what if in reality there is no difference between the two groups and what we are observing is just an artifact of how these particular mothers/babies were selected (it just happened that this set of non-smoking mothers had larger babies)? We will describe that latter expectation, that there is no difference, as the *null hypothesis*. 
+
+We would like to determine how likely it is that the null hypothesis is true[Spoiler warning: We are computing a p-value!]{.aside}. To do so we can simulate the null hypothesis by randomly shuffling the "Maternal Smoker", i.e. randomly assigning row to be a smoker or non-smoker to simulate a different random sample of patients, and then recomputing the difference in mean birth weight. If the null hypothesis is true, the difference in means of shuffled data will be similar to what we observe in the actual data.
+
+::: {.callout-tip collapse="true"}
+## Good application for an LLM?
+
+Pandas and the other libraries will use are very complex and the interfaces are not always intuitive (understatement!). As a result, working with these libraries can be a good application for LLMs. We know what we want, and having learned about split-apply-combine, we generally know what the solution should include, but it's not always clear which of the many hundreds or thousands of functions that are available would be relevant. As experiment, let's try asking an LLM to implement this code for us.
+
+Before doing so let's make sure we know what to expect. We need to:
+
+* Randomly shuffle the smoking label
+* Compute the difference in mean birth weight with groupby (or some type of grouping)
+* Do so many times to generate a distribution of birth weight differences
+
+Let's turn GenAI loose. After a little iteration with Claude Sonnet 4.5 and Copilot (GPT-5 mini) I settled on the following prompt.
+
+> Show me a permutation test in Python using Pandas groupby() and shuffling the "Material Smoker" column to test the difference in mean "Birth Weight".
+
+This is more prescriptive than might be desired. Many prompts produced lower level implementations (i.e., using boolean index into column series) than we wanted. Those approaches may be faster, but are not very clear (and our ultimate goal is learning, and specifically here, learning to use Pandas).
+:::
+
+A possible approach to computing a distribution of birthweight differences for permuted labels:
+
+```{python}
+n_permutations = 5000
+permuted_diffs = []
+#---
+for i in range(n_permutations):
+    shuffled_smoking = baby["Maternal Smoker"].sample(frac=1).reset_index(drop=True) # <1>
+    weight_diff = baby.groupby(shuffled_smoking)["Birth Weight"].mean().diff().iloc[-1] # <2>
+    permuted_diffs.append(weight_diff)
+#---
+permuted_diffs = np.array(permuted_diffs)
+```
+1. `baby["Maternal Smoker"].sample(frac=1)` produces a random permutation of the label column. We reset the index to the default integers index, i.e., match the position.
+2. Group the original data by the permuted column then compute the difference in the mean of the birth weight. Pandas is using the indices from `shuffled_smoking` to select the relevant rows from `baby`. If we hadn't reset the indices, this would just re-compute the difference in the actual data (try it to convince yourself). But by resetting the index we "break" the original relationship between smoking status and birth weight.
+
+```{python}
+#| code-fold: true
+#| label: birthweight-permutation
+#| fig-cap: Distribution of birth weight differences for permuted data with actual difference shown with vertical line
+from matplotlib import pyplot as plt
+import seaborn as sns
+sns.histplot(permuted_diffs, bins=30)
+plt.axvline(x=means.diff().iloc[-1], color="r", label="Actual difference")
+plt.xlabel("Difference in mean birth weight between non-smoking and smoking mothers")
+plt.show()
+```
+
+That sure looks significant, and indeed we don't observe any examples with larger effect. That would imply an empirical p-value, the probability of observing a more extreme test statistic assuming the null model, of $p<$ `{python} 1/n_permutations`. 
+```{python}
+#---
+(np.abs(permuted_diffs) >= abs(means.diff().iloc[-1])).sum()
+#---
+```
+
+::: {.callout-note collapse="true"}
+## Why didn't you use \<insert statistical test\>?
+
+A permutation test, what we did above, is a statistical hypothesis test! It is has the nice property that we don't need to make any assumptions about distribution of the data. And we can implement it and interpret the results without a lot of prior statistics experience. Our goal here is to learn about how to work with Pandas, not necessarily to learn about different forms of hypothesis testing. But this is not a "toy" example. The computational tools in our toolbox are already sufficient to make rigorous inferences about data!
+:::
