@@ -1,5 +1,7 @@
 ---
 jupyter: python3
+title: Introduction to Python Data Science
+subtitle: Getting started with IPython and NumPy vectorized execution
 ---
 
 # Introduction to Python Data Science
@@ -163,7 +165,7 @@ Notice how much faster the NumPy version is! Why is that? Both implementations a
 
 If you will operate on large, regularly structured, data with uniform type and are considering writing `for` loops or Python `list`s, etc., ask yourself whether you can achieve your task with `numpy` arrays instead. Often the vectorized code is more concise and faster, especially as the dimensionality increases (i.e., your data is a 2 or 3 or more dimensional array). But, "always" is a strong word. What we will see is that "general purpose" Python is used as the orchestrator, i.e., to setup the computation. But the "heavy lifting", the computationally intensive portions, are performed with NumPy. And when we do work with NumPy we want to minimize the use of `for` loops and maximize the use of vectorized operations. 
 
-## A more complex example, stock market simulation
+## A more complex vectorization example, stock market simulation
 
 A [random walk](https://en.wikipedia.org/wiki/Random_walk) is a path composed of a succession of random steps, e.g. that path of molecule as it travels in a liquid of gas. Another application of that tool is simulating the stock market ([inspiration](https://bestinterest.blog/five-charts/)). A common rule of thumb is that the stock market as a whole will yield 7% a year, but that simplistic model doesn't capture the variability in returns observed in practice. For example, the S&P 500, a large-cap stock index increased 27% in 2021, but dropped 19.4% in 2022.
 

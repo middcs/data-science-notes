@@ -1,0 +1,2415 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; Data Wrangling with Python – Applied Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/01-data-and-models.html" rel="next">
+<link href="../chapters/00-intro-python-datascience.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-da5d8d89f6dce618f5587771a6e0de62.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/00-intro-python-datascience.html">Examples</a></li><li class="breadcrumb-item"><a href="../chapters/01-pandas-data-wrangling.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Wrangling with Python</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Applied Data Science</a> 
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Examples</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/00-intro-python-datascience.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Python Data Science</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01-pandas-data-wrangling.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Wrangling with Python</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01-data-and-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data, Patterns, and Models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02-black-box-classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Classification as a Black Box</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/20-introduction-prediction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introducing Prediction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/21-feature-engineering-and-overfitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Features and Overfitting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/22-dissecting-bias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dissecting Bias in Medical Risk Prediction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/25-classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Introducing Classification</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#pandas" id="toc-pandas" class="nav-link active" data-scroll-target="#pandas">Pandas</a></li>
+  <li><a href="#what-is-a-dataframe" id="toc-what-is-a-dataframe" class="nav-link" data-scroll-target="#what-is-a-dataframe">What is a DataFrame?</a></li>
+  <li><a href="#selecting-data" id="toc-selecting-data" class="nav-link" data-scroll-target="#selecting-data">Selecting data</a></li>
+  <li><a href="#mutation" id="toc-mutation" class="nav-link" data-scroll-target="#mutation">Mutation</a>
+  <ul class="collapse">
+  <li><a href="#vectorized-operations-on-strings" id="toc-vectorized-operations-on-strings" class="nav-link" data-scroll-target="#vectorized-operations-on-strings">Vectorized operations on strings</a></li>
+  </ul></li>
+  <li><a href="#split-apply-combine" id="toc-split-apply-combine" class="nav-link" data-scroll-target="#split-apply-combine">Split-Apply-Combine</a>
+  <ul class="collapse">
+  <li><a href="#hierarchical-indexing" id="toc-hierarchical-indexing" class="nav-link" data-scroll-target="#hierarchical-indexing">Hierarchical indexing</a></li>
+  </ul></li>
+  <li><a href="#apply-split-apply-combine" id="toc-apply-split-apply-combine" class="nav-link" data-scroll-target="#apply-split-apply-combine">Apply split-apply-combine</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/00-intro-python-datascience.html">Examples</a></li><li class="breadcrumb-item"><a href="../chapters/01-pandas-data-wrangling.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Wrangling with Python</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Wrangling with Python</span></h1>
+<p class="subtitle lead">Getting started with Pandas Data Frames</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+<p><i><a href="http://colab.research.google.com/github/middcs/data-science-notes/blob/main/docs/live-notebooks/01-pandas-data-wrangling.ipynb">Open the live notebook</a> in Google Colab or <a href="https://www.midccs.github.io/data-science-notes/live-notebooks/01-pandas-data-wrangling.ipynb">download the live notebook</a></i></p>.
+
+
+<p><a href="https://en.wikipedia.org/wiki/Data_wrangling">Data wrangling</a> is a broad term for transforming data from one form into another. It some times is synonymous with “data cleaning”, i.e., preparing “messy” raw data for further analysis, but data wrangling can also refer the analysis itself (including data transformation, visualization, aggregation). Today we will focus on the data structures and techniques used to store, transform and aggregate tabular data. These tools build on the vectorized approaches, and specifically NumPy packages, we just learned about.</p>
+<section id="pandas" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="pandas">Pandas</h2>
+<p>The <code>pandas</code> Python package offers a rich set of powerful tools for working with tabular data. The name “pandas” is originally derived from the common term “panel data.” While different users pronounce the package name in different ways, for cuteness reasons we prefer to pronounce it like the plural of “panda [bears]”.</p>
+<div class="quarto-figure quarto-figure-center page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="../assets/img/panda.jpg" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="margin-caption"><a href="https://commons.wikimedia.org/wiki/File:Giant_Panda_eating_Bamboo.JPG">Image credit</a></figcaption>
+</figure>
+</div>
+<p>Our standard imports. Note the new addition of <code>import pandas as pd</code>.</p>
+<div id="e7c71760" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pd is the prefix convention for pandas</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.__version__)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>2.2.3</code></pre>
+</div>
+</div>
+<p>The two key data structures offered by Pandas are <code>Series</code>, a 1-D array, and <code>DataFrame</code>, a 2-D table with rows and columns.</p>
+</section>
+<section id="what-is-a-dataframe" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="what-is-a-dataframe">What is a DataFrame?</h2>
+<p>If you have used Microsoft Excel, Google Sheets, or other similar spreadsheet, you have effectively used a Pandas <code>DataFrame</code> (which is modeled on R’s dataframe).</p>
+<p>What are the key properties of a spreadsheet table:</p>
+<ul>
+<li>2-D table (i.e.&nbsp;rows and columns) with rows typically containing different observations/entities and columns representing different variables</li>
+<li>Columns (and sometimes rows as well) have names (i.e.&nbsp;“labels”)</li>
+<li>Columns can have different types, e.g.&nbsp;one column may be a string, another a float, but any given column is typically of uniform type</li>
+<li>Most computations are performed on a subset of columns, e.g.&nbsp;sum all quiz scores for all students, for all the data in those columns (i.e., “for each” row)</li>
+</ul>
+<p>The pandas <a href="https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html#dataframe">DataFrame</a> type is designed for this kind of data.</p>
+<p>There are lot of different ways to conceptually think about <code>DataFrame</code>s including (but not limited to) as a spreadsheet, or a database table, or as a list/dictionary of 1-D <code>Series</code> (the columns) with the column label as the key. The last is closer to the underlying implementation and a common way to create <code>DataFrame</code>s.</p>
+<div class="page-columns page-full"><p>Let’s get started by loading some example data with physiological measurements and species labels for several populations of Adelie, Chinstrap, and Gentoo penguins (the “Palmer Penguins” data.)</p><div class="no-row-height column-margin column-container"><span class="margin-aside">The Palmer Penguins data was originally collected by <span class="citation" data-cites="gormanEcologicalSexualDimorphism2014">Gorman, Williams, and Fraser (<a href="#ref-gormanEcologicalSexualDimorphism2014" role="doc-biblioref">2014</a>)</span> and was nicely packaged and released for use in the data science community by <span class="citation" data-cites="horstAllisonhorstPalmerpenguinsV02020">Horst, Hill, and Gorman (<a href="#ref-horstAllisonhorstPalmerpenguinsV02020" role="doc-biblioref">2020</a>)</span>.</span></div></div>
+<div id="79d37804" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>URL <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/PhilChodrow/ml-notes/main/data/palmer-penguins/palmer-penguins.csv"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="619621a8" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># df is a common variable name for data frames</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(URL)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>pandas.core.frame.DataFrame</code></pre>
+</div>
+</div>
+<div class="page-columns page-full"><p>Checking out the resulting data, we see a lot happened in that one function call! Pandas downloaded the data from the provided URL, parsed the CSV file and constructed a <code>DataFrame</code> of size (344, 17) (rows × columns).</p><div class="no-row-height column-margin column-container"><span class="margin-aside">We can access the size with <code>df.shape</code>.</span></div></div>
+<div id="ca003d1d" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">studyName</th>
+<th data-quarto-table-cell-role="th">Sample Number</th>
+<th data-quarto-table-cell-role="th">Species</th>
+<th data-quarto-table-cell-role="th">Region</th>
+<th data-quarto-table-cell-role="th">Island</th>
+<th data-quarto-table-cell-role="th">Stage</th>
+<th data-quarto-table-cell-role="th">Individual ID</th>
+<th data-quarto-table-cell-role="th">Clutch Completion</th>
+<th data-quarto-table-cell-role="th">Date Egg</th>
+<th data-quarto-table-cell-role="th">Culmen Length (mm)</th>
+<th data-quarto-table-cell-role="th">Culmen Depth (mm)</th>
+<th data-quarto-table-cell-role="th">Flipper Length (mm)</th>
+<th data-quarto-table-cell-role="th">Body Mass (g)</th>
+<th data-quarto-table-cell-role="th">Sex</th>
+<th data-quarto-table-cell-role="th">Delta 15 N (o/oo)</th>
+<th data-quarto-table-cell-role="th">Delta 13 C (o/oo)</th>
+<th data-quarto-table-cell-role="th">Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>PAL0708</td>
+<td>1</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N1A1</td>
+<td>Yes</td>
+<td>11/11/07</td>
+<td>39.1</td>
+<td>18.7</td>
+<td>181.0</td>
+<td>3750.0</td>
+<td>MALE</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Not enough blood for isotopes.</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>PAL0708</td>
+<td>2</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N1A2</td>
+<td>Yes</td>
+<td>11/11/07</td>
+<td>39.5</td>
+<td>17.4</td>
+<td>186.0</td>
+<td>3800.0</td>
+<td>FEMALE</td>
+<td>8.94956</td>
+<td>-24.69454</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>PAL0708</td>
+<td>3</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N2A1</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>40.3</td>
+<td>18.0</td>
+<td>195.0</td>
+<td>3250.0</td>
+<td>FEMALE</td>
+<td>8.36821</td>
+<td>-25.33302</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>PAL0708</td>
+<td>4</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N2A2</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Adult not sampled.</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>PAL0708</td>
+<td>5</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N3A1</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>36.7</td>
+<td>19.3</td>
+<td>193.0</td>
+<td>3450.0</td>
+<td>FEMALE</td>
+<td>8.76651</td>
+<td>-25.32426</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">339</th>
+<td>PAL0910</td>
+<td>120</td>
+<td>Gentoo penguin (Pygoscelis papua)</td>
+<td>Anvers</td>
+<td>Biscoe</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N38A2</td>
+<td>No</td>
+<td>12/1/09</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">340</th>
+<td>PAL0910</td>
+<td>121</td>
+<td>Gentoo penguin (Pygoscelis papua)</td>
+<td>Anvers</td>
+<td>Biscoe</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N39A1</td>
+<td>Yes</td>
+<td>11/22/09</td>
+<td>46.8</td>
+<td>14.3</td>
+<td>215.0</td>
+<td>4850.0</td>
+<td>FEMALE</td>
+<td>8.41151</td>
+<td>-26.13832</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">341</th>
+<td>PAL0910</td>
+<td>122</td>
+<td>Gentoo penguin (Pygoscelis papua)</td>
+<td>Anvers</td>
+<td>Biscoe</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N39A2</td>
+<td>Yes</td>
+<td>11/22/09</td>
+<td>50.4</td>
+<td>15.7</td>
+<td>222.0</td>
+<td>5750.0</td>
+<td>MALE</td>
+<td>8.30166</td>
+<td>-26.04117</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">342</th>
+<td>PAL0910</td>
+<td>123</td>
+<td>Gentoo penguin (Pygoscelis papua)</td>
+<td>Anvers</td>
+<td>Biscoe</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N43A1</td>
+<td>Yes</td>
+<td>11/22/09</td>
+<td>45.2</td>
+<td>14.8</td>
+<td>212.0</td>
+<td>5200.0</td>
+<td>FEMALE</td>
+<td>8.24246</td>
+<td>-26.11969</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">343</th>
+<td>PAL0910</td>
+<td>124</td>
+<td>Gentoo penguin (Pygoscelis papua)</td>
+<td>Anvers</td>
+<td>Biscoe</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N43A2</td>
+<td>Yes</td>
+<td>11/22/09</td>
+<td>49.9</td>
+<td>16.1</td>
+<td>213.0</td>
+<td>5400.0</td>
+<td>MALE</td>
+<td>8.36390</td>
+<td>-26.15531</td>
+<td>NaN</td>
+</tr>
+</tbody>
+</table>
+
+<p>344 rows × 17 columns</p>
+</div>
+</div>
+</div>
+<p>We noted above that <code>DataFrame</code> columns can have different types. We can query the types for each column with the <code>dtypes</code> attribute. The <code>object</code> type is the default when Pandas can’t infer a numeric type. This is very common when the columns contain strings. You can <a href="https://pandas.pydata.org/pandas-docs/stable/user_guide/text.html">give string columns a dedicated data type</a>, but we won’t focus on that here.</p>
+<div id="05d41ff4" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df.dtypes</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>studyName               object
+Sample Number            int64
+Species                 object
+Region                  object
+Island                  object
+Stage                   object
+Individual ID           object
+Clutch Completion       object
+Date Egg                object
+Culmen Length (mm)     float64
+Culmen Depth (mm)      float64
+Flipper Length (mm)    float64
+Body Mass (g)          float64
+Sex                     object
+Delta 15 N (o/oo)      float64
+Delta 13 C (o/oo)      float64
+Comments                object
+dtype: object</code></pre>
+</div>
+</div>
+<div class="page-columns page-full"><p>Some other commonly used methods for data inspection:</p><div class="no-row-height column-margin column-container"><span class="margin-aside">A method is a function called on the specific instance of an object. In Python we call methods and access instance attributes with the dot operator, <code>.</code>. The object instance to the left of the dot is the receiver, the object on which we want to call the method. You can think of a calling a method as a calling function that takes the receiver as the first argument, i.e., <code>df.head()</code> is equivalent to <code>pd.DataFrame.head(df)</code>.</span></div></div>
+<ul>
+<li><code>df.head()</code>: Display first 5 rows</li>
+<li><code>df.info()</code>: Display column names and types, along with non-null counts</li>
+<li><code>df.describe()</code>: Generate statistical summary of data</li>
+</ul>
+<p>The key parts of the <code>DataFrame</code>:</p>
+<ul>
+<li>The index. The index is used to refer to <strong>rows</strong>, i.e., serves as “row labels”. It is the 0, 1, 2, … at the far left above.</li>
+<li>The column names. These name or label the specific <strong>columns</strong>, i.e., are “column labels”, and are typically used to select data during computation.</li>
+<li>The data itself. You can think of the data as a set of different 1-D arrays or <code>Series</code>, one for each column. Each array has the same length. Many of the operations on these arrays will be familiar from NumPy.</li>
+</ul>
+</section>
+<section id="selecting-data" class="level2">
+<h2 class="anchored" data-anchor-id="selecting-data">Selecting data</h2>
+<p>We could anticipate wanting to select data using both sets of labels, i.e., by column and by row. Recall we described a <code>DataFrame</code> as a dictionary of columns, and we can indeed, use the indexing operator <code>[]</code>, to select columns by name.</p>
+<div id="ded5de2e" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select a single column</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Region"</span>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>0    Anvers
+1    Anvers
+2    Anvers
+3    Anvers
+4    Anvers
+Name: Region, dtype: object</code></pre>
+</div>
+</div>
+<div id="e781e106" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select and optionally reorder columns with a list</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>df[[<span class="st">"Species"</span>, <span class="st">"Region"</span>, <span class="st">"Island"</span>, <span class="st">"Culmen Length (mm)"</span>]].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Species</th>
+<th data-quarto-table-cell-role="th">Region</th>
+<th data-quarto-table-cell-role="th">Island</th>
+<th data-quarto-table-cell-role="th">Culmen Length (mm)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>39.1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>39.5</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>40.3</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>36.7</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>To access rows (and columns) via their labels we use the <code>loc</code> attribute. It exposes as flexible indexing capability, e.g.</p>
+<div id="173badea" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select rows by label (using the index)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df.loc[<span class="dv">0</span>:<span class="dv">3</span>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">studyName</th>
+<th data-quarto-table-cell-role="th">Sample Number</th>
+<th data-quarto-table-cell-role="th">Species</th>
+<th data-quarto-table-cell-role="th">Region</th>
+<th data-quarto-table-cell-role="th">Island</th>
+<th data-quarto-table-cell-role="th">Stage</th>
+<th data-quarto-table-cell-role="th">Individual ID</th>
+<th data-quarto-table-cell-role="th">Clutch Completion</th>
+<th data-quarto-table-cell-role="th">Date Egg</th>
+<th data-quarto-table-cell-role="th">Culmen Length (mm)</th>
+<th data-quarto-table-cell-role="th">Culmen Depth (mm)</th>
+<th data-quarto-table-cell-role="th">Flipper Length (mm)</th>
+<th data-quarto-table-cell-role="th">Body Mass (g)</th>
+<th data-quarto-table-cell-role="th">Sex</th>
+<th data-quarto-table-cell-role="th">Delta 15 N (o/oo)</th>
+<th data-quarto-table-cell-role="th">Delta 13 C (o/oo)</th>
+<th data-quarto-table-cell-role="th">Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>PAL0708</td>
+<td>1</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N1A1</td>
+<td>Yes</td>
+<td>11/11/07</td>
+<td>39.1</td>
+<td>18.7</td>
+<td>181.0</td>
+<td>3750.0</td>
+<td>MALE</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Not enough blood for isotopes.</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>PAL0708</td>
+<td>2</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N1A2</td>
+<td>Yes</td>
+<td>11/11/07</td>
+<td>39.5</td>
+<td>17.4</td>
+<td>186.0</td>
+<td>3800.0</td>
+<td>FEMALE</td>
+<td>8.94956</td>
+<td>-24.69454</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>PAL0708</td>
+<td>3</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N2A1</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>40.3</td>
+<td>18.0</td>
+<td>195.0</td>
+<td>3250.0</td>
+<td>FEMALE</td>
+<td>8.36821</td>
+<td>-25.33302</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>PAL0708</td>
+<td>4</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N2A2</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Adult not sampled.</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Here we select the rows with indices [0,3] inclusive (using Python’s slicing operator). While it may look like we are selecting rows <em>at</em> indices [0,3], that is not the case. We are selecting based on the label, not the position. Consider the following example:</p>
+<div id="920eebb0" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df.loc[<span class="dv">3</span>:<span class="dv">6</span>].loc[<span class="dv">0</span>:<span class="dv">3</span>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">studyName</th>
+<th data-quarto-table-cell-role="th">Sample Number</th>
+<th data-quarto-table-cell-role="th">Species</th>
+<th data-quarto-table-cell-role="th">Region</th>
+<th data-quarto-table-cell-role="th">Island</th>
+<th data-quarto-table-cell-role="th">Stage</th>
+<th data-quarto-table-cell-role="th">Individual ID</th>
+<th data-quarto-table-cell-role="th">Clutch Completion</th>
+<th data-quarto-table-cell-role="th">Date Egg</th>
+<th data-quarto-table-cell-role="th">Culmen Length (mm)</th>
+<th data-quarto-table-cell-role="th">Culmen Depth (mm)</th>
+<th data-quarto-table-cell-role="th">Flipper Length (mm)</th>
+<th data-quarto-table-cell-role="th">Body Mass (g)</th>
+<th data-quarto-table-cell-role="th">Sex</th>
+<th data-quarto-table-cell-role="th">Delta 15 N (o/oo)</th>
+<th data-quarto-table-cell-role="th">Delta 13 C (o/oo)</th>
+<th data-quarto-table-cell-role="th">Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">3</th>
+<td>PAL0708</td>
+<td>4</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N2A2</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Adult not sampled.</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Notice we only get a single row, with index 3. The first operation retries rows with labels 3, 4, 5, 6, and the latter selects rows with labels 0, 1, 2, 3.</p>
+<p>To select rows by position, e.g., as you might select values in a list, we use the <code>iloc</code> attribute. We can again uses slices, but the ranges are position and are exclusive, i.e., the end index is <em>excluded</em>. Notice here we get 3 rows, with indices 3, 4, and 5. The first operation selects those rows (at positions 3, 4, 5 but not including 6), which are now at position 0, 1, and 2 (but not 3) in the result <code>DataFrame</code>. The second selection returns those rows. Note each row keeps its label throughout the various selection operations.</p>
+<div id="72d86ff6" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df.iloc[<span class="dv">3</span>:<span class="dv">6</span>].iloc[<span class="dv">0</span>:<span class="dv">3</span>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">studyName</th>
+<th data-quarto-table-cell-role="th">Sample Number</th>
+<th data-quarto-table-cell-role="th">Species</th>
+<th data-quarto-table-cell-role="th">Region</th>
+<th data-quarto-table-cell-role="th">Island</th>
+<th data-quarto-table-cell-role="th">Stage</th>
+<th data-quarto-table-cell-role="th">Individual ID</th>
+<th data-quarto-table-cell-role="th">Clutch Completion</th>
+<th data-quarto-table-cell-role="th">Date Egg</th>
+<th data-quarto-table-cell-role="th">Culmen Length (mm)</th>
+<th data-quarto-table-cell-role="th">Culmen Depth (mm)</th>
+<th data-quarto-table-cell-role="th">Flipper Length (mm)</th>
+<th data-quarto-table-cell-role="th">Body Mass (g)</th>
+<th data-quarto-table-cell-role="th">Sex</th>
+<th data-quarto-table-cell-role="th">Delta 15 N (o/oo)</th>
+<th data-quarto-table-cell-role="th">Delta 13 C (o/oo)</th>
+<th data-quarto-table-cell-role="th">Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">3</th>
+<td>PAL0708</td>
+<td>4</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N2A2</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Adult not sampled.</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">4</th>
+<td>PAL0708</td>
+<td>5</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N3A1</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>36.7</td>
+<td>19.3</td>
+<td>193.0</td>
+<td>3450.0</td>
+<td>FEMALE</td>
+<td>8.76651</td>
+<td>-25.32426</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">5</th>
+<td>PAL0708</td>
+<td>6</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N3A2</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>39.3</td>
+<td>20.6</td>
+<td>190.0</td>
+<td>3650.0</td>
+<td>MALE</td>
+<td>8.66496</td>
+<td>-25.29805</td>
+<td>NaN</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Alongside label and position we can also select data via boolean masks (i.e., data-driven filtering). The following filters the data to just those rows where the condition is <code>True</code>. To do so, we are computing an array (vector) of booleans using a vectorized comparison and then selecting those rows with <code>True</code>. Any boolean vector can be used, that is the computation used to generate the boolean index can be arbitrarily complex, incorporating different element-wise comparisons and bit-wise <code>&amp;</code> (and) and <code>|</code> (or) or <code>~</code> (not) operations.</p>
+<div id="0b7fe774" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Since slicing and filtering rows is common, slices or boolean arrays inside [] apply to rows, i.e.,</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># is shorthand for df.loc[df["Culmen Length (mm)"] &lt; 40].head()</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>df[df[<span class="st">"Culmen Length (mm)"</span>] <span class="op">&lt;</span> <span class="dv">40</span>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">studyName</th>
+<th data-quarto-table-cell-role="th">Sample Number</th>
+<th data-quarto-table-cell-role="th">Species</th>
+<th data-quarto-table-cell-role="th">Region</th>
+<th data-quarto-table-cell-role="th">Island</th>
+<th data-quarto-table-cell-role="th">Stage</th>
+<th data-quarto-table-cell-role="th">Individual ID</th>
+<th data-quarto-table-cell-role="th">Clutch Completion</th>
+<th data-quarto-table-cell-role="th">Date Egg</th>
+<th data-quarto-table-cell-role="th">Culmen Length (mm)</th>
+<th data-quarto-table-cell-role="th">Culmen Depth (mm)</th>
+<th data-quarto-table-cell-role="th">Flipper Length (mm)</th>
+<th data-quarto-table-cell-role="th">Body Mass (g)</th>
+<th data-quarto-table-cell-role="th">Sex</th>
+<th data-quarto-table-cell-role="th">Delta 15 N (o/oo)</th>
+<th data-quarto-table-cell-role="th">Delta 13 C (o/oo)</th>
+<th data-quarto-table-cell-role="th">Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>PAL0708</td>
+<td>1</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N1A1</td>
+<td>Yes</td>
+<td>11/11/07</td>
+<td>39.1</td>
+<td>18.7</td>
+<td>181.0</td>
+<td>3750.0</td>
+<td>MALE</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Not enough blood for isotopes.</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>PAL0708</td>
+<td>2</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N1A2</td>
+<td>Yes</td>
+<td>11/11/07</td>
+<td>39.5</td>
+<td>17.4</td>
+<td>186.0</td>
+<td>3800.0</td>
+<td>FEMALE</td>
+<td>8.94956</td>
+<td>-24.69454</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>PAL0708</td>
+<td>5</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N3A1</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>36.7</td>
+<td>19.3</td>
+<td>193.0</td>
+<td>3450.0</td>
+<td>FEMALE</td>
+<td>8.76651</td>
+<td>-25.32426</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>PAL0708</td>
+<td>6</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N3A2</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>39.3</td>
+<td>20.6</td>
+<td>190.0</td>
+<td>3650.0</td>
+<td>MALE</td>
+<td>8.66496</td>
+<td>-25.29805</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>PAL0708</td>
+<td>7</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N4A1</td>
+<td>No</td>
+<td>11/15/07</td>
+<td>38.9</td>
+<td>17.8</td>
+<td>181.0</td>
+<td>3625.0</td>
+<td>FEMALE</td>
+<td>9.18718</td>
+<td>-25.21799</td>
+<td>Nest never observed with full clutch.</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="mutation" class="level2">
+<h2 class="anchored" data-anchor-id="mutation">Mutation</h2>
+<p>The process of creating and modifying columns often described as “mutation”.</p>
+<p>Just as we create new or update existing key-value pairs in a Python Dictionary with assignment, we can do the same with columns in a Pandas DataFrame. For example, the following add a column with the culmen length in centimeters (you may need to scroll to the right to see it). The division is an element-wise “vectorized” operation like those we saw with NumPy (and in many bases Pandas is actually storing the column as NumPy array).</p>
+<div id="bc6c444a" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Culmen Length (cm)"</span>] <span class="op">=</span> df[<span class="st">"Culmen Length (mm)"</span>] <span class="op">/</span> <span class="dv">10</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">studyName</th>
+<th data-quarto-table-cell-role="th">Sample Number</th>
+<th data-quarto-table-cell-role="th">Species</th>
+<th data-quarto-table-cell-role="th">Region</th>
+<th data-quarto-table-cell-role="th">Island</th>
+<th data-quarto-table-cell-role="th">Stage</th>
+<th data-quarto-table-cell-role="th">Individual ID</th>
+<th data-quarto-table-cell-role="th">Clutch Completion</th>
+<th data-quarto-table-cell-role="th">Date Egg</th>
+<th data-quarto-table-cell-role="th">Culmen Length (mm)</th>
+<th data-quarto-table-cell-role="th">Culmen Depth (mm)</th>
+<th data-quarto-table-cell-role="th">Flipper Length (mm)</th>
+<th data-quarto-table-cell-role="th">Body Mass (g)</th>
+<th data-quarto-table-cell-role="th">Sex</th>
+<th data-quarto-table-cell-role="th">Delta 15 N (o/oo)</th>
+<th data-quarto-table-cell-role="th">Delta 13 C (o/oo)</th>
+<th data-quarto-table-cell-role="th">Comments</th>
+<th data-quarto-table-cell-role="th">Culmen Length (cm)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>PAL0708</td>
+<td>1</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N1A1</td>
+<td>Yes</td>
+<td>11/11/07</td>
+<td>39.1</td>
+<td>18.7</td>
+<td>181.0</td>
+<td>3750.0</td>
+<td>MALE</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Not enough blood for isotopes.</td>
+<td>3.91</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>PAL0708</td>
+<td>2</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N1A2</td>
+<td>Yes</td>
+<td>11/11/07</td>
+<td>39.5</td>
+<td>17.4</td>
+<td>186.0</td>
+<td>3800.0</td>
+<td>FEMALE</td>
+<td>8.94956</td>
+<td>-24.69454</td>
+<td>NaN</td>
+<td>3.95</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>PAL0708</td>
+<td>3</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N2A1</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>40.3</td>
+<td>18.0</td>
+<td>195.0</td>
+<td>3250.0</td>
+<td>FEMALE</td>
+<td>8.36821</td>
+<td>-25.33302</td>
+<td>NaN</td>
+<td>4.03</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>PAL0708</td>
+<td>4</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N2A2</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Adult not sampled.</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>PAL0708</td>
+<td>5</td>
+<td>Adelie Penguin (Pygoscelis adeliae)</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N3A1</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>36.7</td>
+<td>19.3</td>
+<td>193.0</td>
+<td>3450.0</td>
+<td>FEMALE</td>
+<td>8.76651</td>
+<td>-25.32426</td>
+<td>NaN</td>
+<td>3.67</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<section id="vectorized-operations-on-strings" class="level3">
+<h3 class="anchored" data-anchor-id="vectorized-operations-on-strings">Vectorized operations on strings</h3>
+<p>We can perform similar vectorized operations on the string columns, but need to expose them via the <code>str</code> attribute, e.g.,</p>
+<div id="fa251395" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Species"</span>].<span class="bu">str</span>.upper()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>0      ADELIE PENGUIN (PYGOSCELIS ADELIAE)
+1      ADELIE PENGUIN (PYGOSCELIS ADELIAE)
+2      ADELIE PENGUIN (PYGOSCELIS ADELIAE)
+3      ADELIE PENGUIN (PYGOSCELIS ADELIAE)
+4      ADELIE PENGUIN (PYGOSCELIS ADELIAE)
+                      ...                 
+339      GENTOO PENGUIN (PYGOSCELIS PAPUA)
+340      GENTOO PENGUIN (PYGOSCELIS PAPUA)
+341      GENTOO PENGUIN (PYGOSCELIS PAPUA)
+342      GENTOO PENGUIN (PYGOSCELIS PAPUA)
+343      GENTOO PENGUIN (PYGOSCELIS PAPUA)
+Name: Species, Length: 344, dtype: object</code></pre>
+</div>
+</div>
+<p>For example, to improve readability we might want just the first part the species name, i.e., “Adelie” instead of “Adelie Penguin (Pygoscelis adeliae)”. This is the first part of the name up to the space. We can get it by splitting the string by whitespace and select the value at index 0 in the resulting list. Note that we can chain those operations, but need a <code>str</code> before each one to apply the resulting operation element-wise.</p>
+<div id="a0915970" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Species"</span>] <span class="op">=</span> df[<span class="st">"Species"</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.get(<span class="dv">0</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">studyName</th>
+<th data-quarto-table-cell-role="th">Sample Number</th>
+<th data-quarto-table-cell-role="th">Species</th>
+<th data-quarto-table-cell-role="th">Region</th>
+<th data-quarto-table-cell-role="th">Island</th>
+<th data-quarto-table-cell-role="th">Stage</th>
+<th data-quarto-table-cell-role="th">Individual ID</th>
+<th data-quarto-table-cell-role="th">Clutch Completion</th>
+<th data-quarto-table-cell-role="th">Date Egg</th>
+<th data-quarto-table-cell-role="th">Culmen Length (mm)</th>
+<th data-quarto-table-cell-role="th">Culmen Depth (mm)</th>
+<th data-quarto-table-cell-role="th">Flipper Length (mm)</th>
+<th data-quarto-table-cell-role="th">Body Mass (g)</th>
+<th data-quarto-table-cell-role="th">Sex</th>
+<th data-quarto-table-cell-role="th">Delta 15 N (o/oo)</th>
+<th data-quarto-table-cell-role="th">Delta 13 C (o/oo)</th>
+<th data-quarto-table-cell-role="th">Comments</th>
+<th data-quarto-table-cell-role="th">Culmen Length (cm)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>PAL0708</td>
+<td>1</td>
+<td>Adelie</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N1A1</td>
+<td>Yes</td>
+<td>11/11/07</td>
+<td>39.1</td>
+<td>18.7</td>
+<td>181.0</td>
+<td>3750.0</td>
+<td>MALE</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Not enough blood for isotopes.</td>
+<td>3.91</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>PAL0708</td>
+<td>2</td>
+<td>Adelie</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N1A2</td>
+<td>Yes</td>
+<td>11/11/07</td>
+<td>39.5</td>
+<td>17.4</td>
+<td>186.0</td>
+<td>3800.0</td>
+<td>FEMALE</td>
+<td>8.94956</td>
+<td>-24.69454</td>
+<td>NaN</td>
+<td>3.95</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>PAL0708</td>
+<td>3</td>
+<td>Adelie</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N2A1</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>40.3</td>
+<td>18.0</td>
+<td>195.0</td>
+<td>3250.0</td>
+<td>FEMALE</td>
+<td>8.36821</td>
+<td>-25.33302</td>
+<td>NaN</td>
+<td>4.03</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>PAL0708</td>
+<td>4</td>
+<td>Adelie</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N2A2</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Adult not sampled.</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>PAL0708</td>
+<td>5</td>
+<td>Adelie</td>
+<td>Anvers</td>
+<td>Torgersen</td>
+<td>Adult, 1 Egg Stage</td>
+<td>N3A1</td>
+<td>Yes</td>
+<td>11/16/07</td>
+<td>36.7</td>
+<td>19.3</td>
+<td>193.0</td>
+<td>3450.0</td>
+<td>FEMALE</td>
+<td>8.76651</td>
+<td>-25.32426</td>
+<td>NaN</td>
+<td>3.67</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="split-apply-combine" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="split-apply-combine">Split-Apply-Combine</h2>
+<p>One of the fundamental pattern in tabular data analysis is to perform computation by/across groups. In our penguins data, for example, a very natural thing to do is to compute summary statistics by species, or perhaps by habitat (or both!). We can contextualize this task in three stages:</p>
+<ul>
+<li>Split the data data frame into pieces, one for each species.</li>
+<li>Apply an aggregation function to each piece, yielding a single number.</li>
+<li>Combine the results into a new data frame.</li>
+</ul>
+<p>This pattern is so common that the phrase “split-apply-combine” now appears in many texts on data analysis. This phrase was originally coined by Hadley Wickham, who is famous for developing many of the modern tools for data analysis in the R programming language.</p>
+<div class="quarto-figure quarto-figure-center page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="../assets/img/03.08-split-apply-combine.png" class="img-fluid figure-img"></p>
+<figcaption class="margin-caption">Schematic of split-apply-combine. Image credit: <span class="citation" data-cites="vanderplasPythonDataScience2016">Vanderplas (<a href="#ref-vanderplasPythonDataScience2016" role="doc-biblioref">2016</a>)</span></figcaption>
+</figure>
+</div>
+<p>Pandas implements this pattern with the <code>groupby</code> method. For example, we can compute the mean of the numeric columns as a function of species using</p>
+<div id="632c8152" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">"Species"</span>).mean(numeric_only<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Sample Number</th>
+<th data-quarto-table-cell-role="th">Culmen Length (mm)</th>
+<th data-quarto-table-cell-role="th">Culmen Depth (mm)</th>
+<th data-quarto-table-cell-role="th">Flipper Length (mm)</th>
+<th data-quarto-table-cell-role="th">Body Mass (g)</th>
+<th data-quarto-table-cell-role="th">Delta 15 N (o/oo)</th>
+<th data-quarto-table-cell-role="th">Delta 13 C (o/oo)</th>
+<th data-quarto-table-cell-role="th">Culmen Length (cm)</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Species</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Adelie</th>
+<td>76.5</td>
+<td>38.791391</td>
+<td>18.346358</td>
+<td>189.953642</td>
+<td>3700.662252</td>
+<td>8.859733</td>
+<td>-25.804194</td>
+<td>3.879139</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Chinstrap</th>
+<td>34.5</td>
+<td>48.833824</td>
+<td>18.420588</td>
+<td>195.823529</td>
+<td>3733.088235</td>
+<td>9.356155</td>
+<td>-24.546542</td>
+<td>4.883382</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Gentoo</th>
+<td>62.5</td>
+<td>47.504878</td>
+<td>14.982114</td>
+<td>217.186992</td>
+<td>5076.016260</td>
+<td>8.245338</td>
+<td>-26.185298</td>
+<td>4.750488</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Compare these values to the overall means. We now readily observe that Adelie penguins have much shorter bills (“Culmen length (mm)”) than Chinstrap and Gentoo penguins.</p>
+<div id="5c4c830c" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df.mean(numeric_only<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>Sample Number            63.151163
+Culmen Length (mm)       43.921930
+Culmen Depth (mm)        17.151170
+Flipper Length (mm)     200.915205
+Body Mass (g)          4201.754386
+Delta 15 N (o/oo)         8.733382
+Delta 13 C (o/oo)       -25.686292
+Culmen Length (cm)        4.392193
+dtype: float64</code></pre>
+</div>
+</div>
+<p>Conceptually Pandas collected or “grouped” together all the data into subsets of rows with same value for the specified variable(s), then applied the aggregation function to each subset. We can think of the <code>groupby</code> method as returning a special “view” of the <code>DataFrame</code>, such that any aggregation functions used will by applied to each of the individual “groups” (i.e.&nbsp;species).</p>
+<p>Split-Apply-Combine enables sophisticated aggregations with very little code. Consider computing multiple statistics for all combinations of Species and Island. Note that we use a different approach to efficiently perform different aggregation operation on the same subsets (instead repeating the grouping operation). The <code>aggregate</code> method is a general approach to apply multiple functions to each group. It does not have a <code>numeric_only</code> argument, so we subset the groups to just the column(s) of interest.</p>
+<div id="c35d0941" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> df.groupby([<span class="st">"Species"</span>, <span class="st">"Island"</span>])[[<span class="st">"Culmen Length (mm)"</span>,<span class="st">"Culmen Depth (mm)"</span>]].aggregate([<span class="st">"mean"</span>, <span class="st">"std"</span>])</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>summary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">Culmen Length (mm)</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">Culmen Depth (mm)</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">mean</th>
+<th data-quarto-table-cell-role="th">std</th>
+<th data-quarto-table-cell-role="th">mean</th>
+<th data-quarto-table-cell-role="th">std</th>
+</tr>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Species</th>
+<th data-quarto-table-cell-role="th">Island</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">Adelie</th>
+<th data-quarto-table-cell-role="th">Biscoe</th>
+<td>38.975000</td>
+<td>2.480916</td>
+<td>18.370455</td>
+<td>1.188820</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Dream</th>
+<td>38.501786</td>
+<td>2.465359</td>
+<td>18.251786</td>
+<td>1.133617</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Torgersen</th>
+<td>38.950980</td>
+<td>3.025318</td>
+<td>18.429412</td>
+<td>1.339447</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Chinstrap</th>
+<th data-quarto-table-cell-role="th">Dream</th>
+<td>48.833824</td>
+<td>3.339256</td>
+<td>18.420588</td>
+<td>1.135395</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Gentoo</th>
+<th data-quarto-table-cell-role="th">Biscoe</th>
+<td>47.504878</td>
+<td>3.081857</td>
+<td>14.982114</td>
+<td>0.981220</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<section id="hierarchical-indexing" class="level3">
+<h3 class="anchored" data-anchor-id="hierarchical-indexing">Hierarchical indexing</h3>
+<p>Complex data summary tables like the one above are useful and powerful, but it is also non-obvious how we can extract specific data of interest. For example, how can I get the mean culmen (bill) length for Chinstrap penguins on Dream island? To extract this kind of data, we leverage Pandas’ hierarchical indices, in which we pass multiple keys to the <code>.loc</code> attribute as a tuple.</p>
+<div id="81648685" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Provide tuples for row and column index</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>summary.loc[(<span class="st">"Chinstrap"</span>, <span class="st">"Dream"</span>),(<span class="st">"Culmen Length (mm)"</span>, <span class="st">"mean"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>np.float64(48.83382352941176)</code></pre>
+</div>
+</div>
+<p>More generally, we can think of each value provided for an index drops us one level in the hierarchy. For example, the following returns a <code>DataFrame</code> with row indices for just island and column indices for just the aggregates of the “Culmen Length (mm)” column.</p>
+<div id="56ac0aff" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tuple literals are created with parentheses, but parentheses with a single element (no comma) are interpreted</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># a grouping (in the PEMDAS sense), not a tuple. To create a single element tuple we add a trailing comma.</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>summary.loc[(<span class="st">"Chinstrap"</span>,),(<span class="st">"Culmen Length (mm)"</span>,)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">mean</th>
+<th data-quarto-table-cell-role="th">std</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Island</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Dream</th>
+<td>48.833824</td>
+<td>3.339256</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="apply-split-apply-combine" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="apply-split-apply-combine">Apply split-apply-combine</h2>
+<p>The following data is birth weight data (in ounces) for a cohort of babies along with other data about the baby and mother, including whether the mother smoked during pregnancy<span class="citation" data-cites="adhikariInferentialThinking2022">(<a href="#ref-adhikariInferentialThinking2022" role="doc-biblioref">Adhikari, DeNero, and Wagner 2022</a>)</span>. Our hypothesis is that birth weight is negatively associated with whether the mother smoked during pregnancy (i.e., that babies born to mothers who smoked will be smaller on average).</p>
+<div id="51dc4c7d" class="cell" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>baby <span class="op">=</span> pd.read_csv(<span class="st">"https://www.inferentialthinking.com/data/baby.csv"</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>baby</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Birth Weight</th>
+<th data-quarto-table-cell-role="th">Gestational Days</th>
+<th data-quarto-table-cell-role="th">Maternal Age</th>
+<th data-quarto-table-cell-role="th">Maternal Height</th>
+<th data-quarto-table-cell-role="th">Maternal Pregnancy Weight</th>
+<th data-quarto-table-cell-role="th">Maternal Smoker</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>120</td>
+<td>284</td>
+<td>27</td>
+<td>62</td>
+<td>100</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>113</td>
+<td>282</td>
+<td>33</td>
+<td>64</td>
+<td>135</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>128</td>
+<td>279</td>
+<td>28</td>
+<td>64</td>
+<td>115</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>108</td>
+<td>282</td>
+<td>23</td>
+<td>67</td>
+<td>125</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>136</td>
+<td>286</td>
+<td>25</td>
+<td>62</td>
+<td>93</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">1169</th>
+<td>113</td>
+<td>275</td>
+<td>27</td>
+<td>60</td>
+<td>100</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1170</th>
+<td>128</td>
+<td>265</td>
+<td>24</td>
+<td>67</td>
+<td>120</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">1171</th>
+<td>130</td>
+<td>291</td>
+<td>30</td>
+<td>65</td>
+<td>150</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1172</th>
+<td>125</td>
+<td>281</td>
+<td>21</td>
+<td>65</td>
+<td>110</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">1173</th>
+<td>117</td>
+<td>297</td>
+<td>38</td>
+<td>65</td>
+<td>129</td>
+<td>False</td>
+</tr>
+</tbody>
+</table>
+
+<p>1174 rows × 6 columns</p>
+</div>
+</div>
+</div>
+<p>Here we see a sample of the data (1174 observations total). We are most interested in the “Birth Weight” and “Maternal Smoker” columns. We can use split-apply-combine technique, via the <code>groupby</code> method, to quickly figure out how many smokers and non-smokers are in the data. That helps us answer the question “Do we have enough data to do a meaningful analysis of that variable?”. Fortunately it appears we do!</p>
+<div id="f1013d74" class="cell" data-execution_count="21">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>baby.groupby(<span class="st">"Maternal Smoker"</span>).size()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>Maternal Smoker
+False    715
+True     459
+dtype: int64</code></pre>
+</div>
+</div>
+<p>Let’s check out the means for smokers and non-smokers. Again we can use <code>groupby</code>.</p>
+<div id="843624de" class="cell" data-execution_count="22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>means <span class="op">=</span> baby.groupby(<span class="st">"Maternal Smoker"</span>)[<span class="st">"Birth Weight"</span>].mean()</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>means</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>Maternal Smoker
+False    123.085315
+True     113.819172
+Name: Birth Weight, dtype: float64</code></pre>
+</div>
+</div>
+<p>Notice the over 9 ounce difference in average birth weight! That is suggestive of a significant difference. Specifically:</p>
+<div id="53663b9a" class="cell" data-execution_count="23">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the difference to the previous value. We expect the first to have NaN (not a number)</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># since there is not previous value.</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>means.diff()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>Maternal Smoker
+False         NaN
+True    -9.266143
+Name: Birth Weight, dtype: float64</code></pre>
+</div>
+</div>
+<p>In contrast, the other attributes seem similar between the two groups.</p>
+<div id="b98ff37f" class="cell" data-execution_count="24">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>baby.groupby(<span class="st">"Maternal Smoker"</span>).mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Birth Weight</th>
+<th data-quarto-table-cell-role="th">Gestational Days</th>
+<th data-quarto-table-cell-role="th">Maternal Age</th>
+<th data-quarto-table-cell-role="th">Maternal Height</th>
+<th data-quarto-table-cell-role="th">Maternal Pregnancy Weight</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Maternal Smoker</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">False</th>
+<td>123.085315</td>
+<td>279.874126</td>
+<td>27.544056</td>
+<td>64.013986</td>
+<td>129.47972</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">True</th>
+<td>113.819172</td>
+<td>277.897603</td>
+<td>26.736383</td>
+<td>64.104575</td>
+<td>126.91939</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>However, is that difference in average birth weight actually meaningful or did it just arise by chance? That is, what if in reality there is no difference between the two groups and what we are observing is just an artifact of how these particular mothers/babies were selected (it just happened that this set of non-smoking mothers had larger babies)? We will describe that latter expectation, that there is no difference, as the <em>null hypothesis</em>.</p>
+<div class="page-columns page-full"><p>We would like to determine how likely it is that the null hypothesis is true. To do so we can simulate the null hypothesis by randomly shuffling the “Maternal Smoker”, i.e.&nbsp;randomly assigning row to be a smoker or non-smoker to simulate a different random sample of patients, and then recomputing the difference in mean birth weight. If the null hypothesis is true, the difference in means of shuffled data will be similar to what we observe in the actual data.</p><div class="no-row-height column-margin column-container"><span class="margin-aside">Spoiler warning: We are computing a p-value!</span></div></div>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Good application for an LLM?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Pandas and the other libraries will use are very complex and the interfaces are not always intuitive (understatement!). As a result, working with these libraries can be a good application for LLMs. We know what we want, and having learned about split-apply-combine, we generally know what the solution should include, but it’s not always clear which of the many hundreds or thousands of functions that are available would be relevant. As experiment, let’s try asking an LLM to implement this code for us.</p>
+<p>Before doing so let’s make sure we know what to expect. We need to:</p>
+<ul>
+<li>Randomly shuffle the smoking label</li>
+<li>Compute the difference in mean birth weight with groupby (or some type of grouping)</li>
+<li>Do so many times to generate a distribution of birth weight differences</li>
+</ul>
+<p>Let’s turn GenAI loose. After a little iteration with Claude Sonnet 4.5 and Copilot (GPT-5 mini) I settled on the following prompt.</p>
+<blockquote class="blockquote">
+<p>Show me a permutation test in Python using Pandas groupby() and shuffling the “Material Smoker” column to test the difference in mean “Birth Weight”.</p>
+</blockquote>
+<p>This is more prescriptive than might be desired. Many prompts produced lower level implementations (i.e., using boolean index into column series) than we wanted. Those approaches may be faster, but are not very clear (and our ultimate goal is learning, and specifically here, learning to use Pandas).</p>
+</div>
+</div>
+</div>
+<p>A possible approach to computing a distribution of birthweight differences for permuted labels:</p>
+<div id="61354a1a" class="cell" data-execution_count="25">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-25"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-25-1"><a href="#annotated-cell-25-1" aria-hidden="true" tabindex="-1"></a>n_permutations <span class="op">=</span> <span class="dv">5000</span></span>
+<span id="annotated-cell-25-2"><a href="#annotated-cell-25-2" aria-hidden="true" tabindex="-1"></a>permuted_diffs <span class="op">=</span> []</span>
+<span id="annotated-cell-25-3"><a href="#annotated-cell-25-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_permutations):</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-25" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-25-4" class="code-annotation-target"><a href="#annotated-cell-25-4" aria-hidden="true" tabindex="-1"></a>    shuffled_smoking <span class="op">=</span> baby[<span class="st">"Maternal Smoker"</span>].sample(frac<span class="op">=</span><span class="dv">1</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-25" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-25-5" class="code-annotation-target"><a href="#annotated-cell-25-5" aria-hidden="true" tabindex="-1"></a>    weight_diff <span class="op">=</span> baby.groupby(shuffled_smoking)[<span class="st">"Birth Weight"</span>].mean().diff().iloc[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="annotated-cell-25-6"><a href="#annotated-cell-25-6" aria-hidden="true" tabindex="-1"></a>    permuted_diffs.append(weight_diff)</span>
+<span id="annotated-cell-25-7"><a href="#annotated-cell-25-7" aria-hidden="true" tabindex="-1"></a>permuted_diffs <span class="op">=</span> np.array(permuted_diffs)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-25" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-25" data-code-lines="4" data-code-annotation="1"><code>baby["Maternal Smoker"].sample(frac=1)</code> produces a random permutation of the label column. We reset the index to the default integers index, i.e., match the position.</span>
+</dd>
+<dt data-target-cell="annotated-cell-25" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-25" data-code-lines="5" data-code-annotation="2">Group the original data by the permuted column then compute the difference in the mean of the birth weight. Pandas is using the indices from <code>shuffled_smoking</code> to select the relevant rows from <code>baby</code>. If we hadn’t reset the indices, this would just re-compute the difference in the actual data (try it to convince yourself). But by resetting the index we “break” the original relationship between smoking status and birth weight.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div id="cell-birthweight-permutation" class="cell page-columns page-full" data-execution_count="26">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>sns.histplot(permuted_diffs, bins<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>plt.axvline(x<span class="op">=</span>means.diff().iloc[<span class="op">-</span><span class="dv">1</span>], color<span class="op">=</span><span class="st">"r"</span>, label<span class="op">=</span><span class="st">"Actual difference"</span>)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Difference in mean birth weight between non-smoking and smoking mothers"</span>)</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="birthweight-permutation" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="01-pandas-data-wrangling_files/figure-html/birthweight-permutation-output-1.png" class="figure-img" width="593" height="429"></p>
+<figcaption class="margin-caption">Distribution of birth weight differences for permuted data with actual difference shown with vertical line</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>That sure looks significant, and indeed we don’t observe any examples with larger effect. That would imply an empirical p-value, the probability of observing a more extreme test statistic assuming the null model, of <span class="math inline">\(p&lt;\)</span> 0.0002.</p>
+<div id="6d8c78fb" class="cell" data-execution_count="27">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>(np.<span class="bu">abs</span>(permuted_diffs) <span class="op">&gt;=</span> <span class="bu">abs</span>(means.diff().iloc[<span class="op">-</span><span class="dv">1</span>])).<span class="bu">sum</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<pre><code>np.int64(0)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Why didn’t you use &lt;insert statistical test&gt;?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>A permutation test, what we did above, is a statistical hypothesis test! It is has the nice property that we don’t need to make any assumptions about distribution of the data. And we can implement it and interpret the results without a lot of prior statistics experience. Our goal here is to learn about how to work with Pandas, not necessarily to learn about different forms of hypothesis testing. But this is not a “toy” example. The computational tools in our toolbox are already sufficient to make rigorous inferences about data!</p>
+</div>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-adhikariInferentialThinking2022" class="csl-entry" role="listitem">
+Adhikari, An, John DeNero, and David Wagner. 2022. <em>Computational and Inferential Thinking: The Foundations of Data Science</em>. Second. <a href="https://inferentialthinking.com">https://inferentialthinking.com</a>.
+</div>
+<div id="ref-gormanEcologicalSexualDimorphism2014" class="csl-entry" role="listitem">
+Gorman, Kristen B., Tony D. Williams, and William R. Fraser. 2014. <span>“Ecological <span>Sexual Dimorphism</span> and <span>Environmental Variability</span> Within a <span>Community</span> of <span>Antarctic Penguins</span> (<span>Genus Pygoscelis</span>).”</span> Edited by André Chiaradia. <em>PLoS ONE</em> 9 (3): e90081. <a href="https://doi.org/10.1371/journal.pone.0090081">https://doi.org/10.1371/journal.pone.0090081</a>.
+</div>
+<div id="ref-horstAllisonhorstPalmerpenguinsV02020" class="csl-entry" role="listitem">
+Horst, Allison M, Alison Presmanes Hill, and Kristen B Gorman. 2020. <span>“Allisonhorst/Palmerpenguins: V0.1.0.”</span> Zenodo. <a href="https://doi.org/10.5281/ZENODO.3960218">https://doi.org/10.5281/ZENODO.3960218</a>.
+</div>
+<div id="ref-vanderplasPythonDataScience2016" class="csl-entry" role="listitem">
+Vanderplas, Jacob T. 2016. <em>Python Data Science Handbook: Essential Tools for Working with Data</em>. First edition. Sebastopol, CA: O’Reilly Media, Inc.
+</div>
+</div>
+</section>
+
+<p><br> <br> <span style="color:grey;">© Michael Linderman and Phil Chodrow, 2025-2026</span></p></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/00-intro-python-datascience.html" class="pagination-link" aria-label="Introduction to Python Data Science">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Python Data Science</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/01-data-and-models.html" class="pagination-link" aria-label="Data, Patterns, and Models">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data, Patterns, and Models</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
