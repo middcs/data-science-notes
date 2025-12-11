@@ -39,7 +39,8 @@ sns.set_palette("viridis", n_colors=2)
 ```
 
 ```{python}
-url = "../data/australia-weather/weatherAUS.csv"
+
+url = "https://raw.githubusercontent.com/middcs/data-science-notes/refs/heads/main/data/australia-weather/weatherAUS.csv"
 #---
 df = pd.read_csv(url)
 df.head()
@@ -295,6 +296,27 @@ confusion_matrix(y_test, y_pred, normalize="true")
 Here, we see that our model has a true positive rate of about 95% and a false positive rate of about 47%. This means that, on 95% of days in which it indeed rained the model made the correct prediction. On the other hand, the model is also predicts rain on about 47% of days when it did not actually rain. 
 
 In other words, we can think of this model as being relatively *conservative*: if you bring an umbrella when the model predicts rain, you'll often be protected from getting wet, but you'll also experience a large number of days in which you brought an umbrella unnecessarily.
+
+## Other Classifiers
+
+So far in these notes, we've emphasized logistic regression as a method for binary classification. However, many other classification algorithms exist, many of which are implemented in `sklearn` with similar APIs: 
+
+```{python}
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+
+model_tree = DecisionTreeClassifier()
+model_svm = SVC()
+
+model_tree.fit(X_train, y_train)
+model_svm.fit(X_train, y_train)
+
+print("Decision Tree Accuracy:", model_tree.score(X_test, y_test))
+print("Support Vector Machine Accuracy:", model_svm.score(X_test, y_test))
+```
+
+Each of these models have very different mathematical structures which are beyond the scope of this course, but they can typically be used as black-box classifiers in much the same way as logistic regression. 
 
 ## Other Notes
 
