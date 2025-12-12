@@ -21,11 +21,7 @@ In these notes, we'll introduce the topic of how to assess whether a classifier 
 
 Although we won't use most of the detail from the COMPAS data collection survey, it's helpful to get a sense of what kinds of information are collected about defendants. Here's a [sample form](https://www.documentcloud.org/documents/2702103-Sample-Risk-Assessment-COMPAS-CORE) used for feature collection in the COMPAS risk assessment.
 
-
-
 > What do you notice in the COMPAS sample form? Are there kinds of information collected that concern you in the context of predictive recommendations that may impact a person's freedom?
-
-
 
 ## Data Acquisition and Preparation
 
@@ -224,16 +220,14 @@ We can think about the argument of @angwin2022machine as a two-step argument:
 > 1. The COMPAS algorithm has disparate error rates by race. 
 > 2. **Therefore**, the COMPAS algorithm is unjustly biased with respect to race. 
 
-This argument implicitly equates equality of error rates with lack of bias. 
+This argument implicitly endorses the following requirements of fairness: 
 
-::: {.callout-note}
+> A necessary condition for an automated decision system to be (approximately) fair is that it have equal (approximately) rates of false positives and false negatives across identity groups.
 
-## Fairness (Part 2)
+This principle is sometimes called **error rate parity**. 
 
-1. Suppose that we developed an alternative algorithm in which the false positive rates were equal, but there were still more positive predictions for Black defendants overall. Would that be enough to ensure fairness? 
-2. Suppose that we developed an alternative prediction algorithm in which the rate of positive prediction was the same across racial groups, but the false positive rates were different. Would that be to ensure fairness? 
 
-:::
+
 
 ## The Rebuttal
 
@@ -244,15 +238,18 @@ Here's the intuition expressed by sufficiency. Imagine that you and your friend 
 - To you, the instructor says: "*You did fine in this class, but I don't think that you are prepared to take another CS course. I gave you a higher grade than I would normally because you wear cool hats in class.*"
 - To your friend, the instructor says: "*You did fine in this class and I think you are prepared to take another CS course. Some students got a bump in their grade because they are cool-hat-wearers, but you didn't get that benefit."*
 
-Feels unfair, right? The instructor is saying that:
-
-> *What a grade means for you in terms of your future success depends on your identity group.* 
+Feels unfair, right? The instructor is saying that *what a grade means for you in terms of your future success depends on your identity group.* 
 
 ::: {.callout-note}
 
 Suppose that you heard this, but instead of cool hats it was because you are a member of an identity group that "needs some help" in order to achieve equitable representation in your chosen major. How would you feel? Would that feel fair to you? 
 
 :::
+
+These moral intuitions underly the principle of *sufficiency* as a competing idea of fairness: 
+
+> A necessary condition for an automated decision system to be (approximately) fair is that, for each predicted outcome, the likelihood of the actual outcome is (approximately) equal across identity groups.
+
 
 The idea of *sufficiency* is that a positive prediction should imply the same probability of future recidivism, regardless of racial group membership. To operationalize this idea, we can look at the recidivism rates among defendants who received each decile score, broken down by race:  
 ```{python}
@@ -273,7 +270,6 @@ Indeed, in a rejoinder article published by affiliates of the company Northpoint
 ## Recap
 
 In these notes, we replicated the data analysis of @angwin2022machine, finding that the COMPAS algorithm has disparate error rates between Black and white defendants. We introduced the idea that *fairness* actually has several different facets in our moral intuitions, and found that the COMPAS algorithm satisfies one of them (sufficiency: equal scores mean the same thing regardless of your group membership) but not the others (equal prediction rates and equal error rates). 
-
 
 ## Some Questions Moving Forward
 

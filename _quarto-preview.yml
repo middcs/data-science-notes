@@ -1,13 +1,14 @@
 book: 
   chapters:
     - index.qmd
-    - part: "Examples"
+    - part: "Data Wrangling and Exploration"
       chapters: 
         - source/00-intro-python-datascience.qmd
         - source/01-pandas-data-wrangling.qmd
-        - source/01-data-and-models.qmd
-        - source/02-black-box-classification.qmd
+    - part: "Machine Learning and Prediction"
+      chapters:
         - source/20-introduction-prediction.qmd
         - source/21-feature-engineering-and-overfitting.qmd
         - source/22-dissecting-bias.qmd
         - source/25-classification.qmd
+        - source/29-compas.qmd

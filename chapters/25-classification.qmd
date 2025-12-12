@@ -162,7 +162,7 @@ Although our humidity-based classifier is already better than the base rate, we 
 
 $$
 \begin{aligned}
-    s_i = \sum_{i=1}^p w_i x_i\;,
+    s = \sum_{i=1}^p w_i x_i\;,
 \end{aligned}
 $$
 
