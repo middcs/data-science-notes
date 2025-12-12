@@ -127,8 +127,8 @@ df[df["Culmen Length (mm)"] < 40].head()
 ```
 
 ::: {.content-hidden}
-PI Questions 1
-:::
+PI Questions 1: 1
+::
 
 ## Mutation
 
@@ -205,6 +205,10 @@ More generally, we can think of each value provided for an index drops us one le
 summary.loc[("Chinstrap",),("Culmen Length (mm)",)]
 #---
 ```
+
+::: {.content-hidden}
+PI Questions 2: 2-3
+:::
 
 ## Apply split-apply-combine
 
