@@ -22,7 +22,11 @@ sns.set_style("whitegrid")
 ::: {.callout-tip}
 ## Programmatic plotting?
 
-You should expect that any thing you could do (and any feature that was available) with a graphical plotting tool is possible to do programmatically. A difference is that instead of a series of clicks to "build" up the desired figure, you have a series of programmatic statements to define the figure. These libraries will have a "final" step, often a `show` function or method, to actually render the figure on the screen (although this may be implicit in some environments, such as our IPython notebooks). Why do the libraries work this way? So that we can make changes to the plot before rendering. The separate `show` step is how we indicate we are done with that configuration process. Compared to graphical approaches, regenerating the same figure, with all its relevant features, should take no time. Resist the temptation to make manual tweaks, no matter how small, to a figure after it is rendered. Instead, make the changes to the code and re-run the rendering step. That was you have a complete and reproducible "recipe" for (re)making the figure in the future. The mostly likely person to need to adjust the future is you! Think of this as a way of being kind to future you.
+You should expect that any thing you could do (and any feature that was available) with a graphical plotting tool is possible to do programmatically. A difference is that instead of a series of clicks to "build" up the desired figure, you have a series of programmatic statements to define the figure.
+
+These libraries will typically have a "final" step, often a `show` function or method, to actually render the figure on the screen (although this may be implicit in some environments, such as our IPython notebooks). Why do the libraries work this way? So that we can make changes to the plot before rendering. The separate `show` step is how we indicate we are done with that configuration process.
+
+Compared to graphical approaches, regenerating the same figure, with all its relevant features, should take no time. Resist the temptation to make manual tweaks, no matter how small, to a figure after it is rendered. Instead, make the changes to the code and re-run the rendering step. That was you have a complete and reproducible "recipe" for (re)making the figure in the future. The mostly likely person to need to adjust the future is you! Think of this as a way of being kind to future you.
 :::
 
 ## Matplotlib
@@ -46,11 +50,15 @@ We can then plot the portfolio balance over time as a line plot. We see the 3 pa
 ```{python}
 #| label: one-portfolio-sim
 #| fig-cap: Simulated balance in an investment portfolio
+#---
 plt.plot(range(1, len(portfolio)+1), portfolio) # <1>
 plt.xlabel("Month") # <2>
 plt.ylabel("Portfolio ($)")
+# f-strings are concise syntax for embedding expressions inside strings. This is equivalent to
+# "Simulate an investment portfolio of $" + str(initial) + " as a random walk"
 plt.title(f"Simulate an investment portfolio of ${initial} as a random walk")
 plt.show() # <3>
+#---
 ```
 1. Generate a line plot where the x values are `range(1, len(portfolio)+1)`, i.e., the months, and the y values are the portfolio balance at each month.
 2. Add relevant axis labels and a title.
@@ -78,12 +86,14 @@ PI Questions 1: 1
 As described in the reading, [Matplotlib has two APIs (application programming interfaces)](https://jakevdp.github.io/PythonDataScienceHandbook/04.00-introduction-to-matplotlib.html#Two-Interfaces-for-the-Price-of-One) for creating figures: the "stateful" API (as shown above) and the "object-oriented" API. The former maintains an internal reference to the current figure and axes (to which plotting commands are applied), while the latter uses explicit figure and axes objects (i.e., you control which figure and axes are modified by a specific operation). The stateful API is can be simpler for quick plots, while the object-oriented API can enable more control for complex figures. Here is the same plot as above using the object-oriented API. We explicitly create a figure and axes object with `plt.subplots()`, and then use the axes object to call plotting methods. Note that are are some differences in method names (e.g., `set_xlabel` vs. `xlabel`) between the two APIs.
 
 ```{python}
+#---
 fig, ax = plt.subplots()
 ax.plot(range(1, len(portfolio)+1), portfolio)
 ax.set_xlabel("Month")
 ax.set_ylabel("Portfolio ($)")
 ax.set_title(f"Simulate an investment portfolio of ${initial} as a random walk")
 plt.show()
+#---
 ```
 
 ### Figure and Axes
@@ -120,7 +130,7 @@ axes[1][1].set_xlabel("Month")
 axes[1][1].set_ylabel("Portfolio ($)")
 
 fig.suptitle(f"Simulate an investment portfolio: formatting variations", fontsize=14)
-plt.tight_layout(rect=[0, 0, 1, 0.96])
+plt.tight_layout()
 plt.show()
 ```
 
@@ -129,33 +139,36 @@ plt.show()
 As noted in the reading, some aspects of Matplotlib have begun to "show their age". Newer libraries, such as Seaborn, have been built on top of Matplotlib's powerful foundation to provide a higher-level interface for common statistical visualizations. For example, Matplotlib pre-dated Pandas. While it is very possible to plot Pandas DataFrames and Series with Matplotlib a lot of boilerplate code was required. Seaborn was built with Pandas in mind, making it very easy to create plots directly from DataFrames (and Pandas now has built-in wrappers for plotting that use Matplotlib).
 
 ```{python}
-URL = "https://raw.githubusercontent.com/PhilChodrow/ml-notes/main/data/palmer-penguins/palmer-penguins.csv"
-df = pd.read_csv(URL)
+url = "https://raw.githubusercontent.com/middcs/data-science-notes/main/data/palmer-penguins/palmer-penguins.csv"
+df = pd.read_csv(url)
 df.head()
 ```
 
-For example, we can quickly create a scatter plot of culmen length vs. culmen depth for the Palmer Penguins dataset[@horstAllisonhorstPalmerpenguinsV02020], stratified by species and sex. That is a pretty powerful one-liner!
+For example, we can quickly create a scatter plot of culmen length vs. culmen depth for the Palmer Penguins dataset [@horstAllisonhorstPalmerpenguinsV02020], stratified by species and sex. That is a pretty powerful one-liner!
 
 Looking at the function call, we see that we provide the DataFrame, and then specify which columns to use for the x and y values and the other attributes of each point (equivalent to "aesthetics" in R's ggplot2). We can map the different visual attributes of each point to either a fixed value (the default) or a specific variable in the data. With the latter we can communicate multivariate relationships in a single plot, e.g., the distinct beak shapes of the different penguin species.
 
-When developing a visualization, we typical start by thinking about the overall goal of the visualization. Are trying to communicate a relationship between variables, or the distribution continuous or categorical variables? That will be determine the [general type of plot](https://seaborn.pydata.org/tutorial/function_overview.html#figure-level-vs-axes-level-functions) to use (e.g., scatter plot, line plot, histogram, box plot, etc.). Next we will consider which variables to map to which visual attributes (x and y position, color/hue, shape/style, size, etc.) to show additional multivariate relationships. Finally, we can customize the figure with titles, axis labels, legends, and other formatting options.
+When developing a visualization, we typical start by thinking about the overall goal of the visualization. Are trying to communicate a relationship between variables, or the distribution of continuous or categorical variables? That will be determine the [general type of plot](https://seaborn.pydata.org/tutorial/function_overview.html#figure-level-vs-axes-level-functions) to use (e.g., scatter plot, line plot, histogram, box plot, etc.). Next we will consider which variables to map to which visual attributes (x and y position, color/hue, shape/style, size, etc.) to show additional multivariate relationships. Finally, we can customize the figure with titles, axis labels, legends, and other formatting options.
 
 Here we were interested in the relationship of beak metrics, length vs. depth, so we used a scatter plot (since each point represents an individual penguin). We mapped species and sex to color and shape, respectively, to show how those categorical variables relate to beak morphology. The default labels and legend were generally sufficient, with a small adjustment to the legend position so it did not overlap the data.
 
 ```{python}
-ax = sns.scatterplot(df, x="Culmen Length (mm)", y="Culmen Depth (mm)", hue="Species", style="Sex")
+#---
+ax = sns.scatterplot(df, x="Culmen Length (mm)", y="Culmen Depth (mm)", hue="Species", style="Sex") # <1>
 sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
 plt.show()
+#---
 ```
+1. Create a scatter plot return the Matplotlib axes object with the plot. We can provide a pre-existing axes for the plot with `ax` argument, or as here, let Seaborn create a new figure and axes and return it to us.
 
 ::: {.callout-note collapse="true"}
-## What is the "." for the sex variable? (Answer before expanding)
+## What is the "." for the sex variable? (Try answering before expanding)
 
 Missing data!
 :::
 
 ::: {.content-hidden}
-PI Questions 2: 2
+PI Questions 2: 2-3
 :::
 
 ### "Tidy" data: Wide vs. long format
@@ -166,7 +179,7 @@ PI Questions 2: 2
 > "Tidy datasets are all alike, but every messy dataset is messy in its own way."
 > — Hadley Wickham
 
-There are many ways to structure a dataset, but some structures are more conducive to analysis and visualization than others. "Tidy" data is a standardized way of structuring datasets popularized by Hadley Wickham and the Tidyverse family of R packages[@wickhamRDataScience2023]. This is also generically described as "long" format data, as opposed to "wide" format data. 
+There are many ways to structure a dataset, but some structures are more conducive to analysis and visualization than others. "Tidy" data is a standardized way of structuring datasets popularized by Hadley Wickham and the Tidyverse family of R packages [@wickhamRDataScience2023]. This is also generically described as "long" format data, as opposed to "wide" format data. 
 
 The principles for long-format ("tidy") data are:
 
@@ -195,7 +208,7 @@ tb_wide = pd.DataFrame({
 tb_wide
 ```
 
-The latter, wide format, is how we might represent this data in a spreadsheet. But it can be tricker to work with programmatically. For example, we are largely limited to 3 variables (row, column and value) without using more complex multi-indexing features of Pandas (which are not, for example, supported by Seaborn). Those countries are very different sizes. It would be useful to normalize the case counts by population, but there is no obvious way to add that information in the wide format without creating additional tables. In a long format, we can easily add additional variables, such as population, as additional columns.
+The latter, wide format, is how we might represent this data in a spreadsheet. But it can be tricker to work with programmatically. With wide format data we are largely limited to 3 variables (row, column and value) without using more complex multi-indexing features of Pandas (which are not, for example, supported by Seaborn). For example, those countries are very different sizes. It would be useful to normalize the case counts by population, but there is no obvious way to add that information in the wide format without creating additional tables. In a long format, we can easily add additional variables, such as population, as additional columns.
 
 ```{python}
 tb_long = pd.DataFrame({
@@ -210,6 +223,7 @@ tb_long
 We can now readily visualize TB cases as per-capita rates.
 
 ```{python}
+#---
 # Compute cases per 100,000 population as new column
 tb_long["cases_per_100k"] = tb_long["cases"] / tb_long["population"] * 100000
 
@@ -219,64 +233,81 @@ ax.set_ylabel("TB cases per 100,000 population")
 ax.set_title("Per-capita TB cases over time by country")
 ax.set_xticks(sorted(tb_long["year"].unique()))
 
+# The above functions can be (and are often) condensed into a single `set` function with relevant keyword arguments:
+# ax.set(
+#     xlabel="Year",
+#     ylabel="TB cases per 100,000 population",
+#     title="Per-capita TB cases over time by country",
+#     xticks=sorted(tb_long["year"].unique()),
+# )
+
 plt.ticklabel_format(style='plain', axis='x', useOffset=False) # Prevent scientific notation on x-axis
 plt.legend(title="Country", bbox_to_anchor=(1.05, 1.02), loc="upper left")
 plt.tight_layout()
 
 plt.show()
+#---
 ```
 
-We can convert between long and wide formats using the Pandas `melt` and `pivot` functions.
-
 ::: {.content-hidden}
-PI Questions 3: 3
+PI Questions 3: 4
 :::
 
 ## Example exploratory data analysis
 
-The following is a subset of fuel economy data from <https://fueleconomy.gov> distributed as part of the ggplot2 R package[@wickhamGgplot2ElegantGraphics2016]. We are particularly interested in the `hwy` variable, which is the highway miles-per-gallon (MPG) rating for each vehicle.
+The following is a subset of fuel economy data from <https://fueleconomy.gov> distributed as part of the ggplot2 R package [@wickhamGgplot2ElegantGraphics2016]. We are particularly interested in the `hwy` variable, which is the highway miles-per-gallon (MPG) rating for each vehicle.
 
 ```{python}
-URL = "https://raw.githubusercontent.com/tidyverse/ggplot2/refs/heads/main/data-raw/mpg.csv"
-mpg_df = pd.read_csv(URL)
+url = "https://raw.githubusercontent.com/tidyverse/ggplot2/refs/heads/main/data-raw/mpg.csv"
+mpg_df = pd.read_csv(url)
 mpg_df.head()
 ```
 
 We would hypothesize that engine displacement (`displ`, in liters) is negatively correlated with highway MPG (`hwy`), i.e., larger engines tend to be less fuel efficient. And indeed that seems to be the case.
 
 ```{python}
+#---
 ax = sns.scatterplot(mpg_df, x="displ", y="hwy")
 ax.set_xlabel("Engine Displacement (L)")
 ax.set_ylabel("Highway MPG")
 plt.show()
+#---
 ```
 
 But there are some potentially interesting outliers to the right, i.e., vehicles with large engines but relatively high highway MPG. What do you hypothesize might be going on there? We can add additional variables to the plot to help us explore this question. Let's add vehicle class (`class`, e.g., "compact", "suv", etc.) as a color/hue attribute.
 
 ```{python}
+#---
 ax = sns.scatterplot(mpg_df, x="displ", y="hwy", hue="class")
 ax.set_xlabel("Engine Displacement (L)")
 ax.set_ylabel("Highway MPG")
 plt.show()
+#---
 ```
 
+::: {.callout-tip collapse="true"}
+## What do you observe about those outliers? (Try answering before expanding)
+
 We observe that those outliers are mostly in the "2seater" class. Those are likely sports cars with large, powerful engines, that are relatively light weight (compared to larger vehicles like SUVs and trucks) and thus achieve relatively high highway MPG despite the large engine displacement.
+:::
 
 We observe some additional trends. At a given engine displacement there are appear to be two clusters (or "bands") of vehicles: one with relatively high highway MPG and one with relatively lower highway MPG. The latter appear to be mostly "SUVs" and "pickups". Those are likely to be heavier vehicles with 4-wheel drive, which we hypothesize might reduce fuel economy. Let's add drive type (`drv`, e.g., "4" for 4-wheel drive, "f" for front-wheel drive, etc.) as a shape/style attribute to the plot.
 
 ```{python}
+#---
 ax = sns.scatterplot(mpg_df, x="displ", y="hwy", hue="class", style="drv")
 ax.set_xlabel("Engine Displacement (L)")
 ax.set_ylabel("Highway MPG")
 plt.legend(bbox_to_anchor=(1.05, 1.02), loc="upper left")
 plt.show()
+#---
 ```
 
 Indeed for a given displacement and vehicle class, 4-wheel drive vehicles then tend to have lower highway MPG than their 2-wheel drive, primarily front-wheel drive, counterparts. 
 
 ## Better Figures
 
-"Ten Simple Rules for Better Figures"[@rougierRulesBetterFigures2014] provides a nice checklist for improving the clarity and effectiveness of scientific figures.
+"Ten Simple Rules for Better Figures" [@rougierRulesBetterFigures2014] provides a nice checklist for improving the clarity and effectiveness of scientific figures.
 
 1. Know Your Audience
 2. Identify Your Message

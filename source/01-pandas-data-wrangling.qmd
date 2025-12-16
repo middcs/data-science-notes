@@ -128,7 +128,7 @@ df[df["Culmen Length (mm)"] < 40].head()
 
 ::: {.content-hidden}
 PI Questions 1: 1
-::
+:::
 
 ## Mutation
 
@@ -261,7 +261,7 @@ Pandas and the other libraries will use are very complex and the interfaces are 
 Before doing so let's make sure we know what to expect. We need to:
 
 * Randomly shuffle the smoking label
-* Compute the difference in mean birth weight with groupby (or some type of grouping)
+* Compute the difference in mean birth weight with `groupby` (or some type of grouping)
 * Do so many times to generate a distribution of birth weight differences
 
 Let's turn GenAI loose. After a little iteration with Claude Sonnet 4.5 and Copilot (GPT-5 mini) I settled on the following prompt.
@@ -271,7 +271,7 @@ Let's turn GenAI loose. After a little iteration with Claude Sonnet 4.5 and Copi
 This is more prescriptive than might be desired. Many prompts produced lower level implementations (i.e., using boolean index into column series) than we wanted. Those approaches may be faster, but are not very clear (and our ultimate goal is learning, and specifically here, learning to use Pandas).
 :::
 
-A possible approach to computing a distribution of birthweight differences for permuted labels:
+A possible approach to computing a distribution of birth weight differences for permuted labels:
 
 ```{python}
 n_permutations = 5000
