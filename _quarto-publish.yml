@@ -6,6 +6,7 @@ book:
         - chapters/00-intro-python-datascience.qmd
         - chapters/01-pandas-data-wrangling.qmd
         - chapters/02-visualization.qmd
+        - chapters/03-data-wrangling.qmd
     - part: "Machine Learning and Prediction"
       chapters:
         - chapters/20-introduction-prediction.qmd

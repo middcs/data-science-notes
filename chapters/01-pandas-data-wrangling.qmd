@@ -1,16 +1,20 @@
 ---
 jupyter: python3
-title: Data Wrangling with Python
+title: Data Frames in Python
 subtitle: Getting started with Pandas Data Frames
 ---
 
-[Data wrangling](https://en.wikipedia.org/wiki/Data_wrangling) is a broad term for transforming data from one form into another. It some times is synonymous with "data cleaning", i.e., preparing "messy" raw data for further analysis, but data wrangling can also refer the analysis itself (including data transformation, visualization, aggregation). Today we will focus on the data structures and techniques used to store, transform and aggregate tabular data. These tools build on the vectorized approaches, and specifically NumPy packages, we just learned about.
+[Data wrangling](https://en.wikipedia.org/wiki/Data_wrangling) is a broad term for transforming data from one form into another. It some times is synonymous with "data cleaning", i.e., preparing "messy" raw data for further analysis, but data wrangling can also refer the analysis itself (including data transformation, visualization, aggregation). Today we will focus on the data structures and techniques used to store, transform and aggregate tabular data. These tools build on the vectorized approaches, and specifically the NumPy library, we just learned about.
 
 ## Pandas
 
-The `pandas` Python package offers a rich set of powerful tools for working with tabular data. The name "pandas" is originally derived from the common term "panel data." While different users pronounce the package name in different ways, for cuteness reasons we prefer to pronounce it like the plural of "panda [bears]".
+The `pandas` Python package offers a rich set of powerful tools for working with tabular data. [[Pandas cheat sheet](https://pandas.pydata.org/Pandas_Cheat_Sheet.pdf)]{.aside}The name "pandas" is originally derived from the common term "panel data." While different users pronounce the package name in different ways, for cuteness reasons we prefer to pronounce it like the plural of "panda [bears]".
 
-![[Image credit](https://commons.wikimedia.org/wiki/File:Giant_Panda_eating_Bamboo.JPG)](/assets/img/panda.jpg){width=50%}
+::: {.column-margin}
+
+![[Image credit](https://commons.wikimedia.org/wiki/File:Giant_Panda_eating_Bamboo.JPG)](/assets/img/panda.jpg)
+
+:::
 
 Let's get started with our standard imports. Note the new addition of `import pandas as pd`.
 ```{python}
@@ -41,12 +45,9 @@ There are lot of different ways to conceptually think about `DataFrame`s includi
 Let's get started by loading some example data with physiological measurements and species labels for several populations of Adelie, Chinstrap, and Gentoo penguins (the "Palmer Penguins" data.)[The Palmer Penguins data was originally collected by @gormanEcologicalSexualDimorphism2014 and was nicely packaged and released for use in the data science community by @horstAllisonhorstPalmerpenguinsV02020.]{.aside}
 
 ```{python}
-URL = "https://raw.githubusercontent.com/PhilChodrow/ml-notes/main/data/palmer-penguins/palmer-penguins.csv"
-```
-
-```{python}
+url = "https://raw.githubusercontent.com/middcs/data-science-notes/main/data/palmer-penguins/palmer-penguins.csv"
 # df is a common variable name for data frames
-df = pd.read_csv(URL)
+df = pd.read_csv(url)
 type(df)
 ```
 

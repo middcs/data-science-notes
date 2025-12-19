@@ -6,10 +6,12 @@
 	],
 	"settings": {
 		"cSpell.words": [
+			"Hadley",
 			"Matplotlib",
 			"NumPy",
 			"Seaborn",
-			"Tidyverse"
+			"Tidyverse",
+			"Wickham"
 		]
 	}
 }

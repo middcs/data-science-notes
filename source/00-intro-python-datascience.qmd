@@ -4,9 +4,14 @@ title: Introduction to Python Data Science
 subtitle: Getting started with IPython and NumPy vectorized execution
 ---
 
-These notes were written for students with both introductory Computer Science experience in Python, and introductory data science experience using R. The former may not familiar with common data science tools like notebooks, Data Frames, etc., while the latter may not be familiar with Python, our goal in this class is to build a common foundation using data science tools in Python.
+These notes were written for students with both introductory Computer Science experience in Python, and introductory data science experience using R. The former may not familiar with common data science tools like notebooks, data frames, etc., while the latter may not be familiar with Python, our goal in this class is to build a common foundation using data science tools in Python.
 
 If you are coming from R, keep an eye out for special callouts identifying the equivalent techniques in R. I hope you fill find this transition is not as hard as you might expect. In fact, I think you'll find that the Python data science ecosystem is very familiar. That's not an accident. Python data science tools share inspiration with their R counterparts (or are even directly modeled on tools available within R). In some respects, it may be more challenging to transition from using Python as a general purpose language to using the Python data science ecosystem the way we will in this class.
+
+Some helpful resources for (re)learning Python, especially in the contexts of data science:
+
+* [LabEx Python "cheat sheets"](https://labex.io/python-cheatsheets): A concise listing of Python syntax, data structures, and common libraries.
+* [Whirlwind Tour of Python](https://jakevdp.github.io/WhirlwindTourOfPython/): A quick introduction to Python (intended to serve as an introduction to our reading [@vanderplasPythonDataScience2016])
 
 Why Python (and not R, or some other tool)? That is a complicated and fraught question. But the short answer is machine learning. Python is the lingua franca of machine learning, and that is our ultimate focus.
 
