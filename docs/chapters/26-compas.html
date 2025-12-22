@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>9&nbsp; Introduction to Algorithmic Disparity: COMPAS – Applied Data Science</title>
+<title>9&nbsp; Bias and Fairness in Automated Decision Systems – Applied Data Science</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -85,6 +85,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../chapters/27-neural-prediction.html" rel="next">
 <link href="../chapters/25-classification.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -93,7 +94,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-da5d8d89f6dce618f5587771a6e0de62.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -170,7 +171,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/20-introduction-prediction.html">Machine Learning and Prediction</a></li><li class="breadcrumb-item"><a href="../chapters/29-compas.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Algorithmic Disparity: COMPAS</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/20-introduction-prediction.html">Machine Learning and Prediction</a></li><li class="breadcrumb-item"><a href="../chapters/26-compas.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Bias and Fairness in Automated Decision Systems</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -180,7 +181,9 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../index.html" class="sidebar-logo-link">
+      </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Applied Data Science</a> 
     </div>
@@ -263,8 +266,14 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/29-compas.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Algorithmic Disparity: COMPAS</span></span></a>
+  <a href="../chapters/26-compas.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Bias and Fairness in Automated Decision Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/27-neural-prediction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introducing Neural Networks</span></span></a>
   </div>
 </li>
       </ul>
@@ -293,9 +302,10 @@ window.Quarto = {
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/20-introduction-prediction.html">Machine Learning and Prediction</a></li><li class="breadcrumb-item"><a href="../chapters/29-compas.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Algorithmic Disparity: COMPAS</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/20-introduction-prediction.html">Machine Learning and Prediction</a></li><li class="breadcrumb-item"><a href="../chapters/26-compas.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Bias and Fairness in Automated Decision Systems</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Algorithmic Disparity: COMPAS</span></h1>
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Bias and Fairness in Automated Decision Systems</span></h1>
+<p class="subtitle lead">The COMPAS Investigation</p>
 </div>
 
 
@@ -311,7 +321,7 @@ window.Quarto = {
 
 </header>
 
-<p><i><a href="http://colab.research.google.com/github/middcs/data-science-notes/blob/main/docs/live-notebooks/29-compas.ipynb">Open the live notebook</a> in Google Colab or <a href="https://www.midccs.github.io/data-science-notes/live-notebooks/29-compas.ipynb">download the live notebook</a></i></p>.
+<p><i><a href="http://colab.research.google.com/github/middcs/data-science-notes/blob/main/docs/live-notebooks/26-compas.ipynb">Open the live notebook</a> in Google Colab or <a href="https://www.midccs.github.io/data-science-notes/live-notebooks/26-compas.ipynb">download the live notebook</a></i></p>.
 
 
 <p>Today we are going to study an extremely famous investigation into algorithmic decision-making in the sphere of criminal justice by <span class="citation" data-cites="angwin2022machine">Angwin et al. (<a href="#ref-angwin2022machine" role="doc-biblioref">2022</a>)</span>, originally written for ProPublica in 2016. This investigation significantly accelerated the pace of research into bias and fairness in machine learning, due in combination to its simple message and publicly-available data.</p>
@@ -332,7 +342,7 @@ window.Quarto = {
 <section id="data-acquisition-and-preparation" class="level2">
 <h2 class="anchored" data-anchor-id="data-acquisition-and-preparation">Data Acquisition and Preparation</h2>
 <p>Now let’s download the COMPAS data set published by ProPublica. This data set was obtained by <span class="citation" data-cites="angwin2022machine">Angwin et al. (<a href="#ref-angwin2022machine" role="doc-biblioref">2022</a>)</span> through a public records request. The data comprises two years worth of COMPAS scoring in Broward County, Florida.</p>
-<div id="4eb0053e" class="cell" data-execution_count="1">
+<div id="d6e3b0c7" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -344,7 +354,7 @@ window.Quarto = {
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>compas <span class="op">=</span> pd.read_csv(url)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This data set contains <code>python {len(compas)}</code> rows and <code>python {len(compas.columns)}</code> columns. Each row corresponds to a defendant who was scored by the COMPAS algorithm, and each column corresponds to a different feature collected about that defendant. For our analysis we’ll only need four of the feature columns:</p>
-<div id="6551adea" class="cell" data-execution_count="2">
+<div id="37046df4" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">"sex"</span>, <span class="st">"race"</span>, <span class="st">"decile_score"</span>, <span class="st">"two_year_recid"</span>]</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>compas <span class="op">=</span> compas[cols]</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>compas.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -406,7 +416,7 @@ window.Quarto = {
 </div>
 <p>The <code>decile_score</code> column contains the risk score assigned by the COMPAS algorithm, which ranges from 1 (lowest risk) to 10 (highest risk). The <code>two_year_recid</code> column indicates whether the defendant was in fact charged with another crime within two years of their initial scoring (1 = yes, 0 = no). We can think of the <code>decile_score</code> column as a prediction made by the COMPAS algorithm, and the <code>two_year_recid</code> column as the ground-truth label that COMPAS is trying to predict.</p>
 <p>Following ProPublica, we are going to restrict our attention to white (Caucasian) and Black (African-American) defendants:</p>
-<div id="64c7663a" class="cell" data-execution_count="3">
+<div id="a7e1ba27" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>is_white <span class="op">=</span> compas[<span class="st">"race"</span>] <span class="op">==</span> <span class="st">"Caucasian"</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>is_black <span class="op">=</span> compas[<span class="st">"race"</span>] <span class="op">==</span> <span class="st">"African-American"</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -414,7 +424,7 @@ window.Quarto = {
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>compas <span class="op">=</span> compas.copy()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Our data now looks like this:</p>
-<div id="eb32a50a" class="cell" data-execution_count="4">
+<div id="4aca7b70" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>compas.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div>
@@ -476,7 +486,7 @@ window.Quarto = {
 <section id="preliminary-explorations" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="preliminary-explorations">Preliminary Explorations</h2>
 <p>Let’s do some quick exploration of our data. How many defendants are present in this data of each sex?</p>
-<div id="f9844fbb" class="cell" data-execution_count="5">
+<div id="ea8a055b" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>compas.groupby(<span class="st">"sex"</span>).size()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>sex
@@ -486,7 +496,7 @@ dtype: int64</code></pre>
 </div>
 </div>
 <p>What about race?</p>
-<div id="080dd1bc" class="cell" data-execution_count="6">
+<div id="2b1c884c" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>compas.groupby(<span class="st">"race"</span>).size()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>race
@@ -498,7 +508,7 @@ dtype: int64</code></pre>
 <p>The decile score is the algorithm’s prediction. Higher decile scores indicate that, according to the COMPAS model, the defendant has higher likelihood to be <em>charged with a crime</em> within the next two years. It’s worth emphasizing that this isn’t the same thing as <em>committing</em> a crime: whether or not you’re charged also depends on the behavior of police and prosecutors, which are known to often display racial bias.</p>
 <p>In the framework we’ve developed in this class, you can think of the decile score as being produced by computing a score like <span class="math inline">\(s = \sum_{i = 1}^p w_i x_i \rangle\)</span> for each defendant, and then dividing these into the lowest 10% (decile score 1), the next 10% (decile score 2), the next 10% (decile score 3) and so on. The weights in the model would need to be computed using a training algorithm like logistic regression.</p>
 <p>Let’s take a look at the decile scores assigned to defendants in this data by the COMPAS algorithm:</p>
-<div id="4718c855" class="cell" data-execution_count="7">
+<div id="35c32928" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> compas.groupby([<span class="st">"race"</span>, <span class="st">"decile_score"</span>]).size().reset_index(name <span class="op">=</span> <span class="st">"n"</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> sns.barplot(data <span class="op">=</span> counts, </span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                x <span class="op">=</span> <span class="st">"decile_score"</span>, </span>
@@ -509,14 +519,14 @@ dtype: int64</code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="29-compas_files/figure-html/cell-8-output-1.png" class="figure-img" width="589" height="427"></p>
+<p><img src="26-compas_files/figure-html/cell-8-output-1.png" class="figure-img" width="589" height="427"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>You may notice that the number of white defendants who receive a given decile score tends to decrease as the score increases, whereas the number of Black defendants remains relatively constant. This is our first hint that Black defendants may tend to receive higher risk scores than white defendants.</p>
 <p>Let’s also take a look at the recidivism rate in the data:</p>
-<div id="ad1fc9e6" class="cell" data-execution_count="8">
+<div id="be713066" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>compas[<span class="st">"two_year_recid"</span>].mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>np.float64(0.4661788617886179)</code></pre>
@@ -525,7 +535,7 @@ dtype: int64</code></pre>
 <p>So, in these data, approximately 47% of all defendants went on to be charged of another crime within the next two years. This is sometimes called the <em>prevalence</em> of the outcome. Although this is not a “good” outcome, it is labeled <code>1</code> in the target data and so we refer to this as the “positive” outcome. <em>Prevalence</em> without further specification usually refers to prevalence of the positive outcome.</p>
 <p>The base rate of prediction accuracy in this problem is 53%: if we always guessed that the defendant was not arrested within two years, we would be right 53% of the time.</p>
 <p>We can also compute the prevalence broken down by race of the defendant:</p>
-<div id="72498941" class="cell" data-execution_count="9">
+<div id="6b4941ec" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>compas.groupby(<span class="st">"race"</span>)[<span class="st">"two_year_recid"</span>].mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>race
@@ -545,11 +555,11 @@ Name: two_year_recid, dtype: float64</code></pre>
 <li>Decisions about which behaviors are criminal are contingent political decisions which have, historically, fallen hardest on Black Americans <span class="citation" data-cites="yusefCriminalizingRaceRacializing2017">(<a href="#ref-yusefCriminalizingRaceRacializing2017" role="doc-biblioref">Yusef and Yusef 2017</a>)</span>.</li>
 </ul>
 </div></div><p>We’re going to treat the COMPAS algorithm as a binary classifier, but you might notice a problem: the algorithm’s prediction is the <code>decile_score</code> column, which is not actually a <code>0</code>-<code>1</code> label. Following a common usage of the algorithm in application settings, and the analysis by ProPublica, we are going to construct a new binary column in which we say that a defendant is <code>predicted_high_risk</code> if their <code>decile_score</code> is larger than 4.</p>
-<div id="e2f769bf" class="cell" data-execution_count="10">
+<div id="a803c5ce" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>compas[<span class="st">"predicted_high_risk"</span>] <span class="op">=</span> (compas[<span class="st">"decile_score"</span>] <span class="op">&gt;</span> <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now that we’ve done that, we can ask: how likely are Black and white defendants to receive positive predictions in this data?</p>
-<div id="a2194712" class="cell" data-execution_count="11">
+<div id="a62d28e6" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>compas.groupby(<span class="st">"race"</span>)[[<span class="st">"two_year_recid"</span>, <span class="st">"predicted_high_risk"</span>]].mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <div>
@@ -603,7 +613,7 @@ Name: two_year_recid, dtype: float64</code></pre>
 <section id="the-propublica-findings" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="the-propublica-findings">The ProPublica Findings</h2>
 <p>Let’s now ask a few questions about the the predictive accuracy of this algorithm. First, how accurate it is it overall?</p>
-<div id="56520a9e" class="cell" data-execution_count="12">
+<div id="e5d3d029" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>compas[<span class="st">"correct_prediction"</span>] <span class="op">=</span> (compas[<span class="st">"predicted_high_risk"</span>] <span class="op">==</span> compas[<span class="st">"two_year_recid"</span>])</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>compas[<span class="st">"correct_prediction"</span>].mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
@@ -612,7 +622,7 @@ Name: two_year_recid, dtype: float64</code></pre>
 </div>
 <p>Recall that the base rate in this problem is 53%, so our accuracy is somewhat better than random guessing.</p>
 <p>What about the accuracy on Black and white defendants separately?</p>
-<div id="599993f8" class="cell" data-execution_count="13">
+<div id="f515d9e5" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>compas.groupby([<span class="st">"race"</span>])[<span class="st">"correct_prediction"</span>].mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>race
@@ -623,7 +633,7 @@ Name: correct_prediction, dtype: float64</code></pre>
 </div>
 <p>The overall accuracies for Black and white defendants are comparable, and both are somewhat higher than the base rate of 53%.</p>
 <p>What about the error rates? Here is a simple calculation which computes the false positive rate (FPR) in the first row and the true positive rate (TPR) on the bottom row:</p>
-<div id="243c2fb1" class="cell" data-execution_count="14">
+<div id="07d16d4f" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>compas.groupby([<span class="st">"two_year_recid"</span>])[<span class="st">"predicted_high_risk"</span>].mean().reset_index()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
 <div>
@@ -655,7 +665,7 @@ Name: correct_prediction, dtype: float64</code></pre>
 </div>
 </div>
 <p>However, and this was the main finding of the ProPublica study, the FPR and FNR are very different when we break down the data by race:</p>
-<div id="6b8d9ead" class="cell" data-execution_count="15">
+<div id="47751103" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>compas.groupby([<span class="st">"two_year_recid"</span>, <span class="st">"race"</span>])[<span class="st">"predicted_high_risk"</span>].mean().reset_index()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="15">
 <div>
@@ -745,7 +755,7 @@ Name: correct_prediction, dtype: float64</code></pre>
 <p>A necessary condition for an automated decision system to be (approximately) fair is that, for each predicted outcome, the likelihood of the actual outcome is (approximately) equal across identity groups.</p>
 </blockquote>
 <p>The idea of <em>sufficiency</em> is that a positive prediction should imply the same probability of future recidivism, regardless of racial group membership. To operationalize this idea, we can look at the recidivism rates among defendants who received each decile score, broken down by race:</p>
-<div id="9a788b74" class="cell" data-execution_count="16">
+<div id="7afa84a1" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> compas.groupby([<span class="st">"decile_score"</span>, <span class="st">"race"</span>])[<span class="st">"two_year_recid"</span>].mean().reset_index()</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data <span class="op">=</span> scores, </span>
@@ -757,7 +767,7 @@ Name: correct_prediction, dtype: float64</code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="29-compas_files/figure-html/cell-17-output-1.png" class="figure-img" width="585" height="427"></p>
+<p><img src="26-compas_files/figure-html/cell-17-output-1.png" class="figure-img" width="585" height="427"></p>
 </figure>
 </div>
 </div>
@@ -1213,6 +1223,9 @@ Yusef, Kideste Wilder, and Tseleq Yusef. 2017. <span>“Criminalizing <span>Race
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../chapters/27-neural-prediction.html" class="pagination-link" aria-label="Introducing Neural Networks">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introducing Neural Networks</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

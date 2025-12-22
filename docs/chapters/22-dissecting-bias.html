@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -94,7 +94,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-da5d8d89f6dce618f5587771a6e0de62.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -152,7 +152,9 @@ div.csl-indent {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../index.html" class="sidebar-logo-link">
+      </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Applied Data Science</a> 
     </div>
@@ -235,8 +237,14 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/29-compas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Algorithmic Disparity: COMPAS</span></span></a>
+  <a href="../chapters/26-compas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Bias and Fairness in Automated Decision Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/27-neural-prediction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introducing Neural Networks</span></span></a>
   </div>
 </li>
       </ul>
@@ -311,7 +319,7 @@ div.csl-indent {
 <section id="getting-to-know-the-data" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="getting-to-know-the-data">Getting To Know The Data</h2>
 <p><span class="citation" data-cites="obermeyerDissectingRacialBias2019">Obermeyer et al. (<a href="#ref-obermeyerDissectingRacialBias2019" role="doc-biblioref">2019</a>)</span> collected sensitive medical and demographic data for a large set of hospital patients, along with the risk scores assigned to those patients by the recommendation system. They then released a <em>synthetic version</em> of the data set, in which many features were randomized and anonymized but important correlations in the data were preserved. This is the data set that we’ll work with here.</p>
-<div id="04df1e64" class="cell" data-execution_count="1">
+<div id="38ff9925" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
@@ -321,7 +329,7 @@ div.csl-indent {
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>sns.set_palette(<span class="st">"viridis"</span>, n_colors<span class="op">=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="ac4b08e4" class="cell" data-execution_count="2">
+<div id="846e238f" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://gitlab.com/labsysmed/dissecting-bias/-/raw/master/data/data_new.csv?inline=false"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(url)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -332,10 +340,10 @@ div.csl-indent {
 <h3 class="anchored" data-anchor-id="intensive-care-recommendations">Intensive Care Recommendations</h3>
 <p>Patients status in the intensive care program was informed by the value of the risk score. Risk scores in the 97th percentile above (so, the top 3% of patients with the most predicted risk) were <em>automatically enrolled</em> in the program, while patients with risk scores in the 55th to 96th percentiles were <em>screened</em> for possible enrollment. Patients with risk scores below the 55th percentile were not considered for enrollment.</p>
 <p>Let’s add columns for the percentile risk score score and their status in the intensive care program.</p>
-<div id="0b85293d" class="cell" data-execution_count="3">
+<div id="a8ca4081" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"percentile_risk_score_t"</span>] <span class="op">=</span> (df[<span class="st">"risk_score_t"</span>].rank(pct<span class="op">=</span><span class="va">True</span>)<span class="op">*</span><span class="dv">100</span>).astype(<span class="bu">int</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="ac7252aa" class="cell" data-execution_count="4">
+<div id="a7c17aaf" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>screened_ix <span class="op">=</span> (df[<span class="st">"percentile_risk_score_t"</span>] <span class="op">&gt;=</span> <span class="dv">55</span>) <span class="op">&amp;</span> (df[<span class="st">"percentile_risk_score_t"</span>] <span class="op">&lt;</span> <span class="dv">95</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>enrolled_ix <span class="op">=</span> df[<span class="st">"percentile_risk_score_t"</span>] <span class="op">&gt;</span> <span class="dv">97</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -385,7 +393,7 @@ Figure&nbsp;7.1: Proportion of patients recommended for intensive care, by numbe
 <blockquote class="blockquote">
 <p>What fraction of patients have at most <em>k</em> chronic illnesses?</p>
 </blockquote>
-<div id="f6558740" class="cell" data-execution_count="7">
+<div id="f387a0a6" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sns.ecdfplot(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> df, </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="st">"gagne_sum_tm1"</span>, </span>
@@ -405,7 +413,7 @@ Figure&nbsp;7.1: Proportion of patients recommended for intensive care, by numbe
 <p>It is a common trope that bias in an automated decision system is a consequence of “biased data.” This is often true, but it is important to be specific about the details. It is also important to consider the <em>design decisions</em> that go into building and training these systems.</p>
 <p>The model used to assign risk scores to patients in this case was trained to predict <em>future healthcare costs</em> based on past medical and demographic data. The idea here is that “health risk” isn’t a well-defined, measurable concept, but healthcare <em>costs</em> are. So, an algorithm that can predict the healthcare <em>costs</em> incurred by a patient might be a useful proxy for predicting their <em>health risk</em>.</p>
 <p>Let’s first check whether the total healthcare cost is truly correlated with risk score:</p>
-<div id="dafb3e10" class="cell" data-execution_count="8">
+<div id="6f68e740" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>costs <span class="op">=</span> df.groupby(<span class="st">"percentile_risk_score_t"</span>)[<span class="st">"cost_t"</span>].mean().reset_index()</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> sns.relplot(</span>
@@ -427,7 +435,7 @@ Figure&nbsp;7.1: Proportion of patients recommended for intensive care, by numbe
 </div>
 <p>Indeed, patients with higher risk scores tend to have higher costs, as we’d expect: the risk score is intended to predict the cost.</p>
 <p>But what about the proxy assumption that the <em>health risk</em> of a patient is well-captured by their <em>healthcare costs</em>? Taken as a whole, this looks reasonable:</p>
-<div id="d1fddbd1" class="cell" data-execution_count="9">
+<div id="8763f452" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> df.groupby(<span class="st">"gagne_sum_tm1"</span>)[<span class="st">"cost_t"</span>].mean().reset_index()</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> counts[counts[<span class="st">"gagne_sum_tm1"</span>] <span class="op">&lt;=</span> <span class="dv">5</span>]</span>
@@ -450,7 +458,7 @@ Figure&nbsp;7.1: Proportion of patients recommended for intensive care, by numbe
 </div>
 </div>
 <p>However, and crucially, the relationship between chronic illness and healthcare costs *differs substantially by race:</p>
-<div id="189ca9e1" class="cell" data-execution_count="10">
+<div id="6d558866" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>costs <span class="op">=</span> df.groupby([<span class="st">"gagne_sum_tm1"</span>, <span class="st">"race"</span>, <span class="st">"dem_female"</span>])[[<span class="st">"cost_t"</span>]].mean().reset_index()</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>costs <span class="op">=</span> costs[costs[<span class="st">"gagne_sum_tm1"</span>] <span class="op">&lt;=</span> <span class="dv">5</span>]</span>
@@ -478,11 +486,11 @@ Figure&nbsp;7.1: Proportion of patients recommended for intensive care, by numbe
 <section id="estimating-cost-disparity" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="estimating-cost-disparity">Estimating Cost Disparity</h2>
 <p>It’s possible to use a regression model to estimate the the magnitude of the disparity in healthcare costs between Black and white patients, by race. Let’s do this now, limiting to the bulk of the population with 5 or fewer chronic illnesses:</p>
-<div id="17679824" class="cell" data-execution_count="11">
+<div id="4a806310" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[df[<span class="st">"gagne_sum_tm1"</span>] <span class="op">&lt;=</span> <span class="dv">5</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We’ll include in our model the age, race, and sex demographics of the patient, as well as the total number of chronic illnesses. We’ll then use these to predict total healthcare costs.</p>
-<div id="7e54325c" class="cell" data-execution_count="12">
+<div id="40690dd2" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>     <span class="st">'race'</span>,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'dem_female'</span>,</span>
@@ -496,18 +504,18 @@ Figure&nbsp;7.1: Proportion of patients recommended for intensive care, by numbe
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"gagne_sum_tm1"</span></span>
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="07d4a1c7" class="cell" data-execution_count="13">
+<div id="e0763c9a" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> pd.get_dummies(df[cols], drop_first<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"cost_t"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now we’re ready to fit our regression model:</p>
-<div id="5b21f79b" class="cell" data-execution_count="14">
+<div id="1047443c" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LinearRegression()</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> model.fit(X, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Let’s inspect the coefficients:</p>
-<div id="dc80b689" class="cell" data-execution_count="15">
+<div id="e1879852" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>coef_df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"feature"</span>: X.columns,</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"coefficient"</span>: model.coef_</span>

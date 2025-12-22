@@ -1,8 +1,9 @@
 ---
 jupyter: python3
+title: |
+    Bias and Fairness in Automated Decision Systems
+subtitle: The COMPAS Investigation
 ---
-
-# Introduction to Algorithmic Disparity: COMPAS
 
 Today we are going to study an extremely famous investigation into algorithmic decision-making in the sphere of criminal justice by @angwin2022machine, originally written for ProPublica in 2016. This investigation significantly accelerated the pace of research into bias and fairness in machine learning, due in combination to its simple message and publicly-available data.
 
@@ -42,11 +43,9 @@ compas = pd.read_csv(url)
 This data set contains `python {len(compas)}` rows and `python {len(compas.columns)}` columns. Each row corresponds to a defendant who was scored by the COMPAS algorithm, and each column corresponds to a different feature collected about that defendant. For our analysis we'll only need four of the feature columns: 
 
 ```{python}
-#---
 cols = ["sex", "race", "decile_score", "two_year_recid"]
 compas = compas[cols]
 compas.head()
-#---
 ```
 
 The `decile_score` column contains the risk score assigned by the COMPAS algorithm, which ranges from 1 (lowest risk) to 10 (highest risk). The `two_year_recid` column indicates whether the defendant was in fact charged with another crime within two years of their initial scoring (1 = yes, 0 = no). We can think of the `decile_score` column as a prediction made by the COMPAS algorithm, and the `two_year_recid` column as the ground-truth label that COMPAS is trying to predict. 
@@ -55,21 +54,17 @@ The `decile_score` column contains the risk score assigned by the COMPAS algorit
 Following ProPublica, we are going to restrict our attention to white (Caucasian) and Black (African-American) defendants: 
 
 ```{python}
-#---
 is_white = compas["race"] == "Caucasian"
 is_black = compas["race"] == "African-American"
 
 compas = compas[is_white | is_black]
 compas = compas.copy()
-#---
 ```
 
 Our data now looks like this: 
 
 ```{python}
-#---
 compas.head()
-#---
 ```
 
 ## Preliminary Explorations
@@ -77,17 +72,13 @@ compas.head()
 Let's do some quick exploration of our data. How many defendants are present in this data of each sex? 
 
 ```{python}
-#---
 compas.groupby("sex").size()
-#---
 ```
 
 What about race? 
 
 ```{python}
-#---
 compas.groupby("race").size()
-#---
 ```
 
 The decile score is the algorithm's prediction. Higher decile scores indicate that, according to the COMPAS model, the defendant has higher likelihood to be *charged with a crime* within the next two years. It's worth emphasizing that this isn't the same thing as *committing* a crime: whether or not you're charged also depends on the behavior of police and prosecutors, which are known to often display racial bias. 
@@ -111,9 +102,7 @@ You may notice that the number of white defendants who receive a given decile sc
 Let's also take a look at the recidivism rate in the data: 
 
 ```{python}
-#---
 compas["two_year_recid"].mean()
-#---
 ```
 
 So, in these data, approximately 47% of all defendants went on to be charged of another crime within the next two years. This is sometimes called the *prevalence* of the outcome. Although this is not a "good" outcome, it is labeled `1` in the target data and so we refer to this as the "positive" outcome. *Prevalence* without further specification usually refers to prevalence of the positive outcome. 
@@ -123,9 +112,7 @@ The base rate of prediction accuracy in this problem is 53%: if we always guesse
 We can also compute the prevalence broken down by race of the defendant: 
 
 ```{python}
-#---
 compas.groupby("race")["two_year_recid"].mean()
-#---
 ```
 
 The prevalence of recidivism is approximately 39% for white defendants and 51% for Black defendants. This difference will have major consequences later on for the possibility of different kinds of fairness in classifiers. 
@@ -144,17 +131,13 @@ When interpreting these different prevalences, it is important to remember that
 We're going to treat the COMPAS algorithm as a binary classifier, but you might notice a problem: the algorithm's prediction is the `decile_score` column, which is not actually a `0`-`1` label. Following a common usage of the algorithm in application settings, and the analysis by ProPublica, we are going to construct a new binary column in which we say that a defendant is `predicted_high_risk` if their `decile_score` is larger than 4. 
 
 ```{python}
-#---
 compas["predicted_high_risk"] = (compas["decile_score"] > 4)
-#---
 ```
 
 Now that we've done that, we can ask: how likely are Black and white defendants to receive positive predictions in this data?
 
 ```{python}
-#---
 compas.groupby("race")[["two_year_recid", "predicted_high_risk"]].mean()
-#---
 ```
 
 Black defendants are substantially more likely to receive a positive prediction than white defendants, and the disparity is larger than the observed prevalence of the positive outcome. 
@@ -172,10 +155,8 @@ Is this *fair*? What is your gut telling you? Yes, no, possibly? What informatio
 Let's now ask a few questions about the the predictive accuracy of this algorithm. First, how accurate it is it overall? 
 
 ```{python}
-#---
 compas["correct_prediction"] = (compas["predicted_high_risk"] == compas["two_year_recid"])
 compas["correct_prediction"].mean()
-#---
 ```
 
 Recall that the base rate in this problem is 53%, so our accuracy is somewhat better than random guessing. 
@@ -183,9 +164,7 @@ Recall that the base rate in this problem is 53%, so our accuracy is somewhat be
 What about the accuracy on Black and white defendants separately?
 
 ```{python}
-#---
 compas.groupby(["race"])["correct_prediction"].mean()
-#---
 ```
 
 The overall accuracies for Black and white defendants are comparable, and both are somewhat higher than the base rate of 53%. 
@@ -193,17 +172,13 @@ The overall accuracies for Black and white defendants are comparable, and both a
 What about the error rates? Here is a simple calculation which computes the false positive rate (FPR) in the first row and the true positive rate (TPR) on the bottom row: 
 
 ```{python}
-#---
 compas.groupby(["two_year_recid"])["predicted_high_risk"].mean().reset_index()
-#---
 ```
 
 However, and this was the main finding of the ProPublica study, the FPR and FNR are very different when we break down the data by race:
 
 ```{python}
-#---
 compas.groupby(["two_year_recid", "race"])["predicted_high_risk"].mean().reset_index()
-#---
 ```
 
 The false positive rate for Black defendants is much higher than the false positive rate for white defendants. This was the main finding of @angwin2022machine. The FPR of 45% for Black defendants means that, out of every 100 Black defendants who *in fact will not be charged with another crime*, the algorithm nevertheless predicts that 45 of them will. In contrast, the FPR of 24% for white defendants indicates that only 24 out of 100 non-recidivating white defendants would be predicted to be charged with another crime. 

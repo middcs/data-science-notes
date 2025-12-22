@@ -13,4 +13,5 @@ book:
         - chapters/21-feature-engineering-and-overfitting.qmd
         - chapters/22-dissecting-bias.qmd
         - chapters/25-classification.qmd
-        - chapters/29-compas.qmd
+        - chapters/26-compas.qmd
+        - chapters/27-neural-prediction.qmd
