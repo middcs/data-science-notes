@@ -61,3 +61,5 @@ traitlets==5.14.3
 typing_extensions==4.12.2
 tzdata==2025.1
 wcwidth==0.2.13
+transformers==4.57.3
+ipywidgets==8.1.8

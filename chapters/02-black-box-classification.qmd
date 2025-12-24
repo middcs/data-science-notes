@@ -304,7 +304,6 @@ Accuracy is a simple measure of how many errors a model makes. In many applicati
 
 ```{python}
 from sklearn.metrics import confusion_matrix
-
 y_test_pred = LR.predict(X_test)
 C = confusion_matrix(y_test, y_test_pred)
 C

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -74,7 +74,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-da5d8d89f6dce618f5587771a6e0de62.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -161,9 +161,7 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="../index.html" class="sidebar-logo-link">
-      </a>
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Applied Data Science</a> 
     </div>
@@ -256,6 +254,29 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introducing Neural Networks</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/29-compas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Introduction to Algorithmic Disparity: COMPAS</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Generative Models and Applications</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/30-prediction-generation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Prediction to Generation</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -327,14 +348,14 @@ window.Quarto = {
 <li>Predicting whether it will rain tomorrow (1) or not (0) based on weather data.</li>
 </ul>
 <p>We’ll focus on this latter task in our examples, using weather data collected from the <a href="https://www.bom.gov.au/climate/data/">Australian Bureau of Meteorology</a>. The dataset contains daily weather observations from various locations across Australia, along with a binary indicator of whether it rained the next day. Our goal will be to build a model that can predict whether it will rain tomorrow based on today’s weather conditions.</p>
-<div id="cd9e2dee" class="cell" data-execution_count="1">
+<div id="380284da" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>sns.set_theme(style<span class="op">=</span><span class="st">"whitegrid"</span>, context<span class="op">=</span><span class="st">"notebook"</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sns.set_palette(<span class="st">"viridis"</span>, n_colors<span class="op">=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="6aca0550" class="cell" data-execution_count="2">
+<div id="99bb6fd2" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/middcs/data-science-notes/refs/heads/main/data/australia-weather/weatherAUS.csv"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(url)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -506,19 +527,19 @@ window.Quarto = {
 <li>An indicator of whether it rained the following day (<code>RainTomorrow</code>).</li>
 </ul>
 <p>Our aim is to predict the value of <code>RainTomorrow</code> based on the other features in the data set. To do this, we have a bit of data cleaning to do. First, we are going to drop rows with missing data, as well as the <code>Location</code> and <code>Date</code> columns. These columns <em>can</em> be very helpful in prediction tasks, but methods that use spatial and temporal data structure like these are more advanced than we’ll cover in these notes. <span class="alert">To see how these variables might be used, knowing that it rained yesterday in Montreal might make it more likely that rain will come today in Vermont.</span></p>
-<div id="cd7f306f" class="cell" data-execution_count="3">
+<div id="5b30d1e9" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna()</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.drop(columns<span class="op">=</span>[<span class="st">"Location"</span>, <span class="st">"Date"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The <code>RainToday</code> and <code>RainTomorrow</code> columns are currently represented as strings (“Yes” and “No”). We’ll convert these to binary numerical values (1 and 0), which makes them easier to use in modeling.</p>
-<div id="89969ea7" class="cell" data-execution_count="4">
+<div id="caca67fe" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"RainToday"</span>]    <span class="op">=</span> df[<span class="st">"RainToday"</span>].<span class="bu">map</span>({<span class="st">"No"</span>: <span class="dv">0</span>, <span class="st">"Yes"</span>: <span class="dv">1</span>})</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"RainTomorrow"</span>] <span class="op">=</span> df[<span class="st">"RainTomorrow"</span>].<span class="bu">map</span>({<span class="st">"No"</span>: <span class="dv">0</span>, <span class="st">"Yes"</span>: <span class="dv">1</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="a-first-classifier-humidity" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="a-first-classifier-humidity">A First Classifier: Humidity</h2>
 <p>To check that these meteorological conditions are predictive of rain tomorrow, we can visualize the distribution of one of the features, <code>Humidity3pm</code>, stratified by whether it rained the next day or not.</p>
-<div id="6f62219f" class="cell page-columns page-full" data-fig-height="4" data-fig-width="6" data-execution_count="5">
+<div id="b0142e44" class="cell page-columns page-full" data-fig-height="4" data-fig-width="6" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize <span class="op">=</span> (<span class="dv">6</span>,<span class="dv">3</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sns.histplot(data<span class="op">=</span>df, hue<span class="op">=</span><span class="st">"RainTomorrow"</span>, x <span class="op">=</span> <span class="st">"Humidity3pm"</span>, bins<span class="op">=</span><span class="dv">30</span>, element<span class="op">=</span><span class="st">"step"</span>, stat<span class="op">=</span><span class="st">"density"</span>, common_norm<span class="op">=</span><span class="va">False</span>, ax <span class="op">=</span> ax)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display page-columns page-full">
@@ -536,7 +557,7 @@ window.Quarto = {
 <section id="train-test-split" class="level2">
 <h2 class="anchored" data-anchor-id="train-test-split">Train-Test Split</h2>
 <p>Since we’ll be aiming to assess the predictive performance of the humidity classifier and several other candidates today, let’s split our data into training and test sets.</p>
-<div id="0dacad49" class="cell" data-execution_count="6">
+<div id="ac25f104" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"RainTomorrow"</span>]</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop(columns<span class="op">=</span>[<span class="st">"RainTomorrow"</span>])</span>
@@ -561,7 +582,7 @@ window.Quarto = {
 \end{align}
 \]</span></p>
 <p>Making this classifier work requires choosing a threshold <span class="math inline">\(t\)</span>. One way to do this is to try out a range of possible thresholds, and see which one gives the best accuracy on the training data.</p>
-<div id="17f2ba70" class="cell" data-execution_count="7">
+<div id="cdbdb3dc" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>best_acc <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>best_threshold <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -589,7 +610,7 @@ window.Quarto = {
 </div>
 </div>
 <p>So, it’s possible to choose a threshold that gives around 83% accuracy on the training data! How well does this classifier do on the test data?</p>
-<div id="fdde63f1" class="cell" data-execution_count="8">
+<div id="acccab76" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> (X_test[<span class="st">"Humidity3pm"</span>] <span class="op">&gt;</span> best_threshold).astype(<span class="bu">int</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>(y_test <span class="op">==</span> y_pred).mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
@@ -600,7 +621,7 @@ window.Quarto = {
 <section id="base-rate" class="level3">
 <h3 class="anchored" data-anchor-id="base-rate">Base Rate</h3>
 <p>But wait! Could we have done equally as well simply by predicting the most common outcome in the data set? For example, how accurate would we be if we simply predicted “No Rain Tomorrow” for every day? We can calculate this as a one-liner:</p>
-<div id="6b3e8313" class="cell" data-execution_count="9">
+<div id="28d1c8f3" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(y_test <span class="op">==</span> <span class="dv">0</span>).mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>np.float64(0.777667493796526)</code></pre>
@@ -629,30 +650,29 @@ window.Quarto = {
 \]</span></p>
 <p>The trick here, of course, is that we need to learn the coefficients <span class="math inline">\(w_i\)</span> from data. The details of how this happens are beyond the scope of these notes, but rely on an optimization procedure related to the one we used for linear regression. <code>sklearn</code> implements logistic regression via the <code>LogisticRegression</code> class, which we’ll use here.</p>
 <p>First, we need to one-hot encode any categorical variables in our feature set, since logistic regression requires numerical inputs. Then, we can fit the model to the training data.</p>
-<div id="95cc1e0b" class="cell" data-execution_count="10">
+<div id="3ca57774" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> pd.get_dummies(X_train, drop_first<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>X_test <span class="op">=</span> pd.get_dummies(X_test, drop_first<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now we’re ready to fit the logistic regression model.</p>
-<div id="944089d2" class="cell" data-execution_count="11">
+<div id="d9a71d5b" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LogisticRegression()</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> model.fit(X_train, y_train)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>/Users/philchodrow/My Drive (pchodrow@middlebury.edu)/teaching/data-science-notes/env/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning:
+<pre><code>/opt/miniconda3/envs/cs1010-notes/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:473: ConvergenceWarning: lbfgs failed to converge after 100 iteration(s) (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT
 
-lbfgs failed to converge (status=1):
-STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
+Increase the number of iterations to improve the convergence (max_iter=100).
+You might also want to scale the data as shown in:
     https://scikit-learn.org/stable/modules/preprocessing.html
 Please also refer to the documentation for alternative solver options:
     https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-</code></pre>
+  n_iter_i = _check_optimize_result(</code></pre>
 </div>
 </div>
 <p>Let’s go ahead and evaluate this model on the test data.</p>
-<div id="e6a3bcc2" class="cell" data-execution_count="12">
+<div id="a72f0110" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> model.predict(X_test)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>(y_test <span class="op">==</span> y_pred).mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
@@ -663,7 +683,7 @@ Please also refer to the documentation for alternative solver options:
 <section id="inspecting-coefficients" class="level3">
 <h3 class="anchored" data-anchor-id="inspecting-coefficients">Inspecting Coefficients</h3>
 <p>We can check the weights in the logistic regression model to see which features are most predictive of rain tomorrow:</p>
-<div id="7e4b8a4a" class="cell" data-execution_count="13">
+<div id="e8fdfedd" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>coef_df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"feature"</span>: X.columns,</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"coefficient"</span>: model.coef_[<span class="dv">0</span>]</span>
@@ -715,7 +735,7 @@ Please also refer to the documentation for alternative solver options:
 </div>
 </div>
 <p>The other end of the table shows features that are predictive of <em>no</em> rain tomorrow:</p>
-<div id="e371d609" class="cell" data-execution_count="14">
+<div id="236f8a3e" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>coef_df.tail(<span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
 <div>
@@ -773,7 +793,7 @@ Please also refer to the documentation for alternative solver options:
 <li>A <em>false negative</em> (FN) occurs when the model predicts 0 (no rain tomorrow) but the true label is 1.</li>
 </ul>
 <p>We can count the number of each type of prediction using <code>sklearn</code>’s <code>confusion_matrix</code> function.</p>
-<div id="ae7d657a" class="cell" data-execution_count="15">
+<div id="f3506a66" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_test, y_pred)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>cm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -824,7 +844,7 @@ Please also refer to the documentation for alternative solver options:
 \]</span></p>
 <p>One can also define the True Negative Rate (TNR) and False Negative Rate (FNR), although these are less commonly used because they are related to the above via the equations <span class="math inline">\(\mathrm{TNR} = 1 - \mathrm{FPR}\)</span> and <span class="math inline">\(\mathrm{FNR} = 1 - \mathrm{TPR}\)</span>.</p>
 <p>We can compute all four rates using the confusion matrix:</p>
-<div id="fcbf046e" class="cell" data-execution_count="16">
+<div id="d95a8787" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>confusion_matrix(y_test, y_pred, normalize<span class="op">=</span><span class="st">"true"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
 <pre><code>array([[0.94767071, 0.05232929],
@@ -837,7 +857,7 @@ Please also refer to the documentation for alternative solver options:
 <section id="other-classifiers" class="level2">
 <h2 class="anchored" data-anchor-id="other-classifiers">Other Classifiers</h2>
 <p>So far in these notes, we’ve emphasized logistic regression as a method for binary classification. However, many other classification algorithms exist, many of which are implemented in <code>sklearn</code> with similar APIs:</p>
-<div id="056a2e0c" class="cell" data-execution_count="17">
+<div id="be644060" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.svm <span class="im">import</span> SVC</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -850,7 +870,7 @@ Please also refer to the documentation for alternative solver options:
 <span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Decision Tree Accuracy:"</span>, model_tree.score(X_test, y_test))</span>
 <span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Support Vector Machine Accuracy:"</span>, model_svm.score(X_test, y_test))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Decision Tree Accuracy: 0.7991492378589152
+<pre><code>Decision Tree Accuracy: 0.798936547323644
 Support Vector Machine Accuracy: 0.8390641616448068</code></pre>
 </div>
 </div>

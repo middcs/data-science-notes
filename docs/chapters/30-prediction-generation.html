@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>12&nbsp; Prediction to Generation – Applied Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/29-compas.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-da5d8d89f6dce618f5587771a6e0de62.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/30-prediction-generation.html">Generative Models and Applications</a></li><li class="breadcrumb-item"><a href="../chapters/30-prediction-generation.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Prediction to Generation</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Applied Data Science</a> 
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Data Wrangling and Exploration</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/00-intro-python-datascience.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Python Data Science</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01-pandas-data-wrangling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Frames in Python</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data Visualization with Python</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03-data-wrangling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data Wrangling with Python</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Machine Learning and Prediction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/20-introduction-prediction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introducing Prediction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/21-feature-engineering-and-overfitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Features and Overfitting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/22-dissecting-bias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dissecting Bias in Medical Risk Prediction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/25-classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Introducing Classification</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/26-compas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Bias and Fairness in Automated Decision Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/27-neural-prediction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Introducing Neural Networks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/29-compas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Introduction to Algorithmic Disparity: COMPAS</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Generative Models and Applications</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/30-prediction-generation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Prediction to Generation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#prediction-to-generation" id="toc-prediction-to-generation" class="nav-link active" data-scroll-target="#prediction-to-generation">Prediction to generation</a></li>
+  <li><a href="#interlude-generative-vs.-discriminative-models" id="toc-interlude-generative-vs.-discriminative-models" class="nav-link" data-scroll-target="#interlude-generative-vs.-discriminative-models">Interlude: Generative vs.&nbsp;discriminative models</a></li>
+  <li><a href="#applying-a-generative-model-comparing-sequences" id="toc-applying-a-generative-model-comparing-sequences" class="nav-link" data-scroll-target="#applying-a-generative-model-comparing-sequences">Applying a generative model: Comparing sequences</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/30-prediction-generation.html">Generative Models and Applications</a></li><li class="breadcrumb-item"><a href="../chapters/30-prediction-generation.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Prediction to Generation</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Prediction to Generation</span></h1>
+<p class="subtitle lead">Transitioning from Predictive Models to Generative Models</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+<p><i><a href="http://colab.research.google.com/github/middcs/data-science-notes/blob/main/docs/live-notebooks/30-prediction-generation.ipynb">Open the live notebook</a> in Google Colab or <a href="https://www.midccs.github.io/data-science-notes/live-notebooks/30-prediction-generation.ipynb">download the live notebook</a></i></p>.
+
+
+<section id="prediction-to-generation" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="prediction-to-generation">Prediction to generation</h2>
+<div class="page-columns page-full"><p>Let’s start today by loading a “small” pre-trained language model. We will use the HuggingFace <code>transformers</code> library which provides model definitions and associated tools for a wide variety of transformer models. The library makes it (relatively) easy to load and work with pre-trained models. Here will we use the <a href="https://huggingface.co/openai-community/gpt2">GPT2 model</a>, the smallest variant of the GPT2 family of models released by OpenAI <span class="citation" data-cites="radfordGPT22019">(<a href="#ref-radfordGPT22019" role="doc-biblioref">Radford et al. 2019</a>)</span>.  The original <a href="https://arxiv.org/abs/1810.03993">model card</a> is available <a href="https://github.com/openai/gpt-2/blob/master/model_card.md">here</a>.</p><div class="no-row-height column-margin column-container"><span class="margin-aside">Note that small still means 124 million parameters!</span></div></div>
+<p><em>Note that the initial model loading may take a few minutes as the model weights are downloaded from HuggingFace’s model repository.</em></p>
+<div id="3cd799d4" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch <span class="co"># Common imports for Pytorch</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> AutoTokenizer, AutoModelForCausalLM</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>checkpoint <span class="op">=</span> <span class="st">"openai-community/gpt2"</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(checkpoint)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> AutoModelForCausalLM.from_pretrained(checkpoint)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()<span class="op">;</span>  <span class="co"># Put model in evaluation mode</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="page-columns page-full"><p>We downloaded two components: the model itself and a tokenizer. The tokenizer is responsible for converting text into the integer token IDs that form the model’s vocabulary. This tokenizer has a vocabulary size of 50257 tokens, a sample of which is shown below. </p><div class="no-row-height column-margin column-container"><span class="margin-aside">The ‘Ġ’ character is how a space is encoded with this tokenizer, i.e., many of the tokens include a preceding space.</span></div></div>
+<div id="f4f04f80" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> itertools</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract first 10 tokens in vocabulary (without creating intermediate data structures)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="bu">dict</span>(itertools.islice(tokenizer.vocab.items(), <span class="dv">10</span>))  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>{'ERA': 46461,
+ 'Ġlobbying': 17502,
+ 'ĠCyn': 31040,
+ 'Job': 33308,
+ 'Ġverge': 27373,
+ 'Ġdeline': 46925,
+ 'Ġfollowing': 1708,
+ 'Ę': 212,
+ 'Ġtails': 30514,
+ 'ollywood': 31777}</code></pre>
+</div>
+</div>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Tokens and tokenization?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We will learn more about tokenization as shortly, but for now, let’s just think of the tokens as the model’s vocabulary. Tokens are not always whole words, and purposely so. The GPT2 tokenizer uses a byte-based encoding scheme that includes all possible bytes, e.g., individual letters, <em>and</em> common “merges” of those bytes into larger tokens, e.g., common word fragments or whole words. For example, the work “alligator” is broken into the following tokens. The ability to break words into sub-word tokens, including individual letters, allows the model to represent (both as input and generated output) any possible text, even if it includes words that were not observed during training.</p>
+<div id="8cf78753" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>example_tokens <span class="op">=</span> tokenizer(<span class="st">"alligator"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>tokenizer.convert_ids_to_tokens(example_tokens[<span class="st">"input_ids"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>['all', 'igator']</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="page-columns page-full"><p>The GPT2 model was trained to predict the next token in a sequence given the previous tokens. The version we are using here includes the base GPT2 model, and a causal language modeling “head” that maps the base model’s outputs to a probability distribution over the vocabulary, i.e., <span class="math inline">\(p(t_i|t_1, \ldots, t_{i-1})\)</span>, the conditional probability of each token in the vocabulary being the next token given the previous tokens. </p><div class="no-row-height column-margin column-container"><span class="margin-aside">A conditional probability distribution, <span class="math inline">\(p(X|Y)\)</span>, is the probability of one event given another event(s), shown on the right side of the <span class="math inline">\(|\)</span>, has occurred.</span></div></div>
+<div class="page-columns page-full"><p>Let’s consider the input text “See you”. What words (tokens) would you expect to come next? We can ask the model the same question. We tokenize the input (as PyTorch tensors) and pass those token IDs as the inputs to the model. Among the outputs are the <em>logits</em>, the unnormalized log-probabilities for each token in the vocabulary being the next token. </p><div class="no-row-height column-margin column-container"><span class="margin-aside">In statistics, <em>logits</em> are formally defined as the log-odds. In this context and with neural networks generally, the term is used more loosely to refer to the unnormalized outputs of a layer prior to applying a normalization function like <code>softmax</code> to convert them to a probability distribution.</span></div></div>
+<div id="282f2f9c" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> tokenizer(<span class="st">"See you"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>logits <span class="op">=</span> model(inputs[<span class="st">"input_ids"</span>]).logits  <span class="co"># Run model's forward pass with input IDs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The shape of the <code>logits</code> tensor is <code>(batch_size, sequence_length, vocab_size)</code>, that is we get a prediction for each “next token” in our sequence, i.e., after “See” and after “See you”, for each input in the batch (here just one), over the entire vocabulary.</p>
+<div id="27700f48" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>logits.shape</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>torch.Size([1, 2, 50257])</code></pre>
+</div>
+</div>
+<div class="page-columns page-full"><p>The last index in the sequence dimension corresponds to the prediction after the full input sequence, i.e., after “See you”. We can extract those logits and convert them to a probability distribution using the <code>softmax</code> function.</p><div class="no-row-height column-margin column-container"><span class="margin-aside"><code>softmax</code>, <span class="math inline">\(\text{Softmax}(x_i) = \frac{\exp(x_i)}{\sum_j \exp(x_j)}\)</span>, converts unnormalized log-probabilities (logits) to a probability distribution by computing the exponential of each value and normalizing by the sum of all exponentials.</span></div></div>
+<div id="c64a0f55" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract last logits in the 'sequence' dimension, recall -1 is the last index in Python</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>next_token_logits <span class="op">=</span> logits[:, <span class="op">-</span><span class="dv">1</span>, :] </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>probs <span class="op">=</span> F.softmax(next_token_logits, dim<span class="op">=-</span><span class="dv">1</span>)  <span class="co"># Convert logits to (batch_size, vocab_size) probabilities</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The largest of these probabilities corresponds to the most likely next token according to the model. We can find that token and convert it back to text using the tokenizer. Seems like a pretty reasonable prediction!</p>
+<div id="0c42d4e0" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>next_token_id <span class="op">=</span> torch.argmax(probs, dim<span class="op">=-</span><span class="dv">1</span>)  <span class="co"># argmax returns the index, i.e., token ID, of the largest value</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>tokenizer.decode(next_token_id)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>' soon'</code></pre>
+</div>
+</div>
+<p>The next-token prediction is the “heart” of the generative process. We can use this predictor to generate new text auto-regressively, i.e., we append each predicted token to the input sequence to be used to predict the next token, repeating this process for the desired number of tokens. By incorporating the generated tokens into the input sequence, each next-token prediction incorporates both the original input, e.g., “See you”, the subsequently generated text.</p>
+<div id="0863c463" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>input_ids <span class="op">=</span> tokenizer(<span class="st">"See you"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">20</span>):  <span class="co"># Predict 20 tokens</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> model(input_ids).logits</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    next_token_logits <span class="op">=</span> logits[:, <span class="op">-</span><span class="dv">1</span>, :]</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    next_token_id <span class="op">=</span> torch.argmax(next_token_logits, dim<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Append predicted token to input_ids to auto-regressively generate the next token.</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># next_token_id[:, None] makes 1-D tensor of shape (batch_size,) (batch_size, 1) so</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we can concatenate it to the input_ids</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    input_ids <span class="op">=</span> torch.cat((input_ids, next_token_id[:, <span class="va">None</span>]), dim<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>input_ids</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>tensor([[ 6214,   345,  2582,    11,   198,   198,   464,  4453,   286,   262,
+         26028,   198,   198,   464,  4453,   286,   262, 26028,    25,   383,
+          5172,  3776]])</code></pre>
+</div>
+</div>
+<div id="c198f442" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Decode entire batch (i.e., don't need to strip the outer batch dimension)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>tokenizer.batch_decode(input_ids)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>['See you soon,\n\nThe Lord of the Rings\n\nThe Lord of the Rings: The Card Game']</code></pre>
+</div>
+</div>
+<p>I suspect you find the results a little underwhelming. The algorithm we just implemented is named “greedy decoding” because at each step it deterministically picks the most likely next token. This approach often leads to repetitive and not-very-interesting text. Recall that the output of the model is not a single word, but actually a probability distribution over all possible next tokens. For example:</p>
+<div id="a657cf21" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>(values, indices) <span class="op">=</span> torch.topk(probs, k<span class="op">=</span><span class="dv">10</span>)  <span class="co"># Find top 10 most probable next tokens</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"token"</span>: [tokenizer.decode(t) <span class="cf">for</span> t <span class="kw">in</span> indices[<span class="dv">0</span>]],</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"probability"</span>: values[<span class="dv">0</span>].detach().numpy(), <span class="co"># Detach from gradient tracking graph to convert to numpy</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">token</th>
+<th data-quarto-table-cell-role="th">probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>soon</td>
+<td>0.084681</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>there</td>
+<td>0.073554</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>all</td>
+<td>0.072775</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>next</td>
+<td>0.072505</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>guys</td>
+<td>0.061731</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>in</td>
+<td>0.055900</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>out</td>
+<td>0.053875</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>on</td>
+<td>0.040310</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>later</td>
+<td>0.028322</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>,</td>
+<td>0.027074</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="page-columns page-full"><p>How might be we use this distribution to generate more interesting text? One approach is to sample from the distribution rather than deterministically taking the most likely token. This approach is called “sampling decoding”. We can think of sampling from the multinomial token distribution as a “raffle” in which each token gets a number of tickets proportional to its probability. We then randomly draw one ticket from the raffle to select the next token.  Thus while the mostly likely token is still the most likely sample, all other tokens also have a chance of being selected, leading to more diverse and interesting text. Notice that highly probably next token like “soon”, “later”, “guys”, etc. are still likely to be selected, but we observe some other interesting options as well.</p><div class="no-row-height column-margin column-container"><span class="margin-aside">Alternately you could think of multinomial sampling as rolling a biased <span class="math inline">\(n\)</span>-sided die, where the probability of each side is determined by the distribution.</span></div></div>
+<div id="4e0a2d15" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>next_token_ids <span class="op">=</span> torch.multinomial(probs, num_samples<span class="op">=</span><span class="dv">20</span>, replacement<span class="op">=</span><span class="va">True</span>)  <span class="co"># Sample from the distribution</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token_id <span class="kw">in</span> next_token_ids[<span class="dv">0</span>]:</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(tokenizer.decode(token_id))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> there
+?
+ quite
+ next
+ back
+ soon
+ weighing
+ is
+ to
+'s
+ then
+ tomorrow
+ envelop
+ up
+ Earth
+ then
+ out
+ Wednesday
+ worldwide
+ on</code></pre>
+</div>
+</div>
+<p>We can now update our generation loop to use sampling decoding rather than greedy decoding.</p>
+<div id="aaf2e366" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>input_ids <span class="op">=</span> tokenizer(<span class="st">"See you"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">20</span>):  <span class="co"># Predict 20 tokens</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> model(input_ids).logits</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    next_token_logits <span class="op">=</span> logits[:, <span class="op">-</span><span class="dv">1</span>, :]</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    next_token_ids <span class="op">=</span> torch.multinomial(F.softmax(next_token_logits, dim<span class="op">=-</span><span class="dv">1</span>), num_samples<span class="op">=</span><span class="dv">1</span>)  <span class="co"># Sample one token ID</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    input_ids <span class="op">=</span> torch.cat((input_ids, next_token_ids), dim<span class="op">=-</span><span class="dv">1</span>) <span class="co"># next_token_ids is already (batch_size, 1)</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>input_ids</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>tensor([[ 6214,   345,  1306, 11097,   198,   198,  3980,     7,    18,     8,
+          8554,   262,  2187,  2837,   286,   262,  2378,    11, 34128,   474,
+           422,   262]])</code></pre>
+</div>
+</div>
+<div id="747b29a8" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>tokenizer.batch_decode(input_ids)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>['See you next:"\n\n56(3) Using the whole range of the item, subtract j from the']</code></pre>
+</div>
+</div>
+<p>As a practical matter, the <code>transformers</code> library provides higher-level APIs for generating text, including additional decoding procedures, options to generate multiple sequences and more. As an example:</p>
+<div id="e04d246e" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> tokenizer(<span class="st">"See you"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> model.generate(<span class="op">**</span>inputs, max_new_tokens<span class="op">=</span><span class="dv">20</span>, do_sample<span class="op">=</span><span class="va">True</span>, num_return_sequences<span class="op">=</span><span class="dv">5</span>, pad_token_id<span class="op">=</span>tokenizer.eos_token_id)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>tokenizer.batch_decode(output, skip_special_tokens<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Results still underwhelming?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>I suspect that even with sampling decoding, the results are still a bit underwhelming. Keep in mind that by modern standards, this model, released in 2019, is <em>very</em> small (124 million parameters) and trained on a relatively small dataset (40 GB of internet text). State-of-the-art models today have billions of parameters and are trained on datasets that are orders of magnitude larger. We chose it here for size and speed. We will explore larger and more capable models as we proceed.</p>
+</div>
+</div>
+</section>
+<section id="interlude-generative-vs.-discriminative-models" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="interlude-generative-vs.-discriminative-models">Interlude: Generative vs.&nbsp;discriminative models</h2>
+<p>A statistical generative model, like we used above, is a probability distribution <span class="math inline">\(p(x)\)</span> that incorporates data and some form prior knowledge about that data. We want this distribution to have the following properties:</p>
+<ol type="1">
+<li>If we sample from <span class="math inline">\(p(x)\)</span>, i.e., <span class="math inline">\(x_{new} \sim p(x)\)</span>, then <span class="math inline">\(x_{new}\)</span> should “look like” the data we used to train the model, e.g., be valid english text.</li>
+<li><span class="math inline">\(p(x)\)</span> should assign high probability to data that “looks like” the training data, i.e., to real text, and low probability to data that does not, e.g., gibberish.</li>
+</ol>
+<p>The first property underlies the generative process, i.e., generating new data, the second enables anomaly detection and other applications.</p>
+<p>How is this different than the discriminative models we learned about before? In a discriminative setting, we have both data <span class="math inline">\(x\)</span> and associated labels <span class="math inline">\(y\)</span>, e.g., text and sentiment labels (“positive” or “negative”), or images and the digit represented in the image. The goal is to predict the label <span class="math inline">\(y\)</span> given some new data point <span class="math inline">\(x\)</span>, i.e., a discriminative model is a <em>conditional</em> probability distribution <span class="math inline">\(p(Y|X)\)</span>. A discriminative model doesn’t need or attempt to model the distribution of the data itself, <span class="math inline">\(p(X)\)</span>, only the features needed to discriminate (hence the name) between the labels. Thus the discriminative model is simpler, but also limited. It can only be used for tasks involving that conditional probability distribution (i.e., for which we have an input <span class="math inline">\(x\)</span> and want to predict a label <span class="math inline">\(y\)</span>).</p>
+<p>In contrast, a generative model for the same context learns the <em>joint distribution</em> <span class="math inline">\(p(X, Y)\)</span> over both the data and labels. This joint distribution can be used to compute the distribution of the data <span class="math inline">\(p(X)\)</span> (by “summing” or marginalizing out the labels) <strong>and</strong> the conditional distribution <span class="math inline">\(p(Y|X)\)</span> (using Bayes’ rule, below). Thus a generative model is more flexible than its discriminative counterpart as it can be used for both generation of new data points and for prediction of labels.</p>
+<p><span class="math display">\[
+p(Y|X) = \frac{p(X,Y)}{p(X)}
+\]</span></p>
+<div class="page-columns page-full"><p>We can, then, solve our prediction problems two different ways: using a discriminative model that directly models <span class="math inline">\(p(Y|X)\)</span>, or using a generative model that models <span class="math inline">\(p(X,Y)\)</span> and then uses Bayes’ rule to compute <span class="math inline">\(p(Y|X)\)</span>. Theoretical and empirical results show that generative models can outperform discriminative models when the amount of training data is limited (i.e., “converge” faster), but that discriminative models often outperform generative models when large amounts of training data are available <span class="citation" data-cites="ngDiscriminativevsGenerativeClassifiers2001">(<a href="#ref-ngDiscriminativevsGenerativeClassifiers2001" role="doc-biblioref">Ng and Jordan 2001</a>)</span>. The latter are often simpler to build and more computationally efficient, making them a popular choice in practice for solving purely discriminative tasks. Alternately, if you need to generate new data points, or perform unsupervised learning (where you don’t have <span class="math inline">\(y\)</span>) or estimate the probability of some data, <span class="math inline">\(p(x)\)</span> (e.g., for anomaly detection), then a generative model is required.</p><div class="no-row-height column-margin column-container"><span class="margin-aside">Models from the same family trained to optimized the joint distribution or to optimize the conditional probability <span class="math inline">\(p(Y|X)\)</span> (or its equivalent), are termed <em>Generative-Discriminative pairs</em>. Interested readers are pointed to follow-on courses to learn about about this duality.</span></div></div>
+</section>
+<section id="applying-a-generative-model-comparing-sequences" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="applying-a-generative-model-comparing-sequences">Applying a generative model: Comparing sequences</h2>
+<p>We noted that a generative model should assign high probability to data that “looks like” the training data, e.g., valid text, and low probability to data that does not. That is <span class="math inline">\(p(x)\)</span> should be larger for sequences that “look like” the training data. We can use this property to compare different sequences. For example, which of the following two sequences would you expect to be more probable?</p>
+<ul>
+<li>“See you later, alligator.”</li>
+<li>“See you later, crocodile.”</li>
+</ul>
+<p>Both are valid English sentences, but the first is a common slang phrase (with “in a while, crocodile” as a common response), while the second is not. Let’s see what the GPT2 model thinks. We can estimate the probability of each sequence by computing the product of the probability of each token given the previous tokens, i.e., apply the chain rule <span class="math inline">\(P(t_1, t_2, \ldots) = \prod_i P(t_i | t_1, \ldots, t_{i-1})\)</span>. This is also described as the product the <a href="https://huggingface.co/docs/transformers/main/en/main_classes/text_generation#transformers.GenerationMixin.compute_transition_scores">transition scores</a>.</p>
+<div class="page-columns page-full"><p>Because these probabilities are often very small, we will compute the log-probability of each sequence (so values close to 0 become large negative numbers) by computing the log-probability of each token given the previous tokens and computing the sum of those log probabilities over all tokens.</p><div class="no-row-height column-margin column-container"><span class="margin-aside">Recall that <span class="math inline">\(log(a\cdot b) = log(a) + log(b)\)</span></span></div></div>
+<div id="6412d3e0" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Insert the "beginning-of-sequence" and "end-of-sequence" tokens to create a "complete" input</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>alligator_ids <span class="op">=</span> tokenizer(<span class="ss">f"</span><span class="sc">{</span>tokenizer<span class="sc">.</span>bos_token<span class="sc">}</span><span class="ss">See you later, alligator.</span><span class="sc">{</span>tokenizer<span class="sc">.</span>eos_token<span class="sc">}</span><span class="ss">"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>crocodile_ids <span class="op">=</span> tokenizer(<span class="ss">f"</span><span class="sc">{</span>tokenizer<span class="sc">.</span>bos_token<span class="sc">}</span><span class="ss">See you later, crocodile.</span><span class="sc">{</span>tokenizer<span class="sc">.</span>eos_token<span class="sc">}</span><span class="ss">"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sequence_log_prob(token_ids):</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Compute the log-probability of a sequence given the model logits."""</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> model(token_ids).logits</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Log-encoded probability distribution over vocabulary with shape (batch_size, seq_length, vocab_size)</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    probs <span class="op">=</span> F.log_softmax(logits, dim<span class="op">=-</span><span class="dv">1</span>)  </span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># prob[:, i, :] is the log-probabilities of transitioning to token[i+1] given token[:i]. Use gather</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to get the log-probabilities of the actual tokens in the sequence. We skip the first token since it</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># does not have preceding tokens. </span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We need to add an extra dimension to token_ids for gather, i.e., (batch_size, seq_length) -&gt; (batch_size, seq_length, 1)</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to gather the values at the token indices in dim=2, the vocab_size dimension.</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    token_log_probs <span class="op">=</span> torch.gather(probs, <span class="dv">2</span>, token_ids[:, <span class="dv">1</span>:, <span class="va">None</span>]).squeeze(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> token_log_probs.<span class="bu">sum</span>(dim<span class="op">=-</span><span class="dv">1</span>)  <span class="co"># Sum log-probabilities over sequence length</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"'See you later, alligator.' log-probability:"</span>, sequence_log_prob(alligator_ids).item())</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"'See you later, crocodile.' log-probability:"</span>, sequence_log_prob(crocodile_ids).item())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'See you later, alligator.' log-probability: -31.038818359375
+'See you later, crocodile.' log-probability: -35.54851531982422</code></pre>
+</div>
+</div>
+<p>As we expected, the model assigns a higher probability to the more common saying (it has a less negative log-probability). And compared to gibberish, both of the actual sentences are more likely!</p>
+<div id="b8d89105" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>gibberish_ids <span class="op">=</span> tokenizer(<span class="ss">f"</span><span class="sc">{</span>tokenizer<span class="sc">.</span>bos_token<span class="sc">}</span><span class="ss">See you later, asdf.</span><span class="sc">{</span>tokenizer<span class="sc">.</span>eos_token<span class="sc">}</span><span class="ss">"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"'See you later, asdf.' log-probability:"</span>, sequence_log_prob(gibberish_ids).item())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'See you later, asdf.' log-probability: -42.26846694946289</code></pre>
+</div>
+</div>
+<p>The ability to compare sequences this way is a key feature of generative models. It is also key part of some more sophisticated decoding strategies such as beam search. Instead of “committing” to the next token at each step (whether via greedy or sample decoding), beam search keeps track of the <span class="math inline">\(k\)</span> most likely <em>sequences</em> at each step, expanding each of those sequences with all possible next tokens, and then selecting the <span class="math inline">\(k\)</span> most likely resulting sequences. Beam search can improve generation quality by not requiring the decoding to “commit” to a token choice until it has seen more (or all) of the generated sequence.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-ngDiscriminativevsGenerativeClassifiers2001" class="csl-entry" role="listitem">
+Ng, Andrew, and Michael Jordan. 2001. <span>“On Discriminative Vs. Generative Classifiers: A Comparison of Logistic Regression and Naive Bayes.”</span> In <em>Advances in Neural Information Processing Systems</em>, edited by T. Dietterich, S. Becker, and Z. Ghahramani. Vol. 14. MIT Press. <a href="https://proceedings.neurips.cc/paper_files/paper/2001/file/7b7a53e239400a13bd6be6c91c4f6c4e-Paper.pdf">https://proceedings.neurips.cc/paper_files/paper/2001/file/7b7a53e239400a13bd6be6c91c4f6c4e-Paper.pdf</a>.
+</div>
+<div id="ref-radfordGPT22019" class="csl-entry" role="listitem">
+Radford, Alec, Jeff Wu, Rewon Child, David Luan, Dario Amodei, and Ilya Sutskever. 2019. <span>“Language Models Are Unsupervised Multitask Learners.”</span> <a href="https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf</a>.
+</div>
+</div>
+</section>
+
+<p><br> <br> <span style="color:grey;">© Michael Linderman and Phil Chodrow, 2025-2026</span></p></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/29-compas.html" class="pagination-link" aria-label="Introduction to Algorithmic Disparity: COMPAS">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Introduction to Algorithmic Disparity: COMPAS</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

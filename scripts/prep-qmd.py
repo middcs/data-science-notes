@@ -19,8 +19,9 @@ if "hidden" not in os.listdir("chapters"):
 for f in os.listdir("source"):
     
     if f.endswith(".qmd"):
-        with open(f"source/{f}", "r") as file: 
-            cleaned = file.read().replace('#---\n', '')
+        with open(f"source/{f}", "r") as file:
+            # Remove entire lines with #---, include leading whitespace (multiline flag specifies ^ and $ match start/end of each line) 
+            cleaned = re.sub(r"^\s*#---\n", "", file.read(), flags=re.MULTILINE)
             with open(f"chapters/{f}", "w") as new: 
                 new.write(cleaned)
     

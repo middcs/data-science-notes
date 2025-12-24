@@ -7,9 +7,12 @@
 	"settings": {
 		"cSpell.words": [
 			"Hadley",
+			"logits",
 			"Matplotlib",
+			"multinomial",
 			"NumPy",
 			"Seaborn",
+			"softmax",
 			"Tidyverse",
 			"Wickham"
 		]

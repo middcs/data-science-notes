@@ -15,3 +15,7 @@ book:
         - chapters/25-classification.qmd
         - chapters/26-compas.qmd
         - chapters/27-neural-prediction.qmd
+        - chapters/29-compas.qmd
+    - part: "Generative Models and Applications"
+      chapters:
+        - chapters/30-prediction-generation.qmd
