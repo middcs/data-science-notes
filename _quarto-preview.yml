@@ -3,10 +3,10 @@ book:
     - index.qmd
     - part: "Data Wrangling and Exploration"
       chapters: 
-        - source/00-intro-python-datascience.qmd
-        - source/01-pandas-data-wrangling.qmd
-        - source/02-visualization.qmd
-        - source/03-data-wrangling.qmd
+        - source/10-intro-python-datascience.qmd
+        - source/11-pandas-data-wrangling.qmd
+        - source/12-visualization.qmd
+        - source/13-data-wrangling.qmd
     - part: "Machine Learning and Prediction"
       chapters:
         - source/20-introduction-prediction.qmd
