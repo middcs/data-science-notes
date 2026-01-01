@@ -41,8 +41,10 @@ def create_notebook(src_path: Path, out_path: Path, site_url: str):
     if src_path.suffix == ".qmd":
         # Use absolute paths to avoid issues when changin working directories
         with temporary_softlink(src_path.absolute(), src_path.with_name(f"_{src_path.name}").absolute()) as link_path:
+            # Render to create notebook (instead of convert) to ensure any quarto-specific content is handled (stripped). The lua filter
+            # removes solution blocks with '.hide .solution' classes.
             subprocess.run(
-                ["quarto", "render", str(link_path), "--profile", "notebook", "--output", out_path.name, "--no-execute", "--to", "ipynb", "--metadata", f"site-url:{site_url}"], 
+                ["quarto", "render", str(link_path), "--profile", "notebook", "--output", out_path.name, "--no-execute", "--to", "ipynb", "--metadata", f"site-url:{site_url}", "--lua-filter", f"{Path.cwd()}/scripts/remove-solution.lua"], 
                 cwd=out_path.parent,
                 check=True,
             )
@@ -56,11 +58,9 @@ def clean_notebook(notebook_path):
     notebook = nb.read(notebook_path, as_version = 4)
     
     for cell in notebook["cells"]:
-        # Remove code content designed to be hidden
+         # Remove code content designed to be hidden (markdown solution blocks are handled in lua filter during rendering)
         message = "# TODO" if cell["cell_type"] == "code" else "*[TODO]*"
         cell["source"] = re.sub(r"#---[\S\s]*?#---", message, cell["source"])
-        cell.source = re.sub(r"::: {.hide .solution}[\S\s]*?:::", "*[your response here]*", cell.source)
-        cell.source = re.sub(r"::: {.solution .hide}[\S\s]*?:::", "*[your response here]*", cell.source)
 
         # Delete quarto metadata on individual cells
         cell["source"] = re.sub(r"#\|.*\n", "", cell["source"])
