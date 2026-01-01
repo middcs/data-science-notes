@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -74,7 +74,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-da5d8d89f6dce618f5587771a6e0de62.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -158,7 +158,9 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../index.html" class="sidebar-logo-link">
+      </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Applied Data Science</a> 
     </div>
@@ -322,14 +324,14 @@ window.Quarto = {
 <section id="recall" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="recall">Recall…</h2>
 <p>In our <a href="../chapters/21-feature-engineering-and-overfitting.html">discussion of feature engineering</a>, we saw that one way to allow our linear models to capture nonlinear relationships in data was to create new <em>features</em>, functions which accept input data and return transformations of that input.</p>
-<div id="70022025" class="cell" data-execution_count="1">
+<div id="d8581af9" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"whitegrid"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="117c5994" class="cell page-columns page-full" data-fig-height="60" data-fig-width="100" data-execution_count="2">
+<div id="f84e75c5" class="cell page-columns page-full" data-fig-height="60" data-fig-width="100" data-execution_count="2">
 
 <div class="no-row-height column-margin column-container"><div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -370,7 +372,7 @@ window.Quarto = {
 \end{aligned}
 \]</span></p>
 <div class="page-columns page-full"><p>We can verify this by implementing it in our new framework for deep learning, PyTorch. In the language of neural networks, the operation of taking <span class="math inline">\(x\)</span> and transforming it into <span class="math inline">\(wx + b\)</span> is called a <code>Linear</code> layer. Since the input is just a single number and the output is also a single number, we say that this layer has input dimension 1 and output dimension 1. This means that we need a <code>Linear(1,1)</code> layer to perform the mapping. In standard torch frameworks, we need to save all our layers as instance variables of a class, and then define a <code>forward</code> method which specifies how data flows through the layers. Let’s try this out. First we’ll import our torch libraries and convert our data into torch’s preferred data format, the <code>Tensor</code>.</p><div class="no-row-height column-margin column-container"><span class="margin-aside">You can think about a <code>Tensor</code> as very similar to a numpy array; the key difference is that Tensors support what is called <em>automatic differentiation</em>, a key technology which is behind the scenes when training these models</span></div></div>
-<div id="1cbdac29" class="cell" data-execution_count="3">
+<div id="e71da425" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span>
@@ -382,7 +384,7 @@ window.Quarto = {
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> torch.from_numpy(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now we’ll implement our linear regression model as a neural network with a single <code>Linear</code> layer.</p>
-<div id="d2cd3a80" class="cell" data-execution_count="4">
+<div id="e315afcf" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LinearRegressionNN(nn.Module):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(LinearRegressionNN, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
@@ -392,7 +394,7 @@ window.Quarto = {
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.linear(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We’ll also implement a standard <em>training loop</em> for regression problems. This loop still uses the mean squared error loss function, and optimizes the model parameters using gradient descent.</p>
-<div id="c0f8aa2d" class="cell" data-execution_count="5">
+<div id="b7c5f5a3" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train_regression_model(model, X, y, num_epochs<span class="op">=</span><span class="dv">1000</span>, learning_rate<span class="op">=</span><span class="fl">0.1</span>):</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-2" class="code-annotation-target"><a href="#annotated-cell-4-2" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> nn.MSELoss()</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3" aria-hidden="true" tabindex="-1"></a>    optimizer <span class="op">=</span> optim.SGD(model.parameters(), lr<span class="op">=</span>learning_rate)</span>
@@ -442,7 +444,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Let’s also define some functions to facilitate plotting the results of our regression model.</p>
-<div id="4a7b6244" class="cell" data-execution_count="6">
+<div id="c6cf65cf" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_regression(model, X, y, df, ax, <span class="op">**</span>plot_kwargs):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    predicted <span class="op">=</span> model(X).detach().numpy()</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    sns.scatterplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">'x'</span>, y<span class="op">=</span><span class="st">'y'</span>, ax<span class="op">=</span>ax, color <span class="op">=</span> <span class="st">'steelblue'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
@@ -468,13 +470,13 @@ window.Quarto = {
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Let’s now finally create and train our linear regression model:</p>
-<div id="135fd30a" class="cell" data-execution_count="7">
+<div id="b98defb6" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LinearRegressionNN()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>plot_regression_model_training(model, X, y, df, num_epochs<span class="op">=</span><span class="dv">1</span>, num_viz<span class="op">=</span><span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="27-neural-prediction_files/figure-html/cell-8-output-1.png" class="figure-img" width="662" height="277"></p>
+<p><img src="27-neural-prediction_files/figure-html/cell-8-output-1.png" class="figure-img" width="651" height="277"></p>
 </figure>
 </div>
 </div>
@@ -503,7 +505,7 @@ window.Quarto = {
 \]</span></p>
 <p>Now it matters how we set <span class="math inline">\(p\)</span>, the total number of features to learn. As usual, increasing <span class="math inline">\(p\)</span> increases the flexibility of the model, allowing it to fit more complex relationships in the data, but also increasing the risk of overfitting.</p>
 <div class="page-columns page-full"><p>To build this model, we need two <code>Linear</code> layers: one to map the input <span class="math inline">\(x\)</span> to the <span class="math inline">\(p\)</span> features <span class="math inline">\(\phi_i(x)\)</span>, and another to map the features to the output <span class="math inline">\(\hat{y}\)</span>. We’ll also need to include the ReLU activation function between these two layers: </p><div class="no-row-height column-margin column-container"><span class="margin-aside">It’s very important that the <em>output</em> dimension of one <code>Linear</code> layer matches the <em>input</em> dimension of the next layer, as illustrated below.</span></div></div>
-<div id="1e1a2ec5" class="cell" data-execution_count="8">
+<div id="263c9851" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>num_features <span class="op">=</span> <span class="dv">30</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SimpleNN(nn.Module):</span>
@@ -520,13 +522,13 @@ window.Quarto = {
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now we’re ready to visualize and train our model like before:</p>
-<div id="5bff3cb8" class="cell" data-execution_count="9">
+<div id="4c67ca8f" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> SimpleNN()</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plot_regression_model_training(model, X, y, df, num_epochs<span class="op">=</span><span class="dv">10</span>, num_viz<span class="op">=</span><span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="27-neural-prediction_files/figure-html/cell-10-output-1.png" class="figure-img" width="651" height="277"></p>
+<p><img src="27-neural-prediction_files/figure-html/cell-10-output-1.png" class="figure-img" width="662" height="277"></p>
 </figure>
 </div>
 </div>
@@ -537,7 +539,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="neural-networks-for-classification">Neural Networks for Classification</h2>
 <p>Neural networks are also widely used for nonlinear classification problems.</p>
 <p>To illustrate this, we’ll create a synthetic two-dimensional classification data set using the <code>make_moons</code> function from <code>sklearn</code>. This data set consists of two interleaving half circles, which cannot be separated by a linear decision boundary.</p>
-<div id="5d9a8635" class="cell" data-execution_count="10">
+<div id="cc6c64ce" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_moons</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> make_moons(n_samples<span class="op">=</span><span class="dv">200</span>, noise<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> torch.from_numpy(X.astype(np.float32))</span>
@@ -556,7 +558,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Compared to regression, the primary difference for classification problems is that we typically design our network to output a score <em>for each possible class</em>.</p>
-<div id="e011f356" class="cell" data-execution_count="11">
+<div id="3d664a33" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LinearClassificationNN(nn.Module):</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, num_classes<span class="op">=</span><span class="dv">2</span>):</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(LinearClassificationNN, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
@@ -566,15 +568,15 @@ window.Quarto = {
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.linear(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Here’s how this looks for some example input data:</p>
-<div id="e0348c4d" class="cell" data-execution_count="12">
+<div id="a9819f81" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>x_example <span class="op">=</span> torch.tensor([[<span class="fl">1.0</span>, <span class="fl">2.0</span>], [<span class="fl">3.0</span>, <span class="fl">4.0</span>], [<span class="fl">5.0</span>, <span class="fl">6.0</span>]])</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>model_example <span class="op">=</span> LinearClassificationNN(num_classes<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>output_example <span class="op">=</span> model_example(x_example)</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(output_example)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>tensor([[0.5929, 0.8655],
-        [1.7663, 2.9195],
-        [2.9397, 4.9735]], grad_fn=&lt;AddmmBackward0&gt;)</code></pre>
+<pre><code>tensor([[1.2462, 0.9042],
+        [2.8203, 1.5054],
+        [4.3945, 2.1067]], grad_fn=&lt;AddmmBackward0&gt;)</code></pre>
 </div>
 </div>
 <p>We often apply the <em>softmax</em> function to each row of outputs in order to convert them into interpretable class probabilities. The softmax is defined as</p>
@@ -584,16 +586,16 @@ window.Quarto = {
 \end{aligned}
 \]</span></p>
 <p>When applied to any vector of real numbers, the output of the softmax is a vector of nonnegative numbers which sum to one, making it interpretable as a probability distribution over the <span class="math inline">\(p\)</span> classes.</p>
-<div id="5fc000c3" class="cell" data-execution_count="13">
+<div id="278e06d9" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>torch.softmax(output_example, dim<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
-<pre><code>tensor([[0.4323, 0.5677],
-        [0.2399, 0.7601],
-        [0.1157, 0.8843]], grad_fn=&lt;SoftmaxBackward0&gt;)</code></pre>
+<pre><code>tensor([[0.5847, 0.4153],
+        [0.7883, 0.2117],
+        [0.9079, 0.0921]], grad_fn=&lt;SoftmaxBackward0&gt;)</code></pre>
 </div>
 </div>
 <p>The loop to train a classification model is very similar to the regression training loop from before. We just need to specify a different loss function, called <em>cross-entropy loss</em>, which is appropriate for classification problems and which accepts multidimensional outputs of the kind we’re using here. Because the cross-entropy loss function in PyTorch expects the target labels to be in a one-hot encoded format, we’ll convert our labels <code>y</code> accordingly before training.</p>
-<div id="3297aaad" class="cell" data-execution_count="14">
+<div id="f053b45a" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-13"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1" aria-hidden="true" tabindex="-1"></a>y_one_hot <span class="op">=</span> torch.nn.functional.one_hot(y.flatten().<span class="bu">long</span>(), num_classes<span class="op">=</span><span class="dv">2</span>).<span class="bu">float</span>()</span>
 <span id="annotated-cell-13-2"><a href="#annotated-cell-13-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-13-3"><a href="#annotated-cell-13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train_classification_model(model, X, y, num_epochs<span class="op">=</span><span class="dv">1000</span>, learning_rate<span class="op">=</span><span class="fl">0.1</span>):</span>
@@ -621,7 +623,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Here’s an example of training this model and using it to extract predictions. We assume that the class with the highest predicted score is the predicted class for each observation.</p>
-<div id="295322ec" class="cell" data-execution_count="15">
+<div id="745ac92a" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LinearClassificationNN()</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>losses <span class="op">=</span> train_classification_model(model, X, y, num_epochs<span class="op">=</span><span class="dv">1000</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>y_hat <span class="op">=</span> model.forward(X)</span>
@@ -632,7 +634,7 @@ window.Quarto = {
 </div>
 </div>
 <p>For data with a small number of dimensions, it can be helpful to visualize the behavior of the model in terms of the <em>decision regions</em>, which are the combinations of feature inputs which the model assigns to each class. The somewhat complicated code below implements this visualization along with a plot of the training loss over epochs.</p>
-<div id="a7f28050" class="cell" data-execution_count="16">
+<div id="aeba2e57" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_classification(model, X, y, ax):</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a mesh grid for plotting decision boundary</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    x_min, x_max <span class="op">=</span> X[:, <span class="dv">0</span>].<span class="bu">min</span>()<span class="op">*</span><span class="fl">1.1</span>, X[:, <span class="dv">0</span>].<span class="bu">max</span>()<span class="op">*</span><span class="fl">1.1</span></span>
@@ -659,12 +661,14 @@ window.Quarto = {
 <span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now we can plot both the loss and the decision regions learned by our linear classification model:</p>
-<div id="ae1012dc" class="cell" data-execution_count="17">
+<div id="7b3bec49" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LinearClassificationNN()</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>plot_classification_model_training(model, X, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>/opt/miniconda3/envs/cs1010-notes/lib/python3.10/site-packages/torch/functional.py:539: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/aten/src/ATen/native/TensorShape.cpp:3638.)
-  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]</code></pre>
+<pre><code>/Users/philchodrow/My Drive (pchodrow@middlebury.edu)/teaching/data-science-notes/env/lib/python3.10/site-packages/torch/functional.py:539: UserWarning:
+
+torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/aten/src/ATen/native/TensorShape.cpp:3638.)
+</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -675,7 +679,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Whoops! This doesn’t look like such an interesting classification model. In fact, the use of a single linear layer plus cross-entropy loss is equivalent to fitting a logistic regression model, which we’ve already seen. To develop a more interesting model, let’s add a hidden layer with nonlinear activation functions, just like we did for regression above.</p>
-<div id="681224e1" class="cell" data-execution_count="18">
+<div id="17baaa56" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SimpleClassificationNN(nn.Module):</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, num_classes<span class="op">=</span><span class="dv">2</span>, num_features<span class="op">=</span><span class="dv">10</span>):</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(SimpleClassificationNN, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
@@ -689,7 +693,7 @@ window.Quarto = {
 <span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.layer2(x)</span>
 <span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="d9de953f" class="cell" data-execution_count="19">
+<div id="9abcb5af" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> SimpleClassificationNN(num_classes<span class="op">=</span><span class="dv">2</span>, num_features<span class="op">=</span><span class="dv">100</span>)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>plot_classification_model_training(model, X, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
