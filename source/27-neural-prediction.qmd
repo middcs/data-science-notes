@@ -6,6 +6,8 @@ title: |
 subtitle: Beyond linear models for regression and classification
 ---
 
+{{< include _live_notebook_link.qmd >}}
+
 ## Recall...
 
 In our [discussion of feature engineering](21-feature-engineering-and-overfitting.qmd), we saw that one way to allow our linear models to capture nonlinear relationships in data was to create new *features*, functions which accept input data and return transformations of that input. 

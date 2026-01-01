@@ -4,6 +4,8 @@ code-fold: false
 jupyter: python3
 ---
 
+{{< include _live_notebook_link.qmd >}}
+
 # Features and Overfitting
 
 [Last time](20-introduction-prediction.qmd), we began our study of predictive modeling. We introduced the idea of fitting a model as an *optimization* problem, in which our aim is to minimize some *loss function* which measures the error between model predictions and the actual data. We then used this minimization idea to fit a linear regression model to a data set and measure how the fit model reduces the error when compared to a naive baseline model.

@@ -4,6 +4,8 @@ code-fold: false
 jupyter: python3
 ---
 
+{{< include _live_notebook_link.qmd >}}
+
 # Classification as a Black Box
 
 In these notes, we'll make a lightning tour through the "standard workflow" for users of predictive machine learning technologies. Our focus will be on out-of-the-box Python tools for acquiring, visualizing, and analyzing tabular data sets. 

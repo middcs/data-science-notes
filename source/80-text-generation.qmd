@@ -4,6 +4,7 @@ code-fold: false
 jupyter: python3
 ---
 
+{{< include _live_notebook_link.qmd >}}
 
 ```{python}
 

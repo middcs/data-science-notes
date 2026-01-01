@@ -4,6 +4,8 @@ title: Data Frames in Python
 subtitle: Getting started with Pandas Data Frames
 ---
 
+{{< include _live_notebook_link.qmd >}}
+
 [Data wrangling](https://en.wikipedia.org/wiki/Data_wrangling) is a broad term for transforming data from one form into another. It some times is synonymous with "data cleaning", i.e., preparing "messy" raw data for further analysis, but data wrangling can also refer the analysis itself (including data transformation, visualization, aggregation). Today we will focus on the data structures and techniques used to store, transform and aggregate tabular data. These tools build on the vectorized approaches, and specifically the NumPy library, we just learned about.
 
 ## Pandas
@@ -12,7 +14,7 @@ The `pandas` Python package offers a rich set of powerful tools for working with
 
 ::: {.column-margin}
 
-![[Image credit](https://commons.wikimedia.org/wiki/File:Giant_Panda_eating_Bamboo.JPG)](/assets/img/panda.jpg)
+![[Image credit](https://commons.wikimedia.org/wiki/File:Giant_Panda_eating_Bamboo.JPG)]({{< meta site-url >}}/assets/img/panda.jpg)
 
 :::
 
@@ -165,7 +167,7 @@ One of the fundamental pattern in tabular data analysis is to perform computatio
 
 This pattern is so common that the phrase "split-apply-combine" now appears in many texts on data analysis. This phrase was originally coined by Hadley Wickham, who is famous for developing many of the modern tools for data analysis in the R programming language.
 
-![Schematic of split-apply-combine. Image credit: @vanderplasPythonDataScience2016](/assets/img/03.08-split-apply-combine.png)
+![Schematic of split-apply-combine. Image credit: @vanderplasPythonDataScience2016]({{< meta site-url >}}/assets/img/03.08-split-apply-combine.png)
 
 Pandas implements this pattern with the `groupby` method. For example, we can compute the mean of the numeric columns as a function of species using 
 ```{python}

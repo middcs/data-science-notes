@@ -4,6 +4,8 @@ title: Data Visualization with Python
 subtitle: Getting started with Matplotlib and Seaborn
 ---
 
+{{< include _live_notebook_link.qmd >}}
+
 We have already seen a few examples of visualizing data using Python's Matplotlib and Seaborn libraries, but purposely elided the details. Today will we focus on those tools. [Matplotlib](https://matplotlib.org/) is a "lower-level" plotting library for producing 2-D figures while [Seaborn](https://seaborn.pydata.org/) is a higher-level library built on top of Matplotlib that provides convenient functions for common statistical visualizations.
 
 Visualization is not just about the mechanics of making figures. It is a powerful exploratory tool for understanding data, and a critical tool for clearly and accurately communicating those insights to others. The fanciest, most "beautiful", plots are useless if they do not clearly convey the intended message. Conversely, a simple plot that clearly conveys an important insight can be very powerful.

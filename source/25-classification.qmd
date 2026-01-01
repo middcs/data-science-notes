@@ -4,6 +4,8 @@ code-fold: false
 jupyter: python3
 ---
 
+{{< include _live_notebook_link.qmd >}}
+
 # Introducing Classification
 
 So far in these notes, we've focused on *regression*: the problem of predicting a numerical outcome from a set of features. We framed the regression problem as one of learning a function $f$ such that 

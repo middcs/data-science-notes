@@ -1,12 +1,13 @@
 ---
-jupyter: python3
 title: Introduction to Python Data Science
 subtitle: Getting started with IPython and NumPy vectorized execution
 ---
 
-These notes were written for students with both introductory Computer Science experience in Python, and introductory data science experience using R. The former may not familiar with common data science tools like notebooks, data frames, etc., while the latter may not be familiar with Python, our goal in this class is to build a common foundation using data science tools in Python.
+{{< include _live_notebook_link.qmd >}}
 
-If you are coming from R, keep an eye out for special callouts identifying the equivalent techniques in R. I hope you fill find this transition is not as hard as you might expect. In fact, I think you'll find that the Python data science ecosystem is very familiar. That's not an accident. Python data science tools share inspiration with their R counterparts (or are even directly modeled on tools available within R). In some respects, it may be more challenging to transition from using Python as a general purpose language to using the Python data science ecosystem the way we will in this class.
+These notes were written for students with introductory Computer Science experience in Python or introductory data science experience using R. The former may not familiar with common data science tools like notebooks, data frames, etc., while the latter may not be familiar with Python. Our goal in this class is to build a common foundation using data science tools in Python.
+
+If you are coming from R, keep an eye out for special callouts identifying the equivalent techniques in R. We hope you fill find this transition is not as hard as you might expect. In fact, we think you'll find that the Python data science ecosystem is very familiar. That's not an accident. Python data science tools share inspiration with their R counterparts (or are even directly modeled on tools available within R). In some respects, it may be more challenging to transition from using Python as a general purpose language to using the Python data science ecosystem the way we will in this class.
 
 Some helpful resources for (re)learning Python, especially in the contexts of data science:
 
@@ -206,10 +207,10 @@ scale = std / math.sqrt(2) # Scale parameter for Laplace distribution
 
 # Compute cumulative returns by month
 steps = np.random.laplace(1+mean, scale, 240)
-# ---
+#---
 returns = np.cumprod(steps)
 portfolio = initial * returns
-# ---
+#---
 ```
 
 ```{python}
@@ -234,11 +235,11 @@ num_sim = 5000
 
 # Providing a tuple for size to laplace produces num_simx240 values. We then compute
 # the product along axis=1, i.e., along the rows, to get the final return.
-# ---
+#---
 steps = np.random.laplace(1+mean, scale, (num_sim, 240))
 returns = np.prod(steps, axis=1)
 portfolios = initial * returns
-# ---
+#---
 ```
 
 We observe a broad distribution of returns including a subset of simulations that underperformed the simplistic model of 7% return per year (shown with the dashed line).
@@ -283,20 +284,21 @@ Hide this before class to work out in class
 :::
 
 Consider the following refactoring of $P_{240}$:
+
 $$
-\begin{align}
+\begin{align*}
 P_{240} &= \sum_{m=1}^{240} \$100 \prod_{i=m}^{240} r_i \\
         &= \$100 \sum_{m=1}^{240} \prod_{i=m}^{240} r_i \\
         &= \$100 (\prod_{i=1}^{240} r_i + \prod_{i=2}^{240} r_i + ... + r_{240}) \\
         &= \$100 (r_{240} + (r_{240}\cdot r_{239}) + ... \prod_{i=1}^{240} r_i) \\
-        &= \$100 (r_1 + (r_1\cdot r_2) + ... \prod_{i=1}^{240} r_i) \\
-\end{align}
+        &= \$100 (r_1 + (r_1\cdot r_2) + ... \prod_{i=1}^{240} r_i)
+\end{align*}
 $$
 
 The sequence $r_1, (r_1\cdot r_2), ..., \prod_{i=1}^{240} r_i$ is the cumulative product! That is the right hand side of the last expression is the sum of the cumulative product of the monthly returns! The corresponding vectorized implementation would be:
 
 ```{python}
-# ---
+#---
 # We do exactly the same initial steps as before, but now we think of the returns
 # as the total return for each month's investment (albeit in reverse). The first
 # column is the return on the the amount that has been invested for 1 month, the 
@@ -306,7 +308,7 @@ returns = np.cumprod(np.random.laplace(1+mean, scale, (num_sim, 240)), axis=1)
 
 # `portfolios_monthly` captures the final portfolio value with the iterative investment for all simulations
 portfolios_monthly = initial * np.sum(returns, axis=1)
-# ---
+#---
 ```
 
 We can then plot the distribution of our portfolios with continual investment. That continual investment makes a big difference!

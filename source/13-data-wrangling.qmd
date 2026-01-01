@@ -4,6 +4,8 @@ title: Data Wrangling with Python
 subtitle: Preparing data for analysis and visualization
 ---
 
+{{< include _live_notebook_link.qmd >}}
+
 We had previously introduced the term [Data wrangling](https://en.wikipedia.org/wiki/Data_wrangling), broadly defined as transforming data from one form into another. It is sometimes used synonymously with "data cleaning", i.e., preparing "messy" raw data for further analysis, but data wrangling can also refer the analysis itself (including data transformation, visualization, aggregation). We also encountered the more specific term "tidy data", a standard way of organizing tabular data to facilitate analysis and visualization. Today we will focus on some of the tools and techniques for data transformation, and particularly the process of "data tidying".
 
 Most of the data we encounter in a class setting has already been "tidied". But most real-world data is messy in one or more ways, for example (but not limited to):

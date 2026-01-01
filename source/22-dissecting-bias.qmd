@@ -5,6 +5,8 @@ jupyter: python3
 title: Dissecting Bias in Medical Risk Prediction
 ---
 
+{{< include _live_notebook_link.qmd >}}
+
 ## Introduction: Allocation and Bias
 
 *This set of lecture notes is largely based on the article @obermeyerDissectingRacialBias2019.* 

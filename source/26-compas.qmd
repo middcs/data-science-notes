@@ -5,6 +5,8 @@ title: |
 subtitle: The COMPAS Investigation
 ---
 
+{{< include _live_notebook_link.qmd >}}
+
 Today we are going to study an extremely famous investigation into algorithmic decision-making in the sphere of criminal justice by @angwin2022machine, originally written for ProPublica in 2016. This investigation significantly accelerated the pace of research into bias and fairness in machine learning, due in combination to its simple message and publicly-available data.
 
 In 2016, ProPublica published on article called "[Machine Bias](https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing)". The subtitle of this article offered a simple claim: 

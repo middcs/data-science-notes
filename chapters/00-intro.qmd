@@ -1,6 +1,0 @@
-# Example of showing and hiding code chunks {.unnumbered}
- 
-
-```{python} 
-print("Prefer this not to appear in the live notebook.")
-```
