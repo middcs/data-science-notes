@@ -7,7 +7,7 @@ subtitle: Getting started with IPython and NumPy vectorized execution
 
 These notes were written for students with introductory Computer Science experience in Python or introductory data science experience using R. The former may not familiar with common data science tools like notebooks, data frames, etc., while the latter may not be familiar with Python. Our goal in this class is to build a common foundation using data science tools in Python.
 
-If you are coming from R, keep an eye out for special callouts identifying the equivalent techniques in R. We hope you fill find this transition is not as hard as you might expect. In fact, we think you'll find that the Python data science ecosystem is very familiar. That's not an accident. Python data science tools share inspiration with their R counterparts (or are even directly modeled on tools available within R). In some respects, it may be more challenging to transition from using Python as a general purpose language to using the Python data science ecosystem the way we will in this class.
+If you are coming from R, keep an eye out for special callouts identifying the equivalent techniques in R. We hope you fill find that this transition is not as hard as you might expect. In fact, we think you'll find that the Python data science ecosystem is very familiar. That's not an accident. Python data science tools share inspiration with their R counterparts (or are even directly modeled on tools available within R). In some respects, it may be more challenging to transition from using Python as a general purpose language to using the Python data science ecosystem the way we will in this class.
 
 Some helpful resources for (re)learning Python, especially in the contexts of data science:
 
@@ -18,7 +18,7 @@ Why Python (and not R, or some other tool)? That is a complicated and fraught qu
 
 ## Working with IPython notebooks
 
-The primary computing environment for our class will be a Jupyter/IPython notebooks. These are very similar to R markdown or other notebook-style computing environments you might have used in other settings. Compared to writing a stand-alone program or scripts, notebooks are designed to be interactive computational documents that combine code, visualizations and narrative text.
+The primary computing environment for our class will be a Jupyter/IPython notebooks. These are very similar to R Markdown or other notebook-style computing environments you might have used in other settings. Compared to writing a stand-alone program or scripts, notebooks are designed to be interactive computational documents that combine code, visualizations and narrative text.
 
 A quick orientation:
 
@@ -49,7 +49,7 @@ There is a rich data science ecosystem in Python. Some of the libraries we will 
 
 ## "Vector" execution and Numerical Python (NumPy)
 
-The [`numpy` (**Num**erical **Py**thon) package](https://numpy.org/) is an extensive set of tools for working with N-dimensional *arrays* in Python. `numpy`, which we will write as NumPy, is at the heart of efficient data science and scientific computation in Python and is common building block for many of the tools we will use.
+The [`numpy` (**Num**erical **Py**thon) package](https://numpy.org/) is an extensive set of tools for working with N-dimensional *arrays* in Python. `numpy`, which we will write as NumPy, is at the heart of efficient data science and scientific computation in Python and is common building block for many of the other tools we will use.
 
 Similar to R and other data intensive computing environment, NumPy encourages us to think about our computations in terms of "vector" or "array" operations, i.e., performing computations across multiple values instead of using loops. This "vectorized" style of computation and can be much faster (and more concise) than directly iterating (with `for` loops, etc.) because we can leverage NumPy's highly optimized native implementations (i.e., implemented in C, not Python). Many operations in R, Matlab, etc. are similarly wrappers around high-performance native libraries. In this context, we use "vector" in the linear algebra sense of the term, i.e. a 1-D matrix of values, instead of a description of magnitude and direction (like you might see in Physics). More generally, we are aiming for largely "loop-free" implementations, that is all loops are implicit in the vector operations and thus implemented in native code. 
 
@@ -74,7 +74,7 @@ def mean(data): # <1>
 ```
 1. `def` is used to define a function, here named `mean` with one positional argument `data`. The body of function is indented (typically 4 spaces, but any indentation is allowed as long as it is consistent).
 2. A python `for` loop defines a loop variable (here `val`) that is assigned values from from a loop sequence. Here `data` is likely a `list`, but any ordered sequence will work. In each iteration the loop variable is assigned to the next value from the sequence.
-3. Python requires an explicit `return` statement (unlike R which implicitly returns the value of the last expression in a function), which terminates execution and "returns" a value to the caller. Functions without a `return` statement are permitted. In that case, the function implicitly returns a special value `None`.
+3. Python requires an explicit `return` statement (unlike R which implicitly returns the value of the last expression in a function), which terminates execution and "returns" a value to the caller. Functions without a `return` statement are permitted and will implicitly return a special value `None`.
 
 A more typical implementation might be:
 ```python
@@ -104,7 +104,7 @@ np.sqrt(np.sum((data - np.mean(data))**2)/(len(data) - 1))
 ```
 
 ::: {.content-hidden}
-PI Questions 1: 1-2
+Work through expression step-by-step on the slide
 :::
 
 For our example input, this code performs the following operations:
@@ -113,19 +113,27 @@ For our example input, this code performs the following operations:
 1. Performs a "reduction", computing the mean, to produce the scalar 2.5.
 1. Performs an element-wise subtraction to compute the difference from the mean. Note that the scalar argument, the mean, is "broadcasted" to be the same size as the vector.
 
-    $$ \begin{bmatrix} 1.0 \\ 2.0 \\ 3.0 \\ 4.0 \end{bmatrix} - \begin{bmatrix} 2.5 \\ 2.5 \\ 2.5 \\ 2.5 \end{bmatrix} $$
+   $$
+   \begin{bmatrix} 1.0 \\ 2.0 \\ 3.0 \\ 4.0 \end{bmatrix} - \begin{bmatrix} 2.5 \\ 2.5 \\ 2.5 \\ 2.5 \end{bmatrix}
+   $$
 
 1. Performs an element-wise "squaring" via the `**` operator.
 
-    $$ \begin{bmatrix} -1.5^2 \\ -0.5^2 \\ 0.5^2 \\ 1.5^2 \end{bmatrix} $$
+   $$
+   \begin{bmatrix} -1.5^2 \\ -0.5^2 \\ 0.5^2 \\ 1.5^2 \end{bmatrix}
+   $$
 
 1. Performs a sum reduction of the intermediate vector, producing the scalar 5.
 
-    $$ 2.25 + 0.25 + 0.25 + 2.25 $$
+   $$
+   2.25 + 0.25 + 0.25 + 2.25
+   $$
 
 1. Performs the division and square root operations over scalar values.
 
-    $$ \sqrt{\frac{5}{4-1}} $$
+   $$
+   \sqrt{\frac{5}{4-1}}
+   $$
 
 Let's summarize the NumPy features we used here:
 
@@ -143,6 +151,10 @@ Broadcasting
 
 Vectorized universal functions (ufuncs)
 : Fast, element‑wise functions implemented in C (e.g., `np.sqrt`, arithmetic operators) that operate on arrays efficiently.
+
+::: {.content-hidden}
+PI Questions 1: 1-2
+:::
 
 ## What makes NumPy useful?
 
@@ -167,7 +179,7 @@ Notice how much faster the NumPy version is! Why is that? Both implementations a
 
 ### So, should I always use NumPy?
 
-If you will operate on large, regularly structured, data with uniform type and are considering writing `for` loops or Python `list`s, etc., ask yourself whether you can achieve your task with NumPy arrays instead. Often the vectorized code is more concise and faster, especially as the dimensionality increases (i.e., your data is a 2 or 3 or more dimensional array). But, "always" is a strong word. What we will see is that "general purpose" Python is used as the orchestrator, i.e., to setup the computation. But the "heavy lifting", the computationally intensive portions, are performed with NumPy. And when we do work with NumPy we want to minimize the use of `for` loops and maximize the use of vectorized operations. 
+If you will operate on large regularly-structured data with uniform type and are considering writing `for` loops or Python `list`s, etc., ask yourself whether you can achieve your goal with NumPy arrays instead. Often the vectorized code is more concise and faster, especially as the dimensionality increases (i.e., your data is a 2 or 3 or more dimensional array). But, "always" is a strong word. What we will see is that "general purpose" Python is often used as the orchestrator, i.e., to setup the computation. But the "heavy lifting", the computationally intensive portions, are performed with NumPy. And when we do work with NumPy we want to minimize the use of `for` loops and maximize the use of vectorized operations. 
 
 ## A more complex vectorization example, stock market simulation
 
@@ -276,7 +288,7 @@ P_{240} &= \sum_{m=1}^{240} \$100 \prod_{i=m}^{240} r_i
 \end{align}
 $$
 
-Our first instinct might be to convert the product ($\prod$) and sum ($\sum$) operations into `for` loops, as they  are iterative computations over our 240 month time period. As we saw already, we can implement the product operation as a vectorized operation across a 2-D array. Could we do so with the sum as well?
+Our first instinct might be to convert the product ($\prod$) and sum ($\sum$) operations into `for` loops, as they are iterative computations over our 240 month time period. As we saw already, we can implement the product operation as a vectorized operation across a 2-D array. Could we do so with the sum as well?
 
 ::: {.content-hidden}
 PI Questions 2: 4
@@ -329,4 +341,4 @@ plt.show()
 
 ## A note about vectorization and Python data science tools, more generally
 
-This "vectorized" approach is very powerful. And not as unfamiliar as it might seem. If you have ever created a formula in Excel in a single cell and then copied it to an entire column, then you have performed a "vectorized" computation. As we described earlier, the benefits of this approach are performance and programmer efficiency. We just implemented some very sophisticated computations very concisely and efficiency. One challenge is the size of these libraries. NumPy and the other libraries we will use provide 1000s of functions. We can't possible know every feature that might be available. Instead what we will seek to build our understanding of how to best approach data science problems to effectively use these tools (something not necessarily specific to Python), and the sense of what kind of functions should exist (and where/how to start looking for them). In the readings, in class and in these notes, aim to identify those "cross-cutting" approaches (or patterns) that you can apply broadly. With an appropriate approach in mind you can then use the documentation, online search, GenAI, etc. to efficiently find the specific functions/syntax you need.
+This "vectorized" approach is very powerful. And not as unfamiliar as it might seem. If you have ever created a formula in Excel in a single cell and then copied it to an entire column, then you have performed a "vectorized" computation. As we described earlier, the benefits of this approach are performance and programmer efficiency. We just implemented some very sophisticated computations very concisely and efficiency. One challenge is the size of these libraries. NumPy and the other libraries we will use have 1000s of functions. We can't possible know every feature that might be available. Instead we will seek to build our understanding of how to best approach data science problems to effectively use these tools (something not necessarily specific to Python), and the sense of what kind of functions should exist (and where/how to start looking for them). In the readings, in class and in these notes, aim to identify those "cross-cutting" approaches (or patterns) that you can apply broadly. With an appropriate approach in mind you can then use the documentation, online search, GenAI, etc. to efficiently find the specific functions/syntax you need.

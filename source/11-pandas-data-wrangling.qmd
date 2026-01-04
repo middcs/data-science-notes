@@ -6,7 +6,7 @@ subtitle: Getting started with Pandas Data Frames
 
 {{< include _live_notebook_link.qmd >}}
 
-[Data wrangling](https://en.wikipedia.org/wiki/Data_wrangling) is a broad term for transforming data from one form into another. It some times is synonymous with "data cleaning", i.e., preparing "messy" raw data for further analysis, but data wrangling can also refer the analysis itself (including data transformation, visualization, aggregation). Today we will focus on the data structures and techniques used to store, transform and aggregate tabular data. These tools build on the vectorized approaches, and specifically the NumPy library, we just learned about.
+[Data wrangling](https://en.wikipedia.org/wiki/Data_wrangling) is a broad term for transforming data from one form into another. It some times is synonymous with "data cleaning", i.e., preparing "messy" raw data for further analysis, but data wrangling can also refer to the analysis itself (including data transformation, visualization, aggregation). Today we will focus on the data structures and techniques used to store, transform and aggregate tabular data. These tools build on the vectorized approaches, and specifically the NumPy library, we just learned about.
 
 ## Pandas
 
@@ -31,7 +31,7 @@ The two key data structures offered by Pandas are `Series`, a 1-D array, and `Da
 
 ## What is a DataFrame?
 
-If you have used Microsoft Excel, Google Sheets, or other similar spreadsheet, you have effectively used a Pandas `DataFrame` (which is modeled on R's dataframe).
+If you have used Microsoft Excel, Google Sheets, or other similar spreadsheet, you have effectively used a Pandas `DataFrame` (which is simiar to R's dataframe).
 
 What are the key properties of a spreadsheet table:
 
@@ -96,7 +96,7 @@ df[["Species", "Region", "Island", "Culmen Length (mm)"]].head()
 #---
 ```
 
-To access rows (and columns) via their labels we use the `loc` attribute. It exposes as flexible indexing capability, e.g.
+To access rows (and columns) via their labels we use the `loc` attribute. It exposes flexible indexing capabilities, e.g.
 
 ```{python}
 # Select rows by label (using the index)
@@ -135,9 +135,7 @@ PI Questions 1: 1
 
 ## Mutation
 
-The process of creating and modifying columns often described as "mutation".
-
-Just as we create new or update existing key-value pairs in a Python Dictionary with assignment, we can do the same with columns in a Pandas DataFrame. For example, the following add a column with the culmen length in centimeters (you may need to scroll to the right to see it). The division is an element-wise "vectorized" operation like those we saw with NumPy (and in many bases Pandas is actually storing the column as NumPy array).
+The process of creating and modifying columns is often described as "mutation". Just as we create new or update existing key-value pairs in a Python Dictionary with assignment, we can do the same with columns in a Pandas DataFrame. For example, the following adds a column with the culmen length in centimeters (you may need to scroll to the right to see it). The division is an element-wise "vectorized" operation like those we saw with NumPy (and in many cases Pandas is actually storing the column as NumPy array).
 
 ```{python}
 df["Culmen Length (cm)"] = df["Culmen Length (mm)"] / 10
@@ -161,7 +159,7 @@ df.head()
 
 One of the fundamental pattern in tabular data analysis is to perform computation by/across groups. In our penguins data, for example, a very natural thing to do is to compute summary statistics by species, or perhaps by habitat (or both!). We can contextualize this task in three stages:
 
-* Split the data data frame into pieces, one for each species.
+* Split the data data frame into pieces, one for each group (e.g., species).
 * Apply an aggregation function to each piece, yielding a single number.
 * Combine the results into a new data frame.
 
@@ -203,7 +201,7 @@ More generally, we can think of each value provided for an index drops us one le
 
 ```{python}
 # Tuple literals are created with parentheses, but parentheses with a single element (no comma) are interpreted
-# a grouping (in the PEMDAS sense), not a tuple. To create a single element tuple we add a trailing comma.
+# as a grouping (in the PEMDAS sense), not a tuple. To create a single element tuple we add a trailing comma.
 #---
 summary.loc[("Chinstrap",),("Culmen Length (mm)",)]
 #---
@@ -312,5 +310,5 @@ That sure looks significant, and indeed we don't observe any examples with large
 ::: {.callout-note collapse="true"}
 ## Why didn't you use \<insert statistical test\>?
 
-A permutation test, what we did above, is a statistical hypothesis test! It is has the nice property that we don't need to make any assumptions about distribution of the data. And we can implement it and interpret the results without a lot of prior statistics experience. Our goal here is to learn about how to work with Pandas, not necessarily to learn about different forms of hypothesis testing. But this is not a "toy" example. The computational tools in our toolbox are already sufficient to make rigorous inferences about data!
+A permutation test, what we did above, is a statistical hypothesis test! It is has the nice property that we don't need to make any assumptions about distribution of the data. And we can implement it and interpret the results without a lot of prior statistics experience. Our goal today is to learn about how to work with Pandas, not necessarily to learn about different forms of hypothesis testing. But this is not a "toy" example. The computational tools in our toolbox are already sufficient to make rigorous inferences about data!
 :::

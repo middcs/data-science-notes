@@ -341,7 +341,7 @@ window.Quarto = {
 
 <p><em><a href="https://colab.research.google.com/github/middcs/data-science-notes/blob/main/docs/live-notebooks/10-intro-python-datascience.ipynb">Open the live notebook</a> in Google Colab or <a href="https://middcs.github.io/data-science-notes/live-notebooks/10-intro-python-datascience.ipynb">download the live notebook</a>.</em></p>
 <p>These notes were written for students with introductory Computer Science experience in Python or introductory data science experience using R. The former may not familiar with common data science tools like notebooks, data frames, etc., while the latter may not be familiar with Python. Our goal in this class is to build a common foundation using data science tools in Python.</p>
-<p>If you are coming from R, keep an eye out for special callouts identifying the equivalent techniques in R. We hope you fill find this transition is not as hard as you might expect. In fact, we think you’ll find that the Python data science ecosystem is very familiar. That’s not an accident. Python data science tools share inspiration with their R counterparts (or are even directly modeled on tools available within R). In some respects, it may be more challenging to transition from using Python as a general purpose language to using the Python data science ecosystem the way we will in this class.</p>
+<p>If you are coming from R, keep an eye out for special callouts identifying the equivalent techniques in R. We hope you fill find that this transition is not as hard as you might expect. In fact, we think you’ll find that the Python data science ecosystem is very familiar. That’s not an accident. Python data science tools share inspiration with their R counterparts (or are even directly modeled on tools available within R). In some respects, it may be more challenging to transition from using Python as a general purpose language to using the Python data science ecosystem the way we will in this class.</p>
 <p>Some helpful resources for (re)learning Python, especially in the contexts of data science:</p>
 <ul>
 <li><a href="https://labex.io/python-cheatsheets">LabEx Python “cheat sheets”</a>: A concise listing of Python syntax, data structures, and common libraries.</li>
@@ -350,7 +350,7 @@ window.Quarto = {
 <p>Why Python (and not R, or some other tool)? That is a complicated and fraught question. But the short answer is machine learning. Python is the lingua franca of machine learning, and that is our ultimate focus.</p>
 <section id="working-with-ipython-notebooks" class="level2">
 <h2 class="anchored" data-anchor-id="working-with-ipython-notebooks">Working with IPython notebooks</h2>
-<p>The primary computing environment for our class will be a Jupyter/IPython notebooks. These are very similar to R markdown or other notebook-style computing environments you might have used in other settings. Compared to writing a stand-alone program or scripts, notebooks are designed to be interactive computational documents that combine code, visualizations and narrative text.</p>
+<p>The primary computing environment for our class will be a Jupyter/IPython notebooks. These are very similar to R Markdown or other notebook-style computing environments you might have used in other settings. Compared to writing a stand-alone program or scripts, notebooks are designed to be interactive computational documents that combine code, visualizations and narrative text.</p>
 <p>A quick orientation:</p>
 <ul>
 <li>Notebooks combine executable code cells and rich Markdown/LaTeX text cells. Use Markdown cells for explanatory text, headings, and equations.</li>
@@ -388,10 +388,10 @@ window.Quarto = {
 </section>
 <section id="vector-execution-and-numerical-python-numpy" class="level2">
 <h2 class="anchored" data-anchor-id="vector-execution-and-numerical-python-numpy">“Vector” execution and Numerical Python (NumPy)</h2>
-<p>The <a href="https://numpy.org/"><code>numpy</code> (<strong>Num</strong>erical <strong>Py</strong>thon) package</a> is an extensive set of tools for working with N-dimensional <em>arrays</em> in Python. <code>numpy</code>, which we will write as NumPy, is at the heart of efficient data science and scientific computation in Python and is common building block for many of the tools we will use.</p>
+<p>The <a href="https://numpy.org/"><code>numpy</code> (<strong>Num</strong>erical <strong>Py</strong>thon) package</a> is an extensive set of tools for working with N-dimensional <em>arrays</em> in Python. <code>numpy</code>, which we will write as NumPy, is at the heart of efficient data science and scientific computation in Python and is common building block for many of the other tools we will use.</p>
 <p>Similar to R and other data intensive computing environment, NumPy encourages us to think about our computations in terms of “vector” or “array” operations, i.e., performing computations across multiple values instead of using loops. This “vectorized” style of computation and can be much faster (and more concise) than directly iterating (with <code>for</code> loops, etc.) because we can leverage NumPy’s highly optimized native implementations (i.e., implemented in C, not Python). Many operations in R, Matlab, etc. are similarly wrappers around high-performance native libraries. In this context, we use “vector” in the linear algebra sense of the term, i.e.&nbsp;a 1-D matrix of values, instead of a description of magnitude and direction (like you might see in Physics). More generally, we are aiming for largely “loop-free” implementations, that is all loops are implicit in the vector operations and thus implemented in native code.</p>
 <p>Let’s get started by importing the relevant package. Here we import all the types and functions in the <code>numpy</code> package with a <code>np</code> prefix, i.e., make them available to our program as <code>np.&lt;something&gt;</code>. Another common format is <code>import numpy</code>, which is shorthand for <code>import numpy as numpy</code>. We typically want to use the prefixed imports to avoid naming conflicts, i.e., identically named functions from different packages colliding. Many of the packages we will use in class have conventions for import naming (like <code>np</code> for <code>numpy</code>) that we will try to follow.</p>
-<div id="c184b13c" class="cell" data-execution_count="2">
+<div id="825426b2" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the typical import style/prefix. It makes all the NumPy types and functions</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># available with a `np` prefix.</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -420,7 +420,7 @@ window.Quarto = {
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="7" data-code-annotation="3">Python requires an explicit <code>return</code> statement (unlike R which implicitly returns the value of the last expression in a function), which terminates execution and “returns” a value to the caller. Functions without a <code>return</code> statement are permitted. In that case, the function implicitly returns a special value <code>None</code>.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="7" data-code-annotation="3">Python requires an explicit <code>return</code> statement (unlike R which implicitly returns the value of the last expression in a function), which terminates execution and “returns” a value to the caller. Functions without a <code>return</code> statement are permitted and will implicitly return a special value <code>None</code>.</span>
 </dd>
 </dl>
 <p>A more typical implementation might be:</p>
@@ -431,7 +431,7 @@ window.Quarto = {
 <section id="vectorization-example-standard-deviation" class="level2">
 <h2 class="anchored" data-anchor-id="vectorization-example-standard-deviation">Vectorization example: Standard deviation</h2>
 <p>In a more complex example, let’s consider a standard deviation computation. Here is a typical implementation with an explicit loop. How can we vectorize this function?</p>
-<div id="b6a64db2" class="cell" data-execution_count="3">
+<div id="645e3799" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> stddev(data):</span>
@@ -442,7 +442,7 @@ window.Quarto = {
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> math.sqrt(result <span class="op">/</span> (<span class="bu">len</span>(data) <span class="op">-</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Here is the corresponding implementation using NumPy. Notice there are no more <code>for</code> loops!</p>
-<div id="2ca9e632" class="cell" data-execution_count="4">
+<div id="904845a9" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>, <span class="fl">4.0</span>]) <span class="co"># Square brackets create a list literal</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>np.sqrt(np.<span class="bu">sum</span>((data <span class="op">-</span> np.mean(data))<span class="op">**</span><span class="dv">2</span>)<span class="op">/</span>(<span class="bu">len</span>(data) <span class="op">-</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
@@ -454,13 +454,21 @@ window.Quarto = {
 <li><p>Creates a 1-D array from a list.</p></li>
 <li><p>Performs a “reduction”, computing the mean, to produce the scalar 2.5.</p></li>
 <li><p>Performs an element-wise subtraction to compute the difference from the mean. Note that the scalar argument, the mean, is “broadcasted” to be the same size as the vector.</p>
-<p><span class="math display">\[ \begin{bmatrix} 1.0 \\ 2.0 \\ 3.0 \\ 4.0 \end{bmatrix} - \begin{bmatrix} 2.5 \\ 2.5 \\ 2.5 \\ 2.5 \end{bmatrix} \]</span></p></li>
+<p><span class="math display">\[
+\begin{bmatrix} 1.0 \\ 2.0 \\ 3.0 \\ 4.0 \end{bmatrix} - \begin{bmatrix} 2.5 \\ 2.5 \\ 2.5 \\ 2.5 \end{bmatrix}
+\]</span></p></li>
 <li><p>Performs an element-wise “squaring” via the <code>**</code> operator.</p>
-<p><span class="math display">\[ \begin{bmatrix} -1.5^2 \\ -0.5^2 \\ 0.5^2 \\ 1.5^2 \end{bmatrix} \]</span></p></li>
+<p><span class="math display">\[
+\begin{bmatrix} -1.5^2 \\ -0.5^2 \\ 0.5^2 \\ 1.5^2 \end{bmatrix}
+\]</span></p></li>
 <li><p>Performs a sum reduction of the intermediate vector, producing the scalar 5.</p>
-<p><span class="math display">\[ 2.25 + 0.25 + 0.25 + 2.25 \]</span></p></li>
+<p><span class="math display">\[
+2.25 + 0.25 + 0.25 + 2.25
+\]</span></p></li>
 <li><p>Performs the division and square root operations over scalar values.</p>
-<p><span class="math display">\[ \sqrt{\frac{5}{4-1}} \]</span></p></li>
+<p><span class="math display">\[
+\sqrt{\frac{5}{4-1}}
+\]</span></p></li>
 </ol>
 <p>Let’s summarize the NumPy features we used here:</p>
 <dl>
@@ -489,11 +497,11 @@ Fast, element‑wise functions implemented in C (e.g., <code>np.sqrt</code>, ari
 <section id="what-makes-numpy-useful" class="level2">
 <h2 class="anchored" data-anchor-id="what-makes-numpy-useful">What makes NumPy useful?</h2>
 <p>The above implementation is more concise, but also much faster!</p>
-<div id="ac80c719" class="cell" data-execution_count="5">
+<div id="546583f9" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> stddev_numpy(data):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.sqrt(np.<span class="bu">sum</span>((data <span class="op">-</span> np.mean(data))<span class="op">**</span><span class="dv">2</span>)<span class="op">/</span>(<span class="bu">len</span>(data) <span class="op">-</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="731c2849" class="cell" data-execution_count="6">
+<div id="ce05b245" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create random input data sampled from a normal distribution</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.random.normal(size<span class="op">=</span><span class="dv">1000</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>data_list <span class="op">=</span> <span class="bu">list</span>(data)</span>
@@ -502,14 +510,14 @@ Fast, element‑wise functions implemented in C (e.g., <code>np.sqrt</code>, ari
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit stddev_numpy(data)</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit stddev(data_list)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>5.89 μs ± 86.2 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
-121 μs ± 4.02 μs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)</code></pre>
+<pre><code>6.05 μs ± 37.6 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+127 μs ± 4.22 μs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)</code></pre>
 </div>
 </div>
 <p>Notice how much faster the NumPy version is! Why is that? Both implementations are performing the same arithmetic operations. The difference is that NumPy is doing so with highly optimized native libraries that are working with the machine’s underlying data representation, i.e., directly with the underlying double precision floating point values, compactly stored in continuous memory. In contrast, the Python implementation is working with Python’s highly flexible data types and loop structures. For examples, Python lists store references to the values contiguously, but not the values themselves. As a result more and less performant memory accesses are required. Further, numerous operations are required to access the underlying floating point value to actually perform the calculation.</p>
 <section id="so-should-i-always-use-numpy" class="level3">
 <h3 class="anchored" data-anchor-id="so-should-i-always-use-numpy">So, should I always use NumPy?</h3>
-<p>If you will operate on large, regularly structured, data with uniform type and are considering writing <code>for</code> loops or Python <code>list</code>s, etc., ask yourself whether you can achieve your task with NumPy arrays instead. Often the vectorized code is more concise and faster, especially as the dimensionality increases (i.e., your data is a 2 or 3 or more dimensional array). But, “always” is a strong word. What we will see is that “general purpose” Python is used as the orchestrator, i.e., to setup the computation. But the “heavy lifting”, the computationally intensive portions, are performed with NumPy. And when we do work with NumPy we want to minimize the use of <code>for</code> loops and maximize the use of vectorized operations.</p>
+<p>If you will operate on large regularly-structured data with uniform type and are considering writing <code>for</code> loops or Python <code>list</code>s, etc., ask yourself whether you can achieve your goal with NumPy arrays instead. Often the vectorized code is more concise and faster, especially as the dimensionality increases (i.e., your data is a 2 or 3 or more dimensional array). But, “always” is a strong word. What we will see is that “general purpose” Python is often used as the orchestrator, i.e., to setup the computation. But the “heavy lifting”, the computationally intensive portions, are performed with NumPy. And when we do work with NumPy we want to minimize the use of <code>for</code> loops and maximize the use of vectorized operations.</p>
 </section>
 </section>
 <section id="a-more-complex-vectorization-example-stock-market-simulation" class="level2 page-columns page-full">
@@ -540,7 +548,7 @@ Fast, element‑wise functions implemented in C (e.g., <code>np.sqrt</code>, ari
 </div>
 </div>
 <p>We are interested in the cumulative product of the monthly returns, which we can compute with the <a href="https://numpy.org/doc/stable/reference/generated/numpy.cumprod.html#numpy-cumprod"><code>cumprod</code> function</a>, which as its name suggests computes <span class="math inline">\(x_1, x_1\cdot x_2, x_1\cdot x_2 \cdot x_3,...\)</span>. We will start with a single simulation:</p>
-<div id="a12dc593" class="cell" data-execution_count="8">
+<div id="7b338232" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math <span class="co"># To use the sqrt function</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial portfolio</span></span>
@@ -577,7 +585,7 @@ Fast, element‑wise functions implemented in C (e.g., <code>np.sqrt</code>, ari
 </div>
 </div>
 <p>The above just performed a single simulation. We typically want to perform the walk many times, e.g., 5000, to get a distribution of outcomes. Here is where the vectorized approach can be particularly helpful (for both conciseness and performance). We can think of 5000 random walks of length 240 as working with a 2-D array with 5000 rows and 240 columns where each row is a different walk and each column is a month (a step in our walk). To simplify our approach we will just focus on the total yield, i.e., compute the product of the returns (with <a href="https://numpy.org/doc/stable/reference/generated/numpy.prod.html#numpy.prod"><code>np.prod</code></a>) not the cumulative product.</p>
-<div id="49f2f609" class="cell" data-execution_count="10">
+<div id="0a25f95e" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>num_sim <span class="op">=</span> <span class="dv">5000</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Providing a tuple for size to laplace produces num_simx240 values. We then compute</span></span>
@@ -602,14 +610,14 @@ Fast, element‑wise functions implemented in C (e.g., <code>np.sqrt</code>, ari
 <div class="cell-output cell-output-display page-columns page-full">
 <div id="multi-portfolio-sim" class="quarto-figure quarto-figure-center anchored page-columns page-full">
 <figure class="figure page-columns page-full">
-<p><img src="10-intro-python-datascience_files/figure-html/multi-portfolio-sim-output-1.png" class="figure-img" width="601" height="449"></p>
+<p><img src="10-intro-python-datascience_files/figure-html/multi-portfolio-sim-output-1.png" class="figure-img" width="620" height="449"></p>
 <figcaption class="margin-caption">Distribution of final balance in simulated portfolios with 7% return per year shown as dotted line</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <div class="page-columns page-full"><p>What is different about this version? Notice that we provide a length 2 tuple to <code>np.random.laplace</code>.  This creates a 2-D array of size 5000×240. We can access the size tuple of a NumPy array with the <code>shape</code> attribute. The dimensions correspond to the indices in <code>shape</code>, i.e., dimension 0 is 5000, dimension 1 is 240 and so on.</p><div class="no-row-height column-margin column-container"><span class="margin-aside">A Python tuple is a heterogenous sequence of fixed length.</span></div></div>
-<div id="7097d580" class="cell" data-execution_count="12">
+<div id="0885bd37" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>steps.shape</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>(5000, 240)</code></pre>
@@ -637,7 +645,7 @@ P_{240} &amp;= \sum_{m=1}^{240} \$100 \prod_{i=m}^{240} r_i \\
 \end{align*}
 \]</span></p>
 <p>The sequence <span class="math inline">\(r_1, (r_1\cdot r_2), ..., \prod_{i=1}^{240} r_i\)</span> is the cumulative product! That is the right hand side of the last expression is the sum of the cumulative product of the monthly returns! The corresponding vectorized implementation would be:</p>
-<div id="cdac6d1c" class="cell" data-execution_count="13">
+<div id="257e94b5" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#---</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We do exactly the same initial steps as before, but now we think of the returns</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># as the total return for each month's investment (albeit in reverse). The first</span></span>
@@ -676,7 +684,7 @@ P_{240} &amp;= \sum_{m=1}^{240} \$100 \prod_{i=m}^{240} r_i \\
 </section>
 <section id="a-note-about-vectorization-and-python-data-science-tools-more-generally" class="level2">
 <h2 class="anchored" data-anchor-id="a-note-about-vectorization-and-python-data-science-tools-more-generally">A note about vectorization and Python data science tools, more generally</h2>
-<p>This “vectorized” approach is very powerful. And not as unfamiliar as it might seem. If you have ever created a formula in Excel in a single cell and then copied it to an entire column, then you have performed a “vectorized” computation. As we described earlier, the benefits of this approach are performance and programmer efficiency. We just implemented some very sophisticated computations very concisely and efficiency. One challenge is the size of these libraries. NumPy and the other libraries we will use provide 1000s of functions. We can’t possible know every feature that might be available. Instead what we will seek to build our understanding of how to best approach data science problems to effectively use these tools (something not necessarily specific to Python), and the sense of what kind of functions should exist (and where/how to start looking for them). In the readings, in class and in these notes, aim to identify those “cross-cutting” approaches (or patterns) that you can apply broadly. With an appropriate approach in mind you can then use the documentation, online search, GenAI, etc. to efficiently find the specific functions/syntax you need.</p>
+<p>This “vectorized” approach is very powerful. And not as unfamiliar as it might seem. If you have ever created a formula in Excel in a single cell and then copied it to an entire column, then you have performed a “vectorized” computation. As we described earlier, the benefits of this approach are performance and programmer efficiency. We just implemented some very sophisticated computations very concisely and efficiency. One challenge is the size of these libraries. NumPy and the other libraries we will use have 1000s of functions. We can’t possible know every feature that might be available. Instead we will seek to build our understanding of how to best approach data science problems to effectively use these tools (something not necessarily specific to Python), and the sense of what kind of functions should exist (and where/how to start looking for them). In the readings, in class and in these notes, aim to identify those “cross-cutting” approaches (or patterns) that you can apply broadly. With an appropriate approach in mind you can then use the documentation, online search, GenAI, etc. to efficiently find the specific functions/syntax you need.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
