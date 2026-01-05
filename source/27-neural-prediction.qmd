@@ -274,7 +274,6 @@ output_example = model_example(x_example)
 print(output_example)
 ```
 
-
 We often apply the *softmax* function to each row of outputs in order to convert them into interpretable class probabilities. The softmax is defined as 
 
 $$

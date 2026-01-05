@@ -1,6 +1,7 @@
 project:
   type: book
   output-dir: docs
+  
 
 book: 
   title: "Applied Data Science"
@@ -22,7 +23,6 @@ book:
       chapters:
         - source/20-introduction-prediction.qmd
         - source/21-feature-engineering-and-overfitting.qmd
-        - source/22-dissecting-bias.qmd
         - source/25-classification.qmd
         - source/26-compas.qmd
         - source/27-neural-prediction.qmd
@@ -43,6 +43,8 @@ format:
     callout-appearance: simple
     fig-cap-location: margin
     highlight-style: atom-one
+    filters: 
+      - scripts/remove-delims.lua
 
     
 

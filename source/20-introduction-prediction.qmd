@@ -2,11 +2,15 @@
 fig-cap-location: margin
 code-fold: false
 jupyter: python3
+title: |
+    Introducing Prediction
+subtitle: |
+    Using data to learn relationships between inputs and outputs for making predictions.
 ---
 
 {{< include _live_notebook_link.qmd >}}
 
-# Introducing Prediction
+
 
 In the task of automated prediction, we aim to use a relationship between a set of input features (also called *predictors* or *independent variables*) and an output (also called a *target*). We use this relationship to make a prediction about what outputs would be observed from new inputs. 
 

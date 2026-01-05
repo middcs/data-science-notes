@@ -1,0 +1,15 @@
+---
+format: html
+---
+
+## Some test
+
+```{python}
+print(2+2)
+```
+
+```{python}
+#---
+# don't want to see
+#---
+```

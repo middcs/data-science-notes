@@ -1,0 +1,21 @@
+Pandoc
+  Meta { unMeta = fromList [] }
+  [ Header
+      2
+      ( "some-test" , [] , [] )
+      [ Str "Some" , Space , Str "test" ]
+  , Div
+      ( "" , [ "cell" ] , [ ( "execution_count" , "1" ) ] )
+      [ CodeBlock
+          ( "" , [ "python" , "cell-code" ] , [] ) "print(2+2)"
+      , Div
+          ( "" , [ "cell-output" , "cell-output-stdout" ] , [] )
+          [ CodeBlock ( "" , [] , [] ) "4" ]
+      ]
+  , Div
+      ( "" , [ "cell" ] , [ ( "execution_count" , "2" ) ] )
+      [ CodeBlock
+          ( "" , [ "python" , "cell-code" ] , [] )
+          "\n# don't want to see\n"
+      ]
+  ]

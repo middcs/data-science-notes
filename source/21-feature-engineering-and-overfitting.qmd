@@ -2,11 +2,15 @@
 fig-cap-location: margin
 code-fold: false
 jupyter: python3
+title: |
+    Features and Overfitting
+subtitle: |
+    Using linear models to model nonlinear trends, and managing the risks of overfitting.
 ---
 
 {{< include _live_notebook_link.qmd >}}
 
-# Features and Overfitting
+
 
 [Last time](20-introduction-prediction.qmd), we began our study of predictive modeling. We introduced the idea of fitting a model as an *optimization* problem, in which our aim is to minimize some *loss function* which measures the error between model predictions and the actual data. We then used this minimization idea to fit a linear regression model to a data set and measure how the fit model reduces the error when compared to a naive baseline model.
 
@@ -236,7 +240,7 @@ We won't touch either `X_test` or `y_test` until the very end of our analysis, w
 
 The idea of cross-validation is that we can simulate the process of evaluating our model on unseen data by witholding parts of our training data to use as testing. In order to make an assessment, we can simulate the process of fitting the model and evaluating on "test" data by witholding parts of our *training* data to use as testing. We split the data into chunks and withold each chunk, using the other chunks to train the data. This is called *cross-validation*, and it is illustrated in this figure: 
 
-[@vanderplasPythonDataScience2016 has [more on cross-validation](https://jakevdp.github.io/PythonDataScienceHandbook/05.03-hyperparameters-and-model-validation.html) and overfitting. We'll confront overfitting agian many times in this course.]{.aside}
+[@vanderplasPythonDataScience2016 has [more on cross-validation](https://jakevdp.github.io/PythonDataScienceHandbook/05.03-hyperparameters-and-model-validation.html) and overfitting. We'll confront overfitting again many times in this course.]{.aside}
 
 ![Image source: [scikit-learn](https://scikit-learn.org/stable/_images/grid_search_cross_validation.png) ](https://scikit-learn.org/stable/_images/grid_search_cross_validation.png)
 
