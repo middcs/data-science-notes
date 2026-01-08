@@ -186,6 +186,14 @@ summary
 #---
 ```
 
+If there isn't a [built-in function](https://pandas.pydata.org/docs/user_guide/groupby.html#built-in-aggregation-methods) for the particular aggregation you want to perform, you can provide your own function to `aggregate`, or even more flexibly using the [`apply` method](https://pandas.pydata.org/docs/user_guide/groupby.html#flexible-apply). `.apply` will work for aggregating, filtering or transforming groups. It can be a helpful tool for performing multiple operations on the same group. For example here, we supply an anonymous function (a `lambda` function) to both compute the mean culmen length and convert it to centimeters.
+
+```{python}
+# The Python lambda keyword creates an anonymous function with the specified arguments and body (here a single argument `g`). `apply`
+# calls that function for each group, passing the group `DataFrame` as the argument.
+df.groupby(["Species", "Island"]).apply(lambda g: g["Culmen Length (mm)"].mean() / 10, include_groups=False)
+```
+
 ### Hierarchical indexing
 
 Complex data summary tables like the one above are useful and powerful, but it is also non-obvious how we can extract specific data of interest. For example, how can I get the mean culmen (bill) length for Chinstrap penguins on Dream island? To extract this kind of data, we leverage Pandas' hierarchical indices, in which we pass multiple keys to the `.loc` attribute as a tuple.
