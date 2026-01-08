@@ -63,7 +63,7 @@ print(np.array_equal(a, b, equal_nan=True))  # Set NaN to compare equally
 
 In addition to type distinctions like integer vs. floating-point vs. string, Pandas supports more precise data types that can help with analyses. When a variable is discrete, i.e., can only take on a limited set of values, we can define it as a categorical variable (analogous to a factor in R or an enum in Python and other programming languages). As noted in the [Pandas documentation](https://pandas.pydata.org/docs/user_guide/categorical.html), the categorical data types can offer several advantages, categorical types 1) can reduce memory usage by encoding strings as integers, 2) explicitly define the ordering of values, and 3) indicate that a variable is categorical to other tools (e.g., visualization libraries).
 
-Managing categorical data is a common task when cleaning data. For example, imagines we had survey data that included a user-entered state variable. We could imagine values like "Vermont", "Vermont", "VT", and "vt" all referring to the same state. We could use categorical data types to help standardize these values and ensure consistent analysis.
+Managing categorical data is a common task when cleaning data. For example, imagine we had survey data that included a user-entered state variable. We could imagine values like "Vermont", "Vermont", "VT", and "vt" all referring to the same state. We could use categorical data types to help standardize these values and ensure consistent analysis.
 
 ```{python}
 states = pd.Series(["Vermont", "Vermont", "VT", "vt", "California", "CA", "ca"])
@@ -89,7 +89,7 @@ PI Questions 1: 1
 
 ## Untidy data
 
-We point you to he reading [@mckinneyPythonDataAnalysis2022] and other texts [@wickhamRDataScience2023] for more detail on the different functions for data tidying. Here want to highlight some common cases and the associated tidying approaches:
+We point you to the reading [@mckinneyPythonDataAnalysis2022] and other texts [@wickhamRDataScience2023] for more detail on the different functions for data tidying. Here want to highlight some common cases and the associated tidying approaches:
 
 1. Multiple data elements in a value → [split](https://pandas.pydata.org/docs/reference/api/pandas.Series.str.split.html) one column into several
 2. Data in the column labels, i.e., "wide" format data → ["melt"](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.melt.html) data into "long" format
@@ -164,7 +164,7 @@ One of the key decisions when merging data is the type of join/merge to perform.
 * "left" or "right": Keep all rows from the left or right tables, combining data from the other table where keys match
 * "outer": Keep all rows from both tables, combining data where keys match
 
-::: {.callout-info collapse="true"}
+::: {.callout-note collapse="true"}
 ## What are examples of when you would use one type of join vs. another? (Try answering before expanding)
 
 We might use an inner join when we only want data defined in both tables. Imagine we have table of gene mutations and a table of genes associated with diseases (not all genes are associated with diseases). An inner join would give us only the mutations in disease-associated genes. We would use a left or right join when we want to keep all data from one table, e.g., if we want to opportunistically annotate data, but not drop any. In our same genetics example, we might use a left join to annotate the mutations with disease associations, if available, but not drop any mutations.
@@ -184,8 +184,6 @@ weather.head()
 PI Questions 3: 3 
 :::
 
-::: {.content-hidden}
-
 We want to have one row per observation (i.e., one row per station and date) and one column per variable (i.e., "tmax", "tmin"). To do so, we first "melt" the day columns ("d1", "d2", ...) to lengthen the data, then "pivot" the "element" column to widen the data. In the process we will also drop missing temperature values. In this case we don't lose any information by dropping missing values because we know how many days are in each month, and thus how much data we could have had.
 
 ```{python}
@@ -199,7 +197,7 @@ weather_long = (weather
     .pivot_table(index=["id", "year", "month", "day"], columns="element", values="temp")
     .reset_index()
 )
-weather_long
+weather_long.head()
 #---
 ```
 
@@ -209,7 +207,7 @@ The "d" prefix in the "day" variable does not add any information, so we will st
 #---
 # 4. Remove the "d" prefix from the day variable and convert to integer
 weather_long['day'] = weather_long['day'].str.lstrip("d").astype("int64")
-weather_long
+weather_long.head()
 #---
 ```
 
@@ -220,7 +218,7 @@ We can go one step further and convert the year, month, and day columns into a s
 # 5. Convert year, month, day to a single typed date variable and drop the original columns
 weather_long["date"] = pd.to_datetime(weather_long[['year', 'month', 'day']])
 weather_long = weather_long.drop(columns=["year", "month", "day"])
-weather_long
+weather_long.head()
 #---
 ```
 
@@ -267,5 +265,3 @@ colors = sns.color_palette("tab10")
     .show()
 )
 ```
-
-:::

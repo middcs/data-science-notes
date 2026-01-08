@@ -98,6 +98,12 @@ plt.show()
 #---
 ```
 
+::: {.callout-note collapse="true"}
+## How does `plt.show()` know which figure to show? Or, it is only partly OO...
+
+Only partly OO... Even with the object-oriented API, we can't/don't entirely move away from the stateful API (due to how Matplotlib's back-ends that actually render plots on the screen seem to work). When we invoke `plt.subplots` we create a new figure and "activate" it. Calling `plt.show()` shows the active figure. In this case, since no intervening function activated a different figure, it shows the last figure created. In the notebook environment, there are additional subtleties with the "inline" back-end used to render figures in the notebook itself. It automatically deactivates the current figure at the end of the cell after rendering it, so subsequent calls to `plt.show()` will not show that figure again unless we re-activate it. In general we are working on one figure at a time (but possibly multiple axes within that figure) so using the stateful API at the "figure" level (not "axes" level) is not too problematic.
+:::
+
 ### Figure and Axes
 
 A Matplotlib figure is the entire image or plot that is generated. A figure can contain one or more axes, which are the individual plots or subplots within the figure. Each axes has its own coordinate system, axis labels, title, and data series. Using the object-oriented API, we can create a figure with multiple axes (subplots) and customize each one individually. Here we create a 2x2 grid of subplots, each showing the same portfolio data but with different formatting options. The layout does not need to be square, subplots can be arranged in a variety of ways.
