@@ -272,7 +272,6 @@ div.csl-indent {
   <li><a href="#extended-typing" id="toc-extended-typing" class="nav-link" data-scroll-target="#extended-typing">Extended typing</a></li>
   <li><a href="#untidy-data" id="toc-untidy-data" class="nav-link" data-scroll-target="#untidy-data">Untidy data</a></li>
   <li><a href="#combining-data" id="toc-combining-data" class="nav-link" data-scroll-target="#combining-data">Combining data</a></li>
-  <li><a href="#what-are-examples-of-when-you-would-use-one-type-of-join-vs.-another-try-answering-before-expanding" id="toc-what-are-examples-of-when-you-would-use-one-type-of-join-vs.-another-try-answering-before-expanding" class="nav-link" data-scroll-target="#what-are-examples-of-when-you-would-use-one-type-of-join-vs.-another-try-answering-before-expanding">What are examples of when you would use one type of join vs.&nbsp;another? (Try answering before expanding)</a></li>
   <li><a href="#example-weather-data" id="toc-example-weather-data" class="nav-link" data-scroll-target="#example-weather-data">Example: Weather data</a></li>
   </ul>
 </nav>
@@ -313,7 +312,7 @@ div.csl-indent {
 </ul>
 <p>As Hadley Wickham noted, “Tidy datasets are all alike, but every messy dataset is messy in its own way.” <span class="citation" data-cites="wickhamRDataScience2023">(<a href="#ref-wickhamRDataScience2023" role="doc-biblioref">Wickham, Çetinkaya-Rundel, and Grolemund 2023</a>)</span> How we deal with these issues depends on the context and the analysis we want to perform. For example, we may need or want to drop rows with missing data, leave them as is, or even impute missing values based on other data. While there is no “one-size-fits-all” approach to tidying data, there are some common patterns and techniques. Those are our focus for today.</p>
 <p>Let’s get started with our standard imports.</p>
-<div id="30f61eaf" class="cell" data-execution_count="2">
+<div id="27a6a9df" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
@@ -324,11 +323,11 @@ div.csl-indent {
 <section id="missing-data" class="level2">
 <h2 class="anchored" data-anchor-id="missing-data">Missing data</h2>
 <p>Recall that in the Palmer Penguins dataset <span class="citation" data-cites="horstAllisonhorstPalmerpenguinsV02020">(<a href="#ref-horstAllisonhorstPalmerpenguinsV02020" role="doc-biblioref">Horst, Hill, and Gorman 2020</a>)</span>, some rows have missing values for some or all measurements. Let’s reload the data and take a look at the rows with missing data.</p>
-<div id="f8eef42a" class="cell" data-execution_count="3">
+<div id="c783b280" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/middcs/data-science-notes/main/data/palmer-penguins/palmer-penguins.csv"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(url)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df[df.isna().<span class="bu">any</span>(axis<span class="op">=</span><span class="dv">1</span>)].head() <span class="co"># Show rows with any missing data</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="21">
+<div class="cell-output cell-output-display" data-execution_count="3">
 <div>
 
 
@@ -466,7 +465,7 @@ div.csl-indent {
 <p>It is critical that we accurately represent missing data to ensure valid analyses. When loading data with <code>read_*</code> functions, Pandas will automatically convert certain values to <code>NA</code>, including empty cells, but we can also specify additional values to treat as missing. Doing so is very helpful when dealing with “bespoke” input files.</p>
 <p>One challenge is that while <code>NA</code> is built into all aspects of the R language, Pandas needs to repurpose existing tools within Python (and NumPy) to handle missing data. <code>NaN</code>, for example, is a special floating-point value defined by the relevant design standards (it is not specific to Pandas). There is not an equivalent built-in sentinel value for integers. Thus to represent missing data in integer columns, Pandas will automatically convert the column to floating-point (perhaps to your surprise). Recent versions of Pandas have introduced <a href="https://pandas.pydata.org/docs/user_guide/integer_na.html">“nullable” integer types</a> that can represent missing data without converting to floating-point, but these are still marked as an experimental feature. For other types, Pandas might use the Python <code>None</code> value or the Pandas <code>NaT</code> “Not a Time” values to represent missing data.</p>
 <p>The Pandas methods for <a href="https://pandas.pydata.org/docs/user_guide/missing_data.html">detecting, removing or replacing missing data</a> will generally handle these different cases transparently. For example, we can use <code>dropna</code> to drop rows or columns of different types with some or all missing data. But we need to be mindful of the details so we are not surprised by type coercion or the subtle behaviors of floating-point <code>NaN</code> values. For example, <code>NaN != NaN</code>, so we cannot use equality to comparing missing values.</p>
-<div id="7ef481fa" class="cell" data-execution_count="4">
+<div id="6742d7bf" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> pd.Series([<span class="dv">1</span>, <span class="dv">2</span>, np.nan, <span class="dv">4</span>])</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> pd.Series([<span class="dv">1</span>, <span class="dv">2</span>, np.nan, <span class="dv">4</span>])</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -486,21 +485,21 @@ True</code></pre>
 <h2 class="anchored" data-anchor-id="extended-typing">Extended typing</h2>
 <p>In addition to type distinctions like integer vs.&nbsp;floating-point vs.&nbsp;string, Pandas supports more precise data types that can help with analyses. When a variable is discrete, i.e., can only take on a limited set of values, we can define it as a categorical variable (analogous to a factor in R or an enum in Python and other programming languages). As noted in the <a href="https://pandas.pydata.org/docs/user_guide/categorical.html">Pandas documentation</a>, the categorical data types can offer several advantages, categorical types 1) can reduce memory usage by encoding strings as integers, 2) explicitly define the ordering of values, and 3) indicate that a variable is categorical to other tools (e.g., visualization libraries).</p>
 <p>Managing categorical data is a common task when cleaning data. For example, imagine we had survey data that included a user-entered state variable. We could imagine values like “Vermont”, “Vermont”, “VT”, and “vt” all referring to the same state. We could use categorical data types to help standardize these values and ensure consistent analysis.</p>
-<div id="70f07902" class="cell" data-execution_count="5">
+<div id="3c26d489" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>states <span class="op">=</span> pd.Series([<span class="st">"Vermont"</span>, <span class="st">"Vermont"</span>, <span class="st">"VT"</span>, <span class="st">"vt"</span>, <span class="st">"California"</span>, <span class="st">"CA"</span>, <span class="st">"ca"</span>])</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>pd.Categorical(states.<span class="bu">str</span>.upper())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="23">
+<div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>['VERMONT', 'VERMONT', 'VT', 'VT', 'CALIFORNIA', 'CA', 'CA']
 Categories (4, object): ['CA', 'CALIFORNIA', 'VERMONT', 'VT']</code></pre>
 </div>
 </div>
 <p>We observe we have multiple overlapping categories. We can use <code>map</code> and a dictionary to make the data consistent and then convert to a categorical variable (for example, with a specified set of categories to record there are more possible states than those observed).</p>
-<div id="10dbbb54" class="cell" data-execution_count="6">
+<div id="ffdb2785" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>state_map <span class="op">=</span> { <span class="st">"VT"</span>: <span class="st">"VT"</span>, <span class="st">"VERMONT"</span>: <span class="st">"VT"</span>, <span class="st">"CA"</span>: <span class="st">"CA"</span>, <span class="st">"CALIFORNIA"</span>: <span class="st">"CA"</span> }</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>pd.Categorical(states.<span class="bu">str</span>.upper().<span class="bu">map</span>(state_map), categories<span class="op">=</span>[<span class="st">"CA"</span>, <span class="st">"DC"</span>, <span class="st">"VT"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="24">
+<div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>['VT', 'VT', 'VT', 'VT', 'CA', 'CA', 'CA']
 Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 </div>
@@ -516,14 +515,14 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 <li>Data spread across multiples rows, i.e., data is too long → <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pivot.html">“pivot”</a> data to be wider</li>
 </ol>
 <p>The following data on TB cases in different countries and years has the first two problems <span class="citation" data-cites="wickhamRDataScience2023">(<a href="#ref-wickhamRDataScience2023" role="doc-biblioref">Wickham, Çetinkaya-Rundel, and Grolemund 2023</a>)</span>. Each value is a string with two data elements (the cases and population), and the year data is stored in the column labels. We can apply the first two techniques to make it tidy.</p>
-<div id="ce16a8d0" class="cell" data-execution_count="7">
+<div id="55ebdef5" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tb <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"country"</span>: [<span class="st">"Afghanistan"</span>, <span class="st">"Brazil"</span>, <span class="st">"China"</span>],</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"1999"</span>: [<span class="st">"745/19987071"</span> , <span class="st">"37737/172006362"</span>, <span class="st">"212258/1272915272"</span>],</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2000"</span>: [<span class="st">"2666/20595360"</span>, <span class="st">"80488/174504898"</span>, <span class="st">"213766/1280428583"</span>],</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>})</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>tb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="25">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <div>
 
 
@@ -561,13 +560,13 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 </div>
 </div>
 </div>
-<div id="416b8d36" class="cell" data-execution_count="8">
+<div id="484a8721" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Melt the data to long format by specifying the "id" variables to repeat, the new variable to create</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># from the column labels, and the new variable to hold the values.</span></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>tb_long <span class="op">=</span> tb.melt(id_vars<span class="op">=</span><span class="st">"country"</span>, var_name<span class="op">=</span><span class="st">"year"</span>, value_name<span class="op">=</span><span class="st">"cases_pop"</span>)</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>tb_long</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="26">
+<div class="cell-output cell-output-display" data-execution_count="8">
 <div>
 
 
@@ -623,13 +622,13 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 </div>
 </div>
 </div>
-<div id="35c56aa4" class="cell" data-execution_count="9">
+<div id="00e38d5d" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Now split the "cases_pop" column into two new integer columns, then remove the original</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>tb_long[[<span class="st">"cases"</span>, <span class="st">"population"</span>]] <span class="op">=</span> tb_long[<span class="st">"cases_pop"</span>].<span class="bu">str</span>.split(<span class="st">"/"</span>, expand<span class="op">=</span><span class="va">True</span>).astype(<span class="st">"int64"</span>)</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>tb_long <span class="op">=</span> tb_long.drop(columns<span class="op">=</span><span class="st">"cases_pop"</span>)</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>tb_long</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="27">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <div>
 
 
@@ -693,7 +692,7 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 </div>
 </div>
 <div class="page-columns page-full"><p>The result is now tidy data, with one observation per row and one variable per column! In contrast, the following version of the data is “too long”, i.e., has problem 3. The observations for each country and year are spread across two rows. We use the <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pivot.html"><code>pivot</code> method</a> to make the data wider. </p><div class="no-row-height column-margin column-container"><span class="margin-aside">Behind the scenes Pandas implements <code>pivot</code> by creating and manipulating a hierarchical index, thus the <code>reset_index</code> call to convert the index back into columns.</span></div></div>
-<div id="9fecad9a" class="cell" data-execution_count="10">
+<div id="8e31d984" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>tb <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"country"</span>: [<span class="st">"Afghanistan"</span>, <span class="st">"Afghanistan"</span>, <span class="st">"Afghanistan"</span>, <span class="st">"Afghanistan"</span>, <span class="st">"Brazil"</span>, <span class="st">"Brazil"</span>, <span class="st">"Brazil"</span>, <span class="st">"Brazil"</span>, <span class="st">"China"</span>, <span class="st">"China"</span>, <span class="st">"China"</span>, <span class="st">"China"</span>],</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"year"</span>: [<span class="dv">1999</span>, <span class="dv">1999</span>, <span class="dv">2000</span>, <span class="dv">2000</span>, <span class="dv">1999</span>, <span class="dv">1999</span>, <span class="dv">2000</span>, <span class="dv">2000</span>, <span class="dv">1999</span>, <span class="dv">1999</span>, <span class="dv">2000</span>, <span class="dv">2000</span>],</span>
@@ -701,7 +700,7 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"value"</span>: [<span class="dv">745</span>, <span class="dv">19987071</span>, <span class="dv">2666</span>, <span class="dv">20595360</span>, <span class="dv">37737</span>, <span class="dv">172006362</span>, <span class="dv">80488</span>, <span class="dv">174504898</span>, <span class="dv">212258</span>, <span class="dv">1272915272</span>,  <span class="dv">213766</span>, <span class="dv">1280428583</span>],</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>})</span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>tb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="28">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <div>
 
 
@@ -806,13 +805,13 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 </div>
 </div>
 </div>
-<div id="10160cbe" class="cell" data-execution_count="11">
+<div id="fc4fe981" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># "Pivot" type values to columns, inserting resulting index (county, year) back into the data frame</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># as variables</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>tb_long <span class="op">=</span> tb.pivot(index<span class="op">=</span>[<span class="st">"country"</span>, <span class="st">"year"</span>], columns<span class="op">=</span><span class="st">"type"</span>, values<span class="op">=</span><span class="st">"value"</span>).reset_index()</span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>tb_long</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="29">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div>
 
 
@@ -890,19 +889,31 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 <li>“left” or “right”: Keep all rows from the left or right tables, combining data from the other table where keys match</li>
 <li>“outer”: Keep all rows from both tables, combining data where keys match</li>
 </ul>
-</section>
-<section id="what-are-examples-of-when-you-would-use-one-type-of-join-vs.-another-try-answering-before-expanding" class="level2 callout-info" data-collapse="true">
-<h2 class="anchored" data-anchor-id="what-are-examples-of-when-you-would-use-one-type-of-join-vs.-another-try-answering-before-expanding">What are examples of when you would use one type of join vs.&nbsp;another? (Try answering before expanding)</h2>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>What are examples of when you would use one type of join vs.&nbsp;another? (Try answering before expanding)
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
 <p>We might use an inner join when we only want data defined in both tables. Imagine we have table of gene mutations and a table of genes associated with diseases (not all genes are associated with diseases). An inner join would give us only the mutations in disease-associated genes. We would use a left or right join when we want to keep all data from one table, e.g., if we want to opportunistically annotate data, but not drop any. In our same genetics example, we might use a left join to annotate the mutations with disease associations, if available, but not drop any mutations.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="example-weather-data" class="level2">
 <h2 class="anchored" data-anchor-id="example-weather-data">Example: Weather data</h2>
 <p>The following data from the <a href="https://tidyr.tidyverse.org/articles/tidy-data.html">tidyr package documentation</a> illustrates several of the data tidying techniques we have discussed. It contains daily temperature measurements from a weather station in Mexico. The variables are spread across both the rows and columns. The temperature minimum and maximum are stored in separate rows, while the different days are spread across the columns.</p>
-<div id="2cee7a56" class="cell" data-execution_count="12">
+<div id="2e2c1b6b" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://github.com/tidyverse/tidyr/raw/refs/heads/main/vignettes/weather.csv"</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>weather <span class="op">=</span> pd.read_csv(url)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>weather.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="30">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <div>
 
 
@@ -1062,7 +1073,7 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 </div>
 </div>
 <p>We want to have one row per observation (i.e., one row per station and date) and one column per variable (i.e., “tmax”, “tmin”). To do so, we first “melt” the day columns (“d1”, “d2”, …) to lengthen the data, then “pivot” the “element” column to widen the data. In the process we will also drop missing temperature values. In this case we don’t lose any information by dropping missing values because we know how many days are in each month, and thus how much data we could have had.</p>
-<div id="901b9d76" class="cell" data-execution_count="13">
+<div id="6a145a78" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Melt the day columns into a single "day" column with associated "temp" values</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Drop missing temperature values</span></span>
@@ -1074,7 +1085,7 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>weather_long.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="31">
+<div class="cell-output cell-output-display" data-execution_count="13">
 <div>
 
 
@@ -1143,12 +1154,12 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 </div>
 </div>
 <p>The “d” prefix in the “day” variable does not add any information, so we will strip it off and convert the variable to an integer type to make more useful for analysis (e.g., ensure correct sorting).</p>
-<div id="2b59e3cb" class="cell" data-execution_count="14">
+<div id="2f0b3019" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Remove the "d" prefix from the day variable and convert to integer</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>weather_long[<span class="st">'day'</span>] <span class="op">=</span> weather_long[<span class="st">'day'</span>].<span class="bu">str</span>.lstrip(<span class="st">"d"</span>).astype(<span class="st">"int64"</span>)</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>weather_long.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="32">
+<div class="cell-output cell-output-display" data-execution_count="14">
 <div>
 
 
@@ -1217,13 +1228,13 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 </div>
 </div>
 <p>We can go one step further and convert the year, month, and day columns into a single typed date variable. This will facilitate time series analysis and visualization (for example Seaborn, correctly spacing the days out across the year). We can use the <code>pd.to_datetime</code> function to do so (one of its possible arguments is a <code>DataFrame</code> with year, month, and day columns, in that order), then drop the original year, month, and day columns.</p>
-<div id="c8b68ac7" class="cell" data-execution_count="15">
+<div id="241c43fc" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Convert year, month, day to a single typed date variable and drop the original columns</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>weather_long[<span class="st">"date"</span>] <span class="op">=</span> pd.to_datetime(weather_long[[<span class="st">'year'</span>, <span class="st">'month'</span>, <span class="st">'day'</span>]])</span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>weather_long <span class="op">=</span> weather_long.drop(columns<span class="op">=</span>[<span class="st">"year"</span>, <span class="st">"month"</span>, <span class="st">"day"</span>])</span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>weather_long.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="33">
+<div class="cell-output cell-output-display" data-execution_count="15">
 <div>
 
 
@@ -1280,7 +1291,7 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 </div>
 </div>
 <p>With our tidy data in hand, we can now proceed with analysis and visualization. For example, we can plot the daily maximum temperatures over time. Notice that because we converted the date variable to a typed date, Seaborn automatically spaces the dates correctly along the x-axis.</p>
-<div id="2d54eb19" class="cell" data-execution_count="16">
+<div id="b64f03da" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.lineplot(data<span class="op">=</span>weather_long, x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"tmax"</span>)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Max Temperature (°C)"</span>, title<span class="op">=</span><span class="st">"Daily Max Temperature at Mexican Weather Station (MX17004)"</span>) </span>
@@ -1296,7 +1307,7 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 </div>
 </div>
 <p>How would you modify this plot to also show the daily minimum temperatures as second trace? That is actually a subtle question in this instance. Putting those lines on the same plot implies that “tmin” and “tmax” are two different temperature observations for each date. In that interpretation, we would want to “melt” the data back to the original structure with “element” and “temp” columns, then map “element” to hue.</p>
-<div id="977d2af4" class="cell" data-execution_count="17">
+<div id="12a10536" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.lineplot(</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>weather_long.melt(id_vars<span class="op">=</span>[<span class="st">"id"</span>, <span class="st">"date"</span>], var_name<span class="op">=</span><span class="st">"element"</span>, value_name<span class="op">=</span><span class="st">"temp"</span>), </span>
@@ -1316,7 +1327,7 @@ Categories (3, object): ['CA', 'DC', 'VT']</code></pre>
 </div>
 </div>
 <p>That approach could be awkward if we had other variables, like precipitation, that can’t be readily be combined into the same “element” column. The Seaborn objects interface offers the fine grain control (more similar to R’s libraries, which are expressly designed around tidy data) to create multiple layers from the same data without further reshaping (i.e., continuing to treat “tmin” and “tmax” as separate variables). Here we do just that, while also showing the range on the specific dates for which we have data. The Seaborn objects interface is beyond the scope of this course, but is included here to illustrate the relationship between the plotting tools and how we structure our data.</p>
-<div id="52d96774" class="cell" data-execution_count="18">
+<div id="a50e5127" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn.objects <span class="im">as</span> so</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> sns.color_palette(<span class="st">"tab10"</span>)</span>

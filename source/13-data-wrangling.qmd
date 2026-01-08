@@ -164,7 +164,7 @@ One of the key decisions when merging data is the type of join/merge to perform.
 * "left" or "right": Keep all rows from the left or right tables, combining data from the other table where keys match
 * "outer": Keep all rows from both tables, combining data where keys match
 
-::: {.callout-info collapse="true"}
+::: {.callout-note collapse="true"}
 ## What are examples of when you would use one type of join vs. another? (Try answering before expanding)
 
 We might use an inner join when we only want data defined in both tables. Imagine we have table of gene mutations and a table of genes associated with diseases (not all genes are associated with diseases). An inner join would give us only the mutations in disease-associated genes. We would use a left or right join when we want to keep all data from one table, e.g., if we want to opportunistically annotate data, but not drop any. In our same genetics example, we might use a left join to annotate the mutations with disease associations, if available, but not drop any mutations.
