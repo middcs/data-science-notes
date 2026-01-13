@@ -2,6 +2,7 @@
 jupyter: python3
 title: Markov Models for Text Generation
 subtitle: A First Generative Model From Scratch
+wrap: none
 ---
 
 In this set of notes, we'll take our first peak "under the hood" into a  model for text generation which is simple enough for us to code from scratch and train almost instantly. This model is called a *Markov model*. 

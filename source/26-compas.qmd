@@ -3,6 +3,7 @@ jupyter: python3
 title: |
     Bias and Fairness in Automated Decision Systems
 subtitle: The COMPAS Investigation
+wrap: none
 ---
 
 {{< include _live_notebook_link.qmd >}}

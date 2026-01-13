@@ -4,8 +4,8 @@ code-fold: false
 jupyter: python3
 title: |
     Introducing Classification
-subtitle: |
-    Training models to predict categorical outcomes and guide decision-making. 
+subtitle: Training models to predict categorical outcomes and guide decision-making. 
+wrap: none
 ---
 
 {{< include _live_notebook_link.qmd >}}

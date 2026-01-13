@@ -1,31 +1,26 @@
 ---
-fig-cap-location: margin
-code-fold: false
 jupyter: python3
-title: |
-    Introducing Prediction
-subtitle: |
-    Using data to learn relationships between inputs and outputs for making predictions.
+title: Introducing Prediction
+subtitle: Using data to learn relationships between inputs and outputs for making predictions.
+wrap: none
 ---
 
 {{< include _live_notebook_link.qmd >}}
 
-
-
 In the task of automated prediction, we aim to use a relationship between a set of input features (also called *predictors* or *independent variables*) and an output (also called a *target*). We use this relationship to make a prediction about what outputs would be observed from new inputs. 
 
 For example, suppose we have a numerical input $x$ and a numerical output $y$, and suppose we knew that the input $x$ and the output $y$ were related according to the following linear relationship:
+
 $$
-\begin{aligned}
-y = f(x) = 2x + 1
-\end{aligned}
+    y = f(x) = 2x + 1
 $$
+
 
 Let's visualize this relationship:
 
 ```{python}
 #| fig-cap: Example of a true linear relationship between an input feature $x$ and an output target $y$. 
-#| label: fig-true-linear-relationship
+#| label: true-linear-relationship
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -44,13 +39,15 @@ ax.set(title = "True linear relationship",
        ylabel = r"Target $y$")
 
 ax.legend()
+
+plt.show()
 ```
 
 If we knew this input-output relationship, then we could use it to make predictions for any value of $x$. For example, if we observed an input value of $x = 0.5$, we could predict that the corresponding output would be $y = 2(0.5) + 1 = 2$: 
 
 ```{python}
 #| fig-cap: Predicting the value of $y$ with a new input $x=0.5$ using the true relationship from @fig-true-linear-relationship.
-#| label: fig-linear-prediction
+#| label: linear-prediction
 x_new = 0.5
 y_new = 2 * x_new + 1
 
@@ -64,14 +61,15 @@ ax.scatter(x_new,
 ax.hlines(y_new, xmin=x.min(), xmax=x_new, color='black', linestyles='dashed')
 ax.vlines(x_new, ymin=y.min(), ymax=y_new, color='black', linestyles='dashed')
 ax.legend()
-fig
+
+plt.show()
 ```
 
 The problem, however, is that nature very rarely gives us a true mathematical relationship between inputs and outputs. Instead, we get *data*. Rather than knowing the true relationship $y = f(x)$, we instead observe a set of input-output pairs $(x_i, y_i)$ for $i = 1, \ldots, n$. What we are given looks much more like this: 
 
 ```{python}
 #| fig-cap: Simulated data points generated from a linear relationship with added noise.
-#| label: fig-noisy-linear-relationship
+#| label: noisy-linear-relationship
 y = 2 * x + np.random.normal(0, 0.2, size=n_points) + 1
 
 df = pd.DataFrame({
@@ -85,6 +83,8 @@ sns.scatterplot(data=df, x='x', y='y', ax=ax, edgecolors = "black", facecolors='
 labs = ax.set(title = "Simulated Data", 
               xlabel = r"Feature $x$", 
               ylabel = r"Target $y$")
+
+plt.show()
 ```
 
 Our goal is to use this data to *learn* an approximate relationship $\hat{y} = \hat{f}(x)$ that we can then use to make predictions for new input values. 
@@ -104,6 +104,7 @@ Here, $\hat{y}$ is the name that we'll give to our model's *predicted* output, w
 Let's construct a data frame with several candidate examples of model parameters $w$ and $b$:
 
 ```{python}
+#| fig-cap: Several candidate linear regression models with different parameters.
 k_params = 5
 
 model_df = pd.DataFrame({
@@ -118,7 +119,7 @@ Each row of this data frame corresponds to a different candidate linear model. L
 
 ```{python}
 #| fig-cap: Predictions from several candidate linear regression models.
-#| label: fig-candidate-linear-models
+#| label: candidate-linear-models
 #---
 for i in range(k_params):     
     w = model_df.loc[i, 'w']
@@ -128,7 +129,7 @@ for i in range(k_params):
     sns.lineplot(data=df, x='x', y='y_pred', ax=ax, label = f'Model {i}')
 #---
 
-fig_1
+plt.show()
 ```
 
 Each of the models gives different predictions $\hat{y}$ given the same input $x$. How do we determine which of these models is "best"? A reasonable intuition here is that a good model should make predictions $\hat{y}$ which are *close* to the obserevd outputs $y$ *on average*. One way to express the idea of closeness is to consider the residuals $r_i = y_i - \hat{y}_i$, which measure the difference between the observed output $y_i$ and the predicted output $\hat{y}_i$ for each data point $i$: 
@@ -136,7 +137,7 @@ Each of the models gives different predictions $\hat{y}$ given the same input $x
 ```{python}
 
 #| fig-cap: Residuals for a candidate linear regression model. 
-#| label: fig-residuals
+#| label: residuals
 
 fig, ax = plt.subplots(figsize=(6, 4))
 
@@ -167,6 +168,7 @@ ax.vlines(df['x'],
           zorder = -10)
 
 ax.legend()
+plt.show()
 ```
 
 Let's quantify the idea of closeness using these residuals. The following function accepts three arguments: the `model_df` containing coefficients, the data `df` containing `x` and `y`, and a `metric` function that quantifies the closeness between `y` and predicted `y_pred`. The result is a column of scores computed according to `metric`. 
@@ -198,7 +200,7 @@ model_df.sort_values("mean_residuals")
 #---
 ```
 
-If we compare the mean residuals for each model to @fig-candidate-linear-models, we can see that our use of the mean residual as a scoring metric tends to prefer models that *under-predict* (i.e. models with negative mean residuals). That doesn't seem to be a great idea, and doesn't match our intuition for which of the models above best "fits" the data. 
+If we compare the mean residuals for each model to the candidate linear models, we can see that our use of the mean residual as a scoring metric tends to prefer models that *under-predict* (i.e. models with negative mean residuals). That doesn't seem to be a great idea, and doesn't match our intuition for which of the models above best "fits" the data. 
 
 A more standard idea is to use not the mean error, but the mean *squared* error (MSE) as a scoring metric. The MSE is defined as:
 
@@ -259,23 +261,25 @@ The `sex` column is qualitative (Male, Female, Infant), while the other columns 
 
 ```{python}
 #| fig-cap: Pairplot showing relationships between several physical characteristics of abalones and their age (number of rings).
-#| label: fig-abalone-pairplot
+#| label: abalone-pairplot
 sns.pairplot(df, 
              x_vars = ["height (mm)", "length (mm)", "shell_weight (g)"], 
              y_vars = ["rings"], 
              plot_kws={'alpha':0.5}, )
+plt.show()
 ```
 
 The column `whole_weight` is a composite of the `shucked_weight` (the body of the abalone), `viscera_weight` (the gut), and `shell_weight` (the shell, after drying). The `whole_weight` is not *exactly* equal to the sum of these three weights, but it is very strongly correlated with them: 
 
 ```{python}
 #| fig-cap: Strong correlation (linear trend) between whole weight and the sum of shucked, viscera, and shell weights.
-#| label: fig-weight-correlation
+#| label: weight-correlation
 df["summed_weight (g)"]  = df["shucked_weight (g)"] + df["viscera_weight (g)"] + df["shell_weight (g)"]
 sns.scatterplot(data=df, 
                 x='whole_weight (g)', 
                 y='summed_weight (g)', 
                 alpha = 0.2)
+plt.show()
 ```
 
 Let's therefore drop the `whole_weight` column to avoid redundancy:

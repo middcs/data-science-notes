@@ -2,6 +2,7 @@
 jupyter: python3
 title: Data Frames in Python
 subtitle: Getting started with Pandas Data Frames
+wrap: none
 ---
 
 {{< include _live_notebook_link.qmd >}}

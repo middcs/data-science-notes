@@ -4,8 +4,8 @@ code-fold: false
 jupyter: python3
 title: |
     Features and Overfitting
-subtitle: |
-    Using linear models to model nonlinear trends, and managing the risks of overfitting.
+subtitle: Using linear models to model nonlinear trends, and managing the risks of overfitting.
+wrap: none
 ---
 
 {{< include _live_notebook_link.qmd >}}

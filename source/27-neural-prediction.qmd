@@ -4,6 +4,7 @@ code-fold: false
 title: |
     Introducing Neural Networks
 subtitle: Beyond linear models for regression and classification
+wrap: none
 ---
 
 {{< include _live_notebook_link.qmd >}}

@@ -2,6 +2,7 @@
 jupyter: python3
 title: Data Wrangling with Python
 subtitle: Preparing data for analysis and visualization
+wrap: none
 ---
 
 {{< include _live_notebook_link.qmd >}}

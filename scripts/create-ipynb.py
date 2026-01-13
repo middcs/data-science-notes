@@ -44,10 +44,15 @@ def create_notebook(src_path: Path, out_path: Path, site_url: str):
             # Render to create notebook (instead of convert) to ensure any quarto-specific content is handled (stripped). The lua filter
             # removes solution blocks with '.hide .solution' classes.
             subprocess.run(
-                ["quarto", "render", str(link_path), "--profile", "notebook", "--output", out_path.name, "--no-execute", "--to", "ipynb", "--metadata", f"site-url:{site_url}", "--lua-filter", f"{Path.cwd()}/scripts/remove-solution.lua"], 
+                ["quarto", "render", str(link_path), "--profile", "notebook", "--output", out_path.name, "--no-execute", "--to", "ipynb", "--metadata", f"site-url:{site_url} wrap: none", "--lua-filter", f"{Path.cwd()}/scripts/remove-solution.lua"], 
                 cwd=out_path.parent,
                 check=True,
             )
+            # subprocess.run(
+            #     ["quarto", "convert", str(link_path), "--output", out_path.name], 
+            #     cwd=out_path.parent,
+            #     check=True,
+            # )
     elif src_path.suffix == ".ipynb":
         shutil.copyfile(src_path, out_path)
     else:

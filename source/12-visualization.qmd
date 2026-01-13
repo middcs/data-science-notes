@@ -2,6 +2,7 @@
 jupyter: python3
 title: Data Visualization with Python
 subtitle: Getting started with Matplotlib and Seaborn
+wrap: none
 ---
 
 {{< include _live_notebook_link.qmd >}}

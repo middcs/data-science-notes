@@ -2,6 +2,7 @@
 jupyter: python3
 title: Prediction to Generation
 subtitle: Transitioning from Predictive Models to Generative Models
+wrap: none
 ---
 
 {{< include _live_notebook_link.qmd >}}
