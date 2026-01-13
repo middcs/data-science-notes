@@ -23,6 +23,13 @@ import seaborn as sns
 import numpy as np
 from matplotlib import pyplot as plt
 sns.set_style("whitegrid")
+
+# for suppressing sklearn fit warnings
+def warn(*args, **kwargs):
+    pass
+import warnings
+warnings.warn = warn
+
 ```
 
 ## Nonlinear Prediction: Feature Maps
@@ -136,7 +143,7 @@ for i, deg in enumerate(degs):
     sns.scatterplot(data=df, x='x', y='y', ax = axis)
     sns.lineplot(x=df['x'], y=y_pred, color='black', ax =axis)
     axis.set_title(
-        f'Polynomial regression (deg={deg})\nMSE: {mse(y, y_pred):.3f}'
+        f'Degree={deg}\nMSE: {mse(y, y_pred):.3f}'
         )
 
 t = plt.tight_layout()
@@ -269,7 +276,7 @@ If we wrap this in a loop, we can see how the cross-validated MSE changes as we 
 ```{python}
 
 cv_scores = []
-degrees = np.arange(0, 10)
+degrees = np.arange(0, 25)
 
 for deg in degrees:
     deg_scores = cross_val_score(

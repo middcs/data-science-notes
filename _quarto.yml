@@ -25,10 +25,10 @@ book:
         - source/21-feature-engineering-and-overfitting.qmd
         - source/25-classification.qmd
         - source/26-compas.qmd
-        - source/27-neural-prediction.qmd
-    - part: "Generative Models and Applications"
-      chapters:
-        - source/30-prediction-generation.qmd
+        # - source/27-neural-prediction.qmd
+    # - part: "Generative Models and Applications"
+      # chapters:
+        # - source/30-prediction-generation.qmd
 
 bibliography: refs.bib
 
@@ -45,8 +45,8 @@ format:
     highlight-style: atom-one
     filters: 
       - scripts/remove-delims.lua
-
-    
+  ipynb: 
+    wrap: none
 
 jupyter: python3
 
