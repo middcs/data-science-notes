@@ -22,11 +22,7 @@ sns.set_style("whitegrid")
 ```
 
 ```{python}
-#| column: margin
 #| fig-cap: "Scatterplot of noisy sinusoidal data."
-#| fig-width: 100
-#| fig-height: 60
-#| echo: false
 np.random.seed(42)
 
 def sin_data(n_samples=50, noise_std=0.3):
@@ -35,8 +31,9 @@ def sin_data(n_samples=50, noise_std=0.3):
     return pd.DataFrame({'x': x, 'y': y})
 
 df = sin_data()
-fig, ax = plt.subplots(figsize=(2, 1.1))
+fig, ax = plt.subplots(figsize=(3, 3))
 sns.scatterplot(data=df, x='x', y='y', ax=ax, color = "steelblue", alpha = 0.7)
+plt.show()
 ```
 
 We saw that, although fitting a linear regression model to this data directly resulted in poor performance, we could instead fit a *polynomial regression model* where we defined a feature map $\phi_d(x) = x^d$ and then fit a linear model of the form 
@@ -46,14 +43,14 @@ $$
     \hat{y} &= w_D \phi_D(x) + w_{D-1} \phi_{D-1}(x) + \cdots + w_1 \phi_1(x) + w_0 \\
     &= \sum_{d=0}^D w_d \phi_d(x).
 \end{aligned}
-$${#eq-poly-regression}
+$$
 
 We then used standard linear regression techniques to estimate the weights $w_d$.
 
 However, this approach has some major limitations: 
 
 - Why should we choose polynomial feature maps, rather than some other function instead? 
-- How do we know how many to use in order to avoid both underfitting and overfitting?
+- How do we know how many features to use in order to avoid both underfitting and overfitting?
 
 These two questions are sometimes referred to as *the problem of features*. There have been several proposed solutions to the problem of features over the history of machine learning. Today we'll introduce *neural networks*, which have been the dominant paradigm in many areas of machine learning since roughly 2012. 
 
@@ -63,20 +60,27 @@ The core insight of neural networks is very simple: rather than just trying to f
 
 > Neural networks aim to learn helpful feature maps from data. 
 
-
 The most common way in which neural networks learn features is by composing together simple parameterized functions (often called "layers") into complex pipelines which may then be optimized. 
 
-For example, suppose that we want to learn a total of $p$ features $\phi_1(x), \ldots, \phi_p(x)$ from a single input variable $x$. One way to define these features is to simply set $\phi_j(x) = x$ for all $j$. Since no real transformation is applied, this is equivalent to fitting a linear regression model, like before, since 
+For example, suppose that we want to learn a total of $p$ features $\phi_1(x), \ldots, \phi_p(x)$ from a single input variable $x$. One way to define these features is to simply set $\phi_i(x) = x$ for all $i$. Since no real transformation is applied, this is equivalent to fitting a linear regression model, like before, since 
 
 $$
 \begin{aligned}
-    \hat{y} &= \sum_{j = 1}^p w_j\phi_j(x) + b \\ 
-            &= \sum_{j = 1}^p w_j x + b \\
-            &= \underbrace{\left(\sum_{j = 1}^p w_j\right)}_w x + b.
+    \hat{y} &= \sum_{i = 1}^p w_i\phi_i(x) + b \\ 
+            &= \sum_{i = 1}^p w_i x + b \\
+            &= \underbrace{\left(\sum_{i = 1}^p w_i\right)}_w x + b.
 \end{aligned}
 $$
 
-We can verify this by implementing it in our new framework for deep learning, PyTorch. In the language of neural networks, the operation of taking $x$ and transforming it into $wx + b$ is called a `Linear` layer. Since the input is just a single number and the output is also a single number, we say that this layer has input dimension 1 and output dimension 1. This means that we need a `Linear(1,1)` layer to perform the mapping. In standard torch frameworks, we need to save all our layers as instance variables of a class, and then define a `forward` method which specifies how data flows through the layers. Let's try this out. First we'll import our torch libraries and convert our data into torch's preferred data format, the `Tensor`.[You can think about a `Tensor` as very similar to a numpy array; the key difference is that Tensors support what is called *automatic differentiation*, a key technology which is behind the scenes when training these models]{.aside}
+In the language of neural networks, the operation of taking $x$ and transforming it into $wx + b$ is called a `Linear` layer. Since the input is just a single number and the output is also a single number, we say that this layer has input dimension 1 and output dimension 1. This means that we need a `Linear(1,1)` layer to perform the mapping. 
+
+We will implement this using the `torch` library, which is a popular framework for building and training neural networks. The typical approach for defining a model in `torch` is to create a class which inherits from `torch.nn.Module`, define the layers as instance variables of that class, and then define a `forward` method which specifies how data flows through the layers. Let's try this out. First we'll import our torch libraries and convert our data into torch's preferred data format, the `Tensor`.[You can think about a `Tensor` as very similar to a numpy array; the key difference is that Tensors support *automatic differentiation*, a key technology for training neural network models]{.aside}
+
+::: {.callout-tip collapse="true"}
+## Why torch?
+
+There are multiple neural network frameworks available, including TensorFlow, JAX, and others. We choose to use PyTorch here because it is widely used in both research and industry, has a Pythonic and (more?) intuitive interface, and has extensive documentation and community support (many examples are available). While the the syntax and underlying implementation details differ between frameworks, the core concepts we are learning here are similar, and thus readily portable, across frameworks.
+:::
 
 
 ```{python}
@@ -128,13 +132,12 @@ def train_regression_model(model, X, y, num_epochs=1000, learning_rate=0.1):
 ```
 
 1. Define the loss function (mean squared error for regression).
-2. Define the optimization algorithm used to adjust the parameters in order to make the loss function small. 
+2. Define the optimization algorithm used to adjust the parameters in order to make the loss function small. In this case we're using stochastic gradient descent (SGD).
 3. Reset all information accumulated from the previous backpropagation step.
 4. Perform a forward pass through the model to compute predictions.
 5. Compute the loss value based on the predictions and true values.
 6. Perform an algorithm called *backpropagation* to determine a good direction in which to adjust the model parameters. 
 7. Update the model parameters based on the results of backpropagation.
-
 
 Let's also define some functions to facilitate plotting the results of our regression model.
 
@@ -149,18 +152,19 @@ def plot_regression_model_training(model, X, y, df, num_epochs=10, num_viz=10):
 
     loss_all = []
     for j in range(num_viz):
-
         plot_regression(model, X, y, df, ax[0], alpha=j/num_viz, color='black')
         losses = train_regression_model(model, X, y, num_epochs = num_epochs)
         loss_all.extend(losses)
 
     ax[0].set_title('Model Prediction')
+    
     ax[1].plot(loss_all, color = "grey")
     ax[1].set_title('Training Loss Over Training Steps')
     ax[1].set_xlim(0, num_epochs * num_viz)
     ax[1].set_ylim(0, max(loss_all)*1.1)
     ax[1].set_xlabel('Training Steps')
     ax[1].set_ylabel('MSE Loss')
+    
     plt.tight_layout()
 ```
 
@@ -170,10 +174,21 @@ Let's now finally create and train our linear regression model:
 #---
 model = LinearRegressionNN()
 plot_regression_model_training(model, X, y, df, num_epochs=1, num_viz=10)
+plt.show()
 #---
 ```
 
 As expected, we can see that the model attempts to fit the data with a straight line, which it adjusts over the course of the training process until the training loss begins to plateau. 
+
+::: {.callout-tip collapse="true"}
+## What is torch doing under the hood?
+
+When we define a model in torch, it automatically keeps track of all the parameters (weights and biases) that need to be learned during training (accessible via `model.parameters()`). When we run the forward pass, torch computes the output of the model based on the current values of these parameters (building a graph of the computation). During backpropagation, torch "propagates" the errors back through the computation graph calculating the gradients of the loss function (the error) with respect to each parameter, which are then used by the optimizer to update the parameters, i.e., $w_i \leftarrow w_i - \alpha \frac{\partial \text{Loss}}{\partial w_i}$, where $\alpha$ is the learning rate.
+
+```{python}
+list(model.parameters())
+``` 
+:::
 
 ## Nonlinear Features via Neural Networks
 
@@ -181,11 +196,11 @@ Now let's move past linear regression to what neural networks are really for: no
 
 $$
 \begin{aligned}
-    \phi_i(x) = \sigma(u_ix)\;,
+    \phi_i(x) = \sigma(w_ix + b_i)\;,
 \end{aligned}
 $$
 
-where $u_i$ is a learned weight corresponding to feature $i$ and $\sigma$ is a fixed nonlinear function called an *activation function*. A common choice for $f$ is the *rectified linear unit* (ReLU), defined as [There are lots of reasonable choices of activation function: the primary requirement is simply that the function be nonlinear in some way.]{.aside}
+where $w_i$ is the learned weight (and $b_i$ the learned bias) corresponding to feature $i$ and $\sigma$ is a fixed nonlinear function called an *activation function*. A common choice for $\sigma$ is the *rectified linear unit* (ReLU), defined as [There are lots of reasonable choices of activation function: the primary requirement is simply that the function be nonlinear in some way.]{.aside}
 
 $$
 \begin{aligned}
@@ -193,24 +208,15 @@ $$
 \end{aligned}
 $$
 
-This means that the model we're going to implement now has the form 
-
-$$
-\begin{aligned}
-    \hat{y} = \sum_{i = 1}^p w_i \sigma(u_i x)\;.
-\end{aligned}
-$$
+We then compute $\hat{y}$ as a linear combination of these features, just like before, i.e., $\hat{y} = \sum_{i } w_i \phi_i(x) + b$.
 
 Now it matters how we set $p$, the total number of features to learn. As usual, increasing $p$ increases the flexibility of the model, allowing it to fit more complex relationships in the data, but also increasing the risk of overfitting. 
 
-To build this model, we need two `Linear` layers: one to map the input $x$ to the $p$ features $\phi_i(x)$, and another to map the features to the output $\hat{y}$. We'll also need to include the ReLU activation function between these two layers: [It's very important that the *output* dimension of one `Linear` layer matches the *input* dimension of the next layer, as illustrated below.]{.aside}
+To build this model, we need two `Linear` layers: one to map the input $x$ to the $p$ features $\phi_i(x)$ (termed a "hidden layer"), and another to map the features to the output $\hat{y}$. We'll also need to include the ReLU activation function between these two layers: [It's very important that the *output* dimension of one `Linear` layer matches the *input* dimension of the next layer, as illustrated below.]{.aside}
 
 ```{python}
-
-num_features = 30
-
 class SimpleNN(nn.Module):
-    def __init__(self):
+    def __init__(self, num_features=30):
         super(SimpleNN, self).__init__()
         self.layer1 = nn.Linear(1, num_features)   
         self.layer2 = nn.Linear(num_features, 1)   
@@ -232,12 +238,63 @@ plot_regression_model_training(model, X, y, df, num_epochs=10, num_viz=30)
 
 This model is able to fit the nonlinear trend in the sinusoidal data set much more effectively than the linear regression model from above, which is reflected in the much smaller value of the loss function at the end of training. 
 
+### What kind of features is the model learning?
+
+Previously we had explicitly defined the features we wanted to use in our regression model (e.g., polynomial features). Now the features are being learned automatically by the model. But what kind of features is it learning? We plot those features by extracting the outputs of the activation function, i.e. the outputs of the hidden layer, for a range of input values (via torch's hook mechanism). We see that the model has learned a set of piecewise linear functions (left) which it is then combining via final layer to fit the data (right). We observe how these features effectively "cancel out" in some regions while combining constructively in others to fit the nonlinear data. There is something very important going on there... We could image that with enough of those features, we could approximate any function. And indeed that is the case! We can prove that we can approximate any continuous function $f$ to an arbitrary degree of accuracy with a neural network consisting of single nonlinear layer (of sufficient width) followed by a linear output layer. This is known as the [*universal approximation theorem*](https://en.wikipedia.org/wiki/Universal_approximation_theorem).[Although we can prove the existence of such a network, this theorem(s) doesn't provide a guide to defining was "sufficient width" means, or how we could train such a network in practice.]{.aside} 
+
+```{python}
+# Store the activations of each layer
+activation = {}
+def getActivation(name):
+  # Pytorch forward hook signature
+  def hook(model, input, output):
+    activation[name] = output.detach()
+  return hook
+
+# Register hook to capture output from the ReLU layer
+h1 = model.activation.register_forward_hook(getActivation('activation'))
+
+# Create a range of input values and pass them through the model
+x_min, x_max = X[:, 0].min()*1.1, X[:, 0].max()*1.1
+xx = torch.arange(x_min, x_max, 0.01).unsqueeze(-1)
+with torch.no_grad():
+    yy = model(xx)
+
+h1.remove()  # Clear the hook
+
+# Plot the non-linear features
+fig, ax = plt.subplots(1, 2, figsize=(7, 3))
+ax[0].plot(xx.numpy(), activation['activation'].numpy())
+ax[0].set_title('Learned Nonlinear Features')
+ax[0].set(xlabel='x', ylabel='$\phi(x)$')
+
+ax[1].scatter(X.numpy(), y.numpy(), color='steelblue', alpha=0.7, s=5)
+ax[1].plot(xx.numpy(), (activation['activation'] * model.layer2.weight).detach().numpy())
+ax[1].set_title('Weighed Combination of Features')
+ax[1].set(xlabel='x', ylabel='$w_i\cdot\phi_i(x)$')
+
+plt.tight_layout()
+plt.show()
+```
+
+### The neuron as a computational unit
+
+With the important role of activation functions we tend to think about "neurons", i.e., the layers in our networks, as computational units combining the weighted sum and the activation function (which may be non-linear or just the identity function). As you saw in the reading, we often express this with vector notation, i.e., \emph{dot product} between the weight vector $\boldsymbol{w}$ and the input vector $\boldsymbol{x}$, plus a bias term $b$, passed through an activation function $\sigma$:
+
+$$
+\begin{aligned}
+    y & = \sigma\left(\sum_{i} w_i x_i + b\right) \\
+      & = \sigma(\boldsymbol{w}\cdot \boldsymbol{x} + b)
+\end{aligned}
+$$
+
+::: {.content-hidden}
+PI Questions: 1-3
+:::
 
 ## Neural Networks for Classification
 
-Neural networks are also widely used for nonlinear classification problems. 
-
-To illustrate this, we'll create a synthetic two-dimensional classification data set using the `make_moons` function from `sklearn`. This data set consists of two interleaving half circles, which cannot be separated by a linear decision boundary.
+Neural networks are also widely used for nonlinear classification problems. To illustrate this, we'll create a synthetic two-dimensional classification data set using the `make_moons` function from `sklearn`. This data set consists of two interleaving half circles, which cannot be separated by a linear decision boundary.
 
 ```{python}
 from sklearn.datasets import make_moons
@@ -249,8 +306,8 @@ fig, ax = plt.subplots(figsize=(6, 4))
 sns.scatterplot(x=X[:, 0], y=X[:, 1], hue=y.flatten(), palette='BrBG', ax=ax, legend = False, edgecolor='k')
 ax.set_title('Synthetic Two-Class "Moons" Data Set')
 ax.set(xlabel='Feature 1', ylabel='Feature 2')
+plt.show()
 ```
-
 
 Compared to regression, the primary difference for classification problems is that we typically design our network to output a score *for each possible class*. 
 
@@ -272,7 +329,7 @@ Here's how this looks for some example input data:
 x_example = torch.tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
 model_example = LinearClassificationNN(num_classes=2)
 output_example = model_example(x_example)
-print(output_example)
+output_example
 ```
 
 We often apply the *softmax* function to each row of outputs in order to convert them into interpretable class probabilities. The softmax is defined as 
@@ -289,15 +346,13 @@ When applied to any vector of real numbers, the output of the softmax is a vecto
 torch.softmax(output_example, dim=1)
 ```
 
-
 The loop to train a classification model is very similar to the regression training loop from before. We just need to specify a different loss function, called *cross-entropy loss*, which is appropriate for classification problems and which accepts multidimensional outputs of the kind we're using here. Because the cross-entropy loss function in PyTorch expects the target labels to be in a one-hot encoded format, we'll convert our labels `y` accordingly before training.
 
 ```{python}
-
 y_one_hot = torch.nn.functional.one_hot(y.flatten().long(), num_classes=2).float()
 
 def train_classification_model(model, X, y, num_epochs=1000, learning_rate=0.1):
-    loss = nn.CrossEntropyLoss()                          # <1>
+    loss = nn.CrossEntropyLoss()  # <1>
     optimizer = optim.SGD(model.parameters(), lr=learning_rate)  
 
     losses = []
@@ -323,12 +378,12 @@ model = LinearClassificationNN()
 losses = train_classification_model(model, X, y, num_epochs=1000)
 y_hat = model.forward(X)
 preds = torch.argmax(y_hat, dim=1)
-print((preds == y.flatten()).float().mean())  # Classification accuracy
+(preds == y.flatten()).float().mean()  # Classification accuracy
 #---
 ```
 
 
-For data with a small number of dimensions, it can be helpful to visualize the behavior of the model in terms of the *decision regions*, which are the combinations of feature inputs which the model assigns to each class. The somewhat complicated code below implements this visualization along with a plot of the training loss over epochs.
+For data with a small number of dimensions, it can be helpful to visualize the behavior of the model in terms of the *decision regions*, which are the combinations of feature inputs which the model assigns to each class. The code below implements this visualization along with a plot of the training loss over epochs.
 
 ```{python}
 def plot_classification(model, X, y, ax):
@@ -336,7 +391,8 @@ def plot_classification(model, X, y, ax):
     x_min, x_max = X[:, 0].min()*1.1, X[:, 0].max()*1.1
     y_min, y_max = X[:, 1].min()*1.1, X[:, 1].max()*1.1
     xx, yy = torch.meshgrid(torch.arange(x_min, x_max, 0.01),
-                            torch.arange(y_min, y_max, 0.01))
+                            torch.arange(y_min, y_max, 0.01),
+                            indexing='ij')
     grid = torch.cat([xx.reshape(-1, 1), yy.reshape(-1, 1)], dim=1)
     with torch.no_grad():
         Z = model(grid)
@@ -363,10 +419,11 @@ Now we can plot both the loss and the decision regions learned by our linear cla
 #---
 model = LinearClassificationNN()
 plot_classification_model_training(model, X, y)
+plt.show()
 #---
 ```
 
-Whoops! This doesn't look like such an interesting classification model. In fact, the use of a single linear layer plus cross-entropy loss is equivalent to fitting a logistic regression model, which we've already seen. To develop a more interesting model, let's add a hidden layer with nonlinear activation functions, just like we did for regression above.
+But that doesn't look like such an interesting or useful classification model. In fact, the use of a single linear layer plus cross-entropy loss is equivalent to fitting a logistic regression model, which we've already seen. To develop a more interesting model, let's add a hidden layer with nonlinear activation functions, just like we did for regression above.
 
 ```{python}
 #---
@@ -389,6 +446,7 @@ class SimpleClassificationNN(nn.Module):
 #---
 model = SimpleClassificationNN(num_classes=2, num_features=100)
 plot_classification_model_training(model, X, y)
+plt.show()
 #---
 ``` 
 
@@ -396,4 +454,4 @@ Again, our model has much more successfully learned the nonlinear structure in t
 
 ## Coming Up
 
-In these notes, we demonstrated the use of neural networks for learning nonlinear features in regression and classification problems. These are settings in which we have previously learned how to use other methods, and indeed, so-called "classical" methods often outperform neural networks on small data sets that can be easily represented with tabular structure (i.e. using single data frame). Where neural networks truly shine is in settings where the data is large and has a complex structure which doesn't easily fit in to the dataframe paradigm. Some examples include images, audio, video, and text. In upcoming notes, we'll explore the application of neural networks to modeling text data. 
+In these notes, we demonstrated the use of neural networks for learning nonlinear features in regression and classification problems. These are settings in which we have previously learned how to use other methods, and indeed, so-called "classical" methods often outperform neural networks on small data sets that can be easily represented with tabular structure (i.e. using single data frame). Where neural networks truly shine is in settings where the data is large and has a complex structure which doesn't easily fit in to the dataframe paradigm, i.e., for which there not already clear features. Some examples include images, audio, video, and text. Conceptually these problems are not very different from what we've seen here: we still want to learn a mapping from inputs to outputs, that is learn a function $\hat{y}=f(x)$ that approximates some unknown relationship between inputs $x$ and outputs $y$. That same idea applies for with more "complex" inputs, e.g., images. If we are trying to build a classifier to predict the kind of fruit in an image, we can think that as learning a function $\hat{y}=f(\text{image})$ that maps from images to fruit labels. In upcoming classes, we'll explore the application of neural networks to modeling text data. 

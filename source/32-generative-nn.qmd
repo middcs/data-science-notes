@@ -1,0 +1,111 @@
+---
+jupyter: python3
+title: Generative Neural Networks
+subtitle: Model architectures underlying LLMs
+wrap: none
+---
+
+https://jalammar.github.io/illustrated-transformer/
+https://poloclub.github.io/transformer-explainer/
+
+
+
+https://arxiv.org/pdf/1906.05714
+
+
+
+```{python}
+#| echo: false
+# Install bertviz if (and only if) running in Google Colab
+import sys
+if "google.colab" in sys.modules:
+    !pip install bertviz
+```
+
+Load GPT-2 model with the ability to output attention weights so we can visualize each layer and head's attention patterns.
+```{python}
+import torch # Common imports for Pytorch
+import torch.nn.functional as F
+
+from transformers import AutoTokenizer, AutoModelForCausalLM
+checkpoint = "openai-community/gpt2"
+tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+# Use slower eager attention to enable attention outputs
+model = AutoModelForCausalLM.from_pretrained(checkpoint, attn_implementation="eager", output_attentions=True)
+model.eval();  # Put model in evaluation mode
+```
+
+
+```{python}
+inputs = tokenizer("The dog ran up the street and barked loudly.", return_tensors="pt")
+output = model.generate(**inputs, max_new_tokens=20, do_sample=True, num_return_sequences=5, pad_token_id=tokenizer.eos_token_id)
+tokenizer.batch_decode(output, skip_special_tokens=True)
+```
+
+## Transformer Architecture
+
+The Transformer architecture, introduced in the paper ["Attention is All You Need"](https://arxiv.org/abs/1706.03762) by Vaswani et al. in 2017, has become a (the?) foundational neural network architecture for natural language processing (NLP) tasks and increasingly for computer vision and other domains too. Previously, most sequence-to-sequence models, such as for machine translation or text generation, used recurrent neural networks (RNNs) to process input sequences. But RNNs are inherently sequential; many computational steps are required to propagate "information" between distant elements (i.e., to capture "long-range dependencies"). Transformers entirely rely on self-attention mechanisms to efficiently capture the relationships between all elements in a sequence, even those at "long distance", in parallel. 
+
+The original application was for machine translation, and so consisted of an encoder-decoder architecture (the encoder effectively processed the source language, while the decoder generated the target language). Models such as GPT-2, our example here, use only the decoder portion for generative language modeling tasks while other models use different subsets (e.g., just the encoder portion) of the full Transformer architecture. Today we will primarily focus on the self-attention mechanism, and its role in propagating information between different tokens in a sequence, but recognize it is part of a larger architecture.
+
+
+## Visualizing Attention
+
+
+
+
+Define a helper function for plotting attention weights.
+```{python}
+from matplotlib import pyplot as plt
+import seaborn as sns
+
+def _format_special_chars(tokens):
+    return [t.replace('Ġ', ' ') for t in tokens]
+
+def plot_attention(attentions, inputs, layer=0, head=0):
+    tokens = _format_special_chars(tokenizer.convert_ids_to_tokens(inputs["input_ids"][0]))
+    att = attentions[layer][0, head, :, :].detach().numpy()
+    ax = sns.heatmap(att, xticklabels=tokens, yticklabels=tokens)
+    ax.set(title=f"Attentions Layer {layer} Head {head}", xlabel="Attends to", ylabel="Query")
+    return ax
+```
+
+Consider the following input sequence "The girl and the boy walked home. She". [These examples are adapted from @vigAttentionVis2019]{.aside}. What are the relevant tokens that "She" should "attend" to understand this sentence? The implication is that "She" in the second sentence is referring to the "girl" in the first sentence and as we would expect that the attention weights (for some layer and head) would reflect this. And indeed we can see in the attention weights for layer 5, head 10, the token "She" (last row) attends strongly to "girl" (second column).
+
+```{python}
+inputs = tokenizer("The girl and the boy walked home. She", return_tensors="pt")
+output = model(**inputs)
+# output.attentions is (layers) length tuple of (batch_size, num_heads, seq_len, seq_len) tensors
+# containing attention weights after the attention softmax, used to compute the weighted average in
+# self-attention heads.
+plot_attention(output.attentions, inputs, layer=5, head=10)
+plt.show()
+```
+
+contrast that with the attention map when we replace "She" with "He" in the start of the second sentence. Now "He" (last row) attends more strongly to "boy" (fifth column).
+
+```{python}
+inputs = tokenizer("The girl and the boy walked home. He", return_tensors="pt")
+output = model(**inputs)
+plot_attention(output.attentions, inputs, layer=5, head=10)
+plt.show()
+```
+
+Not all heads in all layers will show this behavior. Different layers and heads learn to focus on different aspects of the input sequence. Some heads may focus on syntactic relationships, while others may capture semantic relationships or positional information. We can use [BertViz](https://github.com/jessevig/bertviz) to explore the entire model ("model view") and interactively explore individual layers and heads like we did above ("head view"). To look at a single layer (click on the colors to show/hide specific heads):
+
+```{python}
+from bertviz import head_view, model_view
+
+# Interactively view all layers and heads, defaulting to the same shown above
+head_view(output.attentions, tokenizer.convert_ids_to_tokens(inputs["input_ids"][0]), layer=5, heads=[10])
+```
+
+or the entire model:
+
+```{python}
+model_view(output.attentions, tokenizer.convert_ids_to_tokens(inputs["input_ids"][0]))
+```
+
+Notice that for some heads, tokens attend to themselves, in others, each token appears to attend to the previous token (e.g, layer 4, head 11) and many other relationships. 
+
+null attention.
