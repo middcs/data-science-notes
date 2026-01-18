@@ -26,9 +26,9 @@ book:
         - source/25-classification.qmd
         - source/26-compas.qmd
         - source/27-neural-prediction.qmd
-    # - part: "Generative Models and Applications"
-      # chapters:
-        # - source/30-prediction-generation.qmd
+    - part: "Generative Models and Applications"
+      chapters:
+        - source/30-prediction-generation.qmd
 
 bibliography: refs.bib
 
