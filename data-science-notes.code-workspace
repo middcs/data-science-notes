@@ -6,11 +6,14 @@
 	],
 	"settings": {
 		"cSpell.words": [
+			"backpropagation",
+			"convolutional",
 			"Hadley",
 			"logits",
 			"Matplotlib",
 			"multinomial",
 			"NumPy",
+			"overfitting",
 			"Seaborn",
 			"softmax",
 			"Tidyverse",

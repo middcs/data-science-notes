@@ -26,10 +26,16 @@ book:
         - source/25-classification.qmd
         - source/26-compas.qmd
         - source/27-neural-prediction.qmd
+<<<<<<< HEAD
     # - part: "Generative Models and Applications"
       # chapters:
         # - source/30-prediction-generation.qmd
         - source/31-markov-models.qmd
+=======
+    - part: "Generative Models and Applications"
+      chapters:
+        - source/30-prediction-generation.qmd
+>>>>>>> faa660a34d796965fc455c1475f5e9e9d7478fb5
 
 bibliography: refs.bib
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -94,7 +94,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-da5d8d89f6dce618f5587771a6e0de62.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -152,9 +152,7 @@ div.csl-indent {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="../index.html" class="sidebar-logo-link">
-      </a>
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Applied Data Science</a> 
     </div>
@@ -243,6 +241,23 @@ div.csl-indent {
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Generative Models and Applications</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../source/30-prediction-generation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Prediction to Generation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -294,7 +309,7 @@ div.csl-indent {
 <p>We have already seen a few examples of visualizing data using Python’s Matplotlib and Seaborn libraries, but purposely elided the details. Today will we focus on those tools. <a href="https://matplotlib.org/">Matplotlib</a> is a “lower-level” plotting library for producing 2-D figures while <a href="https://seaborn.pydata.org/">Seaborn</a> is a higher-level library built on top of Matplotlib that provides convenient functions for common statistical visualizations.</p>
 <p>Visualization is not just about the mechanics of making figures. It is a powerful exploratory tool for understanding data, and a critical tool for clearly and accurately communicating those insights to others. The fanciest, most “beautiful”, plots are useless if they do not clearly convey the intended message. Conversely, a simple plot that clearly conveys an important insight can be very powerful.</p>
 <p>Let’s get started with our standard imports. Note the new additions for Matplotlib and Seaborn. As with the other libraries we will use the community import prefix conventions. We also set a default plotting style for Seaborn to use.</p>
-<div id="ba44b19c" class="cell" data-execution_count="2">
+<div id="54902832" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
@@ -320,7 +335,7 @@ div.csl-indent {
 <section id="matplotlib" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="matplotlib">Matplotlib</h2>
 <p>Recall our previous experiments with random walks to simulate an investment portfolio.</p>
-<div id="54650681" class="cell" data-execution_count="3">
+<div id="e36ecd62" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>initial <span class="op">=</span> <span class="dv">100</span> <span class="co"># Initial portfolio balance</span></span>
@@ -377,7 +392,7 @@ div.csl-indent {
 </div>
 <div class="callout-body-container callout-body">
 <p>In the default “interactive” IPython notebook configuration we are using, the final <code>plt.show()</code> step is actually <a href="https://jakevdp.github.io/PythonDataScienceHandbook/04.00-introduction-to-matplotlib.html#show()-or-No-show()?-How-to-Display-Your-Plots">optional (like shown below)</a>. The notebook will automatically render the current figure when the cell finishes executing. However, it is good practice to include this step explicitly, especially if you later run the same code in a different environment (e.g., a script or other non-interactive setting) where this automatic rendering does not occur.</p>
-<div id="d640d98f" class="cell" data-execution_count="5">
+<div id="55736153" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(portfolio)<span class="op">+</span><span class="dv">1</span>), portfolio)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Month"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Portfolio ($)"</span>)</span>
@@ -398,7 +413,7 @@ div.csl-indent {
 <section id="stateful-vs.-object-oriented-apis" class="level3">
 <h3 class="anchored" data-anchor-id="stateful-vs.-object-oriented-apis">Stateful vs.&nbsp;Object-Oriented APIs</h3>
 <p>As described in the reading, <a href="https://jakevdp.github.io/PythonDataScienceHandbook/04.00-introduction-to-matplotlib.html#Two-Interfaces-for-the-Price-of-One">Matplotlib has two APIs (application programming interfaces)</a> for creating figures: the “stateful” API (as shown above) and the “object-oriented” API. The former maintains an internal reference to the current figure and axes (to which plotting commands are applied), while the latter uses explicit figure and axes objects (i.e., you control which figure and axes are modified by a specific operation). The stateful API is can be simpler for quick plots, while the object-oriented API can enable more control for complex figures. Here is the same plot as above using the object-oriented API. We explicitly create a figure and axes object with <code>plt.subplots()</code>, and then use the axes object to call plotting methods. Note that are are some differences in method names (e.g., <code>set_xlabel</code> vs.&nbsp;<code>xlabel</code>) between the two APIs.</p>
-<div id="0e70def7" class="cell" data-execution_count="6">
+<div id="90ebba40" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>ax.plot(<span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(portfolio)<span class="op">+</span><span class="dv">1</span>), portfolio)</span>
@@ -434,7 +449,7 @@ div.csl-indent {
 <section id="figure-and-axes" class="level3">
 <h3 class="anchored" data-anchor-id="figure-and-axes">Figure and Axes</h3>
 <p>A Matplotlib figure is the entire image or plot that is generated. A figure can contain one or more axes, which are the individual plots or subplots within the figure. Each axes has its own coordinate system, axis labels, title, and data series. Using the object-oriented API, we can create a figure with multiple axes (subplots) and customize each one individually. Here we create a 2x2 grid of subplots, each showing the same portfolio data but with different formatting options. The layout does not need to be square, subplots can be arranged in a variety of ways.</p>
-<div id="c192f1c3" class="cell" data-execution_count="7">
+<div id="53b2ddf0" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, sharex<span class="op">=</span><span class="va">True</span>, sharey<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>months <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(portfolio) <span class="op">+</span> <span class="dv">1</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -479,7 +494,7 @@ div.csl-indent {
 <section id="data-visualization-with-seaborn" class="level2">
 <h2 class="anchored" data-anchor-id="data-visualization-with-seaborn">Data visualization with Seaborn</h2>
 <p>As noted in the reading, some aspects of Matplotlib have begun to “show their age”. Newer libraries, such as Seaborn, have been built on top of Matplotlib’s powerful foundation to provide a higher-level interface for common statistical visualizations. For example, Matplotlib pre-dated Pandas. While it is very possible to plot Pandas DataFrames and Series with Matplotlib a lot of boilerplate code was required. Seaborn was built with Pandas in mind, making it very easy to create plots directly from DataFrames (and Pandas now has built-in wrappers for plotting that use Matplotlib).</p>
-<div id="f2fdda83" class="cell" data-execution_count="8">
+<div id="61fc7eca" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/middcs/data-science-notes/main/data/palmer-penguins/palmer-penguins.csv"</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(url)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -621,7 +636,7 @@ div.csl-indent {
 <p>Looking at the function call, we see that we provide the DataFrame, and then specify which columns to use for the x and y values and the other attributes of each point (equivalent to “aesthetics” in R’s ggplot2). We can map the different visual attributes of each point to either a fixed value (the default) or a specific variable in the data. With the latter we can communicate multivariate relationships in a single plot, e.g., the distinct beak shapes of the different penguin species.</p>
 <p>When developing a visualization, we typical start by thinking about the overall goal of the visualization. Are trying to communicate a relationship between variables, or the distribution of continuous or categorical variables? That will be determine the <a href="https://seaborn.pydata.org/tutorial/function_overview.html#figure-level-vs-axes-level-functions">general type of plot</a> to use (e.g., scatter plot, line plot, histogram, box plot, etc.). Next we will consider which variables to map to which visual attributes (x and y position, color/hue, shape/style, size, etc.) to show additional multivariate relationships. Finally, we can customize the figure with titles, axis labels, legends, and other formatting options.</p>
 <p>Here we were interested in the relationship of beak metrics, length vs.&nbsp;depth, so we used a scatter plot (since each point represents an individual penguin). We mapped species and sex to color and shape, respectively, to show how those categorical variables relate to beak morphology. The default labels and legend were generally sufficient, with a small adjustment to the legend position so it did not overlap the data.</p>
-<div id="68efa59e" class="cell" data-execution_count="9">
+<div id="3e38e561" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.scatterplot(df, x<span class="op">=</span><span class="st">"Culmen Length (mm)"</span>, y<span class="op">=</span><span class="st">"Culmen Depth (mm)"</span>, hue<span class="op">=</span><span class="st">"Species"</span>, style<span class="op">=</span><span class="st">"Sex"</span>)</span>
 <span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-hidden="true" tabindex="-1"></a>sns.move_legend(ax, <span class="st">"upper left"</span>, bbox_to_anchor<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
@@ -637,7 +652,7 @@ div.csl-indent {
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="12-visualization_files/figure-html/cell-10-output-1.png" class="figure-img" width="883" height="427"></p>
+<p><img src="12-visualization_files/figure-html/cell-10-output-1.png" class="figure-img" width="882" height="427"></p>
 </figure>
 </div>
 </div>
@@ -675,7 +690,7 @@ div.csl-indent {
 </ol>
 <p>Seaborn <a href="https://seaborn.pydata.org/tutorial/data_structure.html#data-structures-accepted-by-seaborn">supports both long and wide format data</a>, but we will generally find long format data easier to work with and more portable between data science environments (e.g., Python and R). Here we will focus on working with (and creating) long format data.</p>
 <p>Consider this snippet of example<span class="citation" data-cites="wickhamRDataScience2023">(<a href="#ref-wickhamRDataScience2023" role="doc-biblioref">Wickham, Çetinkaya-Rundel, and Grolemund 2023</a>)</span> data of Tuberculosis (TB) cases over two years, first in long format and then in wide format.</p>
-<div id="89158034" class="cell" data-execution_count="10">
+<div id="486c9737" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tb_long <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"country"</span>: [<span class="st">"Afghanistan"</span>, <span class="st">"Afghanistan"</span>, <span class="st">"Brazil"</span>, <span class="st">"Brazil"</span>, <span class="st">"China"</span>, <span class="st">"China"</span>],</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"year"</span>: [<span class="dv">1999</span>, <span class="dv">2000</span>, <span class="dv">1999</span>, <span class="dv">2000</span>, <span class="dv">1999</span>, <span class="dv">2000</span>],</span>
@@ -738,7 +753,7 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<div id="63c9da79" class="cell" data-execution_count="11">
+<div id="80006379" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tb_wide <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"1999"</span>: [<span class="dv">745</span>, <span class="dv">37737</span>, <span class="dv">212258</span>],</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2000"</span>: [<span class="dv">2666</span>, <span class="dv">80488</span>, <span class="dv">213766</span>],</span>
@@ -779,7 +794,7 @@ div.csl-indent {
 </div>
 </div>
 <p>The latter, wide format, is how we might represent this data in a spreadsheet. But it can be tricker to work with programmatically. With wide format data we are largely limited to 3 variables (row, column and value) without using more complex multi-indexing features of Pandas (which are not, for example, supported by Seaborn). For example, those countries are very different sizes. It would be useful to normalize the case counts by population, but there is no obvious way to add that information in the wide format without creating additional tables. In a long format, we can easily add additional variables, such as population, as additional columns.</p>
-<div id="e8c5ca89" class="cell" data-execution_count="12">
+<div id="14d8072c" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>tb_long <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"country"</span>: [<span class="st">"Afghanistan"</span>, <span class="st">"Afghanistan"</span>, <span class="st">"Brazil"</span>, <span class="st">"Brazil"</span>, <span class="st">"China"</span>, <span class="st">"China"</span>],</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"year"</span>: [<span class="dv">1999</span>, <span class="dv">2000</span>, <span class="dv">1999</span>, <span class="dv">2000</span>, <span class="dv">1999</span>, <span class="dv">2000</span>],</span>
@@ -851,7 +866,7 @@ div.csl-indent {
 </div>
 </div>
 <p>We can now readily visualize TB cases as per-capita rates.</p>
-<div id="d5bcff54" class="cell" data-execution_count="13">
+<div id="181d6249" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute cases per 100,000 population as new column</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>tb_long[<span class="st">"cases_per_100k"</span>] <span class="op">=</span> tb_long[<span class="st">"cases"</span>] <span class="op">/</span> tb_long[<span class="st">"population"</span>] <span class="op">*</span> <span class="dv">100000</span></span>
@@ -878,7 +893,7 @@ div.csl-indent {
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="12-visualization_files/figure-html/cell-14-output-1.png" class="figure-img" width="659" height="470"></p>
+<p><img src="12-visualization_files/figure-html/cell-14-output-1.png" class="figure-img" width="658" height="470"></p>
 </figure>
 </div>
 </div>
@@ -888,7 +903,7 @@ div.csl-indent {
 <section id="example-exploratory-data-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="example-exploratory-data-analysis">Example exploratory data analysis</h2>
 <p>The following is a subset of fuel economy data from <a href="https://fueleconomy.gov" class="uri">https://fueleconomy.gov</a> distributed as part of the ggplot2 R package <span class="citation" data-cites="wickhamGgplot2ElegantGraphics2016">(<a href="#ref-wickhamGgplot2ElegantGraphics2016" role="doc-biblioref">Wickham 2016</a>)</span>. We are particularly interested in the <code>hwy</code> variable, which is the highway miles-per-gallon (MPG) rating for each vehicle.</p>
-<div id="1aff846a" class="cell" data-execution_count="14">
+<div id="cd658fba" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/tidyverse/ggplot2/refs/heads/main/data-raw/mpg.csv"</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>mpg_df <span class="op">=</span> pd.read_csv(url)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>mpg_df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -991,7 +1006,7 @@ div.csl-indent {
 </div>
 </div>
 <p>We would hypothesize that engine displacement (<code>displ</code>, in liters) is negatively correlated with highway MPG (<code>hwy</code>), i.e., larger engines tend to be less fuel efficient. And indeed that seems to be the case.</p>
-<div id="668519df" class="cell" data-execution_count="15">
+<div id="9faee45d" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.scatterplot(mpg_df, x<span class="op">=</span><span class="st">"displ"</span>, y<span class="op">=</span><span class="st">"hwy"</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Engine Displacement (L)"</span>)</span>
@@ -1006,7 +1021,7 @@ div.csl-indent {
 </div>
 </div>
 <p>But there are some potentially interesting outliers to the right, i.e., vehicles with large engines but relatively high highway MPG. What do you hypothesize might be going on there? We can add additional variables to the plot to help us explore this question. Let’s add vehicle class (<code>class</code>, e.g., “compact”, “suv”, etc.) as a color/hue attribute.</p>
-<div id="97a76144" class="cell" data-execution_count="16">
+<div id="83736248" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.scatterplot(mpg_df, x<span class="op">=</span><span class="st">"displ"</span>, y<span class="op">=</span><span class="st">"hwy"</span>, hue<span class="op">=</span><span class="st">"class"</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Engine Displacement (L)"</span>)</span>
@@ -1037,7 +1052,7 @@ div.csl-indent {
 </div>
 </div>
 <p>We observe some additional trends. At a given engine displacement there are appear to be two clusters (or “bands”) of vehicles: one with relatively high highway MPG and one with relatively lower highway MPG. The latter appear to be mostly “SUVs” and “pickups”. Those are likely to be heavier vehicles with 4-wheel drive, which we hypothesize might reduce fuel economy. Let’s add drive type (<code>drv</code>, e.g., “4” for 4-wheel drive, “f” for front-wheel drive, etc.) as a shape/style attribute to the plot.</p>
-<div id="92a73202" class="cell" data-execution_count="17">
+<div id="ae8857e3" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.scatterplot(mpg_df, x<span class="op">=</span><span class="st">"displ"</span>, y<span class="op">=</span><span class="st">"hwy"</span>, hue<span class="op">=</span><span class="st">"class"</span>, style<span class="op">=</span><span class="st">"drv"</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Engine Displacement (L)"</span>)</span>

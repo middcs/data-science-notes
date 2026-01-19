@@ -36,7 +36,7 @@ dict(itertools.islice(tokenizer.vocab.items(), 10))
 ::: {.callout-note}
 ## Tokens and tokenization?
 
-We will learn more about tokenization as shortly, but for now, let's just think of the tokens as the model's vocabulary. Tokens are not always whole words, and purposely so. The GPT2 tokenizer uses a byte-based encoding scheme that includes all possible bytes, e.g., individual letters, _and_ common "merges" of those bytes into larger tokens, e.g., common word fragments or whole words. For example, the work "alligator" is broken into the following tokens. The ability to break words into sub-word tokens, including individual letters, allows the model to represent (both as input and generated output) any possible text, even if it includes words that were not observed during training.
+We will learn more about tokenization as shortly, but for now, let's just think of the tokens as the model's vocabulary. Tokens are not always whole words, and purposely so. The GPT2 tokenizer uses a byte-based encoding scheme that includes all possible bytes, e.g., individual letters, _and_ common "merges" of those bytes into larger tokens, e.g., common word fragments or whole words. For example, the word "alligator" is broken into the following tokens. The ability to break words into sub-word tokens, including individual letters, allows the model to represent (both as input and generated output) any possible text, even if it includes words that were not observed during training.
 
 ```{python}
 #---
