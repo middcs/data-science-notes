@@ -29,6 +29,7 @@ book:
     # - part: "Generative Models and Applications"
       # chapters:
         # - source/30-prediction-generation.qmd
+        - source/31-markov-models.qmd
 
 bibliography: refs.bib
 
@@ -45,8 +46,6 @@ format:
     highlight-style: atom-one
     filters: 
       - scripts/remove-delims.lua
-  ipynb: 
-    wrap: none
 
 jupyter: python3
 
