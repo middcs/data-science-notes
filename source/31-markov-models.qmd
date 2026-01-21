@@ -5,6 +5,8 @@ subtitle: A First Generative Model From Scratch
 wrap: none
 ---
 
+{{< include _live_notebook_link.qmd >}}
+
 In this set of notes, we'll take our first peak "under the hood" into a  model for text generation which is simple enough for us to code from scratch and train almost instantly. This model is called a *Markov model*. 
 
 We'll also introduce *tokenization*, which prepares text data for use in machine learning models by breaking it down into smaller units. 
