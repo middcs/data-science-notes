@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -94,7 +94,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-da5d8d89f6dce618f5587771a6e0de62.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -181,7 +181,9 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../index.html" class="sidebar-logo-link">
+      </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Applied Data Science</a> 
     </div>
@@ -285,6 +287,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Prediction to Generation</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../source/31-markov-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">LLM Building Blocks: Tokenization and Markov Models</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -349,14 +357,14 @@ window.Quarto = {
 </figure>
 </div>
 </div></div><p>Let’s get started with our standard imports. Note the new addition of <code>import pandas as pd</code>.</p>
-<div id="c3d379c0" class="cell" data-execution_count="2">
+<div id="810a010e" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pd is the prefix convention for pandas</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.__version__)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>2.2.3</code></pre>
+<pre><code>2.3.3</code></pre>
 </div>
 </div>
 <p>The two key data structures offered by Pandas are <code>Series</code>, a 1-D array, and <code>DataFrame</code>, a 2-D table with rows and columns.</p>
@@ -374,7 +382,7 @@ window.Quarto = {
 <p>The pandas <a href="https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html#dataframe">DataFrame</a> type is designed for this kind of data.</p>
 <p>There are lot of different ways to conceptually think about <code>DataFrame</code>s including (but not limited to) as a spreadsheet, or a database table, or as a list/dictionary of 1-D <code>Series</code> (the columns) with the column label as the key. The last is closer to the underlying implementation and a common way to create <code>DataFrame</code>s.</p>
 <div class="page-columns page-full"><p>Let’s get started by loading some example data with physiological measurements and species labels for several populations of Adelie, Chinstrap, and Gentoo penguins (the “Palmer Penguins” data.)</p><div class="no-row-height column-margin column-container"><span class="margin-aside">The Palmer Penguins data was originally collected by <span class="citation" data-cites="gormanEcologicalSexualDimorphism2014">Gorman, Williams, and Fraser (<a href="#ref-gormanEcologicalSexualDimorphism2014" role="doc-biblioref">2014</a>)</span> and was nicely packaged and released for use in the data science community by <span class="citation" data-cites="horstAllisonhorstPalmerpenguinsV02020">Horst, Hill, and Gorman (<a href="#ref-horstAllisonhorstPalmerpenguinsV02020" role="doc-biblioref">2020</a>)</span>.</span></div></div>
-<div id="6a6a78cd" class="cell" data-execution_count="3">
+<div id="ed0592f1" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/middcs/data-science-notes/main/data/palmer-penguins/palmer-penguins.csv"</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># df is a common variable name for data frames</span></span>
@@ -385,7 +393,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="page-columns page-full"><p>Checking out the resulting data, we see a lot happened in that one function call! Pandas downloaded the data from the provided URL, parsed the CSV file and constructed a <code>DataFrame</code> of size (344, 17) (rows × columns).</p><div class="no-row-height column-margin column-container"><span class="margin-aside">We can access the size with <code>df.shape</code>.</span></div></div>
-<div id="98b4c094" class="cell" data-execution_count="4">
+<div id="a50bbdfd" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div>
@@ -643,7 +651,7 @@ window.Quarto = {
 </div>
 </div>
 <p>We noted above that <code>DataFrame</code> columns can have different types. We can query the types for each column with the <code>dtypes</code> attribute. The <code>object</code> type is the default when Pandas can’t infer a numeric type. This is very common when the columns contain strings. You can <a href="https://pandas.pydata.org/pandas-docs/stable/user_guide/text.html">give string columns a dedicated data type</a>, but we won’t focus on that here.</p>
-<div id="60cb4686" class="cell" data-execution_count="5">
+<div id="f50d1606" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df.dtypes</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>studyName               object
@@ -682,7 +690,7 @@ dtype: object</code></pre>
 <section id="selecting-data" class="level2">
 <h2 class="anchored" data-anchor-id="selecting-data">Selecting data</h2>
 <p>We could anticipate wanting to select data using both sets of labels, i.e., by column and by row. Recall we described a <code>DataFrame</code> as a dictionary of columns, and we can indeed, use the indexing operator <code>[]</code>, to select columns by name.</p>
-<div id="222da055" class="cell" data-execution_count="6">
+<div id="8c15e15b" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select a single column</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Region"</span>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -695,7 +703,7 @@ dtype: object</code></pre>
 Name: Region, dtype: object</code></pre>
 </div>
 </div>
-<div id="9b638971" class="cell" data-execution_count="7">
+<div id="b1ca6500" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select and optionally reorder columns with a list</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>df[[<span class="st">"Species"</span>, <span class="st">"Region"</span>, <span class="st">"Island"</span>, <span class="st">"Culmen Length (mm)"</span>]].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -756,7 +764,7 @@ Name: Region, dtype: object</code></pre>
 </div>
 </div>
 <p>To access rows (and columns) via their labels we use the <code>loc</code> attribute. It exposes flexible indexing capabilities, e.g.</p>
-<div id="fd282867" class="cell" data-execution_count="8">
+<div id="3c1d2f66" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select rows by label (using the index)</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>df.loc[<span class="dv">0</span>:<span class="dv">3</span>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -875,7 +883,7 @@ Name: Region, dtype: object</code></pre>
 </div>
 </div>
 <p>Here we select the rows with indices [0,3] inclusive (using Python’s slicing operator). While it may look like we are selecting rows <em>at</em> indices [0,3], that is not the case. We are selecting based on the label, not the position. Consider the following example:</p>
-<div id="78e8d946" class="cell" data-execution_count="9">
+<div id="6622f636" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df.loc[<span class="dv">3</span>:<span class="dv">6</span>].loc[<span class="dv">0</span>:<span class="dv">3</span>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
@@ -934,7 +942,7 @@ Name: Region, dtype: object</code></pre>
 </div>
 <p>Notice we only get a single row, with index 3. The first operation retries rows with labels 3, 4, 5, 6, and the latter selects rows with labels 0, 1, 2, 3.</p>
 <p>To select rows by position, e.g., as you might select values in a list, we use the <code>iloc</code> attribute. We can again uses slices, but the ranges are position and are exclusive, i.e., the end index is <em>excluded</em>. Notice here we get 3 rows, with indices 3, 4, and 5. The first operation selects those rows (at positions 3, 4, 5 but not including 6), which are now at position 0, 1, and 2 (but not 3) in the result <code>DataFrame</code>. The second selection returns those rows. Note each row keeps its label throughout the various selection operations.</p>
-<div id="da8ffa76" class="cell" data-execution_count="10">
+<div id="66e06236" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df.iloc[<span class="dv">3</span>:<span class="dv">6</span>].iloc[<span class="dv">0</span>:<span class="dv">3</span>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
@@ -1032,7 +1040,7 @@ Name: Region, dtype: object</code></pre>
 </div>
 </div>
 <p>Alongside label and position we can also select data via boolean masks (i.e., data-driven filtering). The following filters the data to just those rows where the condition is <code>True</code>. To do so, we are computing an array (vector) of booleans using a vectorized comparison and then selecting those rows with <code>True</code>. Any boolean vector can be used, that is the computation used to generate the boolean index can be arbitrarily complex, incorporating different element-wise comparisons and bit-wise <code>&amp;</code> (and) and <code>|</code> (or) or <code>~</code> (not) operations.</p>
-<div id="f23ed118" class="cell" data-execution_count="11">
+<div id="6d8a5886" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Since slicing and filtering rows is common, slices or boolean arrays inside [] apply to rows, i.e.,</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># is shorthand for df.loc[df["Culmen Length (mm)"] &lt; 40].head()</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1175,7 +1183,7 @@ Name: Region, dtype: object</code></pre>
 <section id="mutation" class="level2">
 <h2 class="anchored" data-anchor-id="mutation">Mutation</h2>
 <p>The process of creating and modifying columns is often described as “mutation”. Just as we create new or update existing key-value pairs in a Python Dictionary with assignment, we can do the same with columns in a Pandas DataFrame. For example, the following adds a column with the culmen length in centimeters (you may need to scroll to the right to see it). The division is an element-wise “vectorized” operation like those we saw with NumPy (and in many cases Pandas is actually storing the column as NumPy array).</p>
-<div id="3bb69a06" class="cell" data-execution_count="12">
+<div id="a6a27e4e" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Culmen Length (cm)"</span>] <span class="op">=</span> df[<span class="st">"Culmen Length (mm)"</span>] <span class="op">/</span> <span class="dv">10</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
@@ -1321,7 +1329,7 @@ Name: Region, dtype: object</code></pre>
 <section id="vectorized-operations-on-strings" class="level3">
 <h3 class="anchored" data-anchor-id="vectorized-operations-on-strings">Vectorized operations on strings</h3>
 <p>We can perform similar vectorized operations on the string columns, but need to expose them via the <code>str</code> attribute, e.g.,</p>
-<div id="08387d50" class="cell" data-execution_count="13">
+<div id="4517ab59" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Species"</span>].<span class="bu">str</span>.upper()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>0      ADELIE PENGUIN (PYGOSCELIS ADELIAE)
@@ -1339,7 +1347,7 @@ Name: Species, Length: 344, dtype: object</code></pre>
 </div>
 </div>
 <p>For example, to improve readability we might want just the first part the species name, i.e., “Adelie” instead of “Adelie Penguin (Pygoscelis adeliae)”. This is the first part of the name up to the space. We can get it by splitting the string by whitespace and select the value at index 0 in the resulting list. Note that we can chain those operations, but need a <code>str</code> before each one to apply the resulting operation element-wise.</p>
-<div id="1c1491f7" class="cell" data-execution_count="14">
+<div id="b0d41772" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Species"</span>] <span class="op">=</span> df[<span class="st">"Species"</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.get(<span class="dv">0</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
@@ -1500,7 +1508,7 @@ Name: Species, Length: 344, dtype: object</code></pre>
 </figure>
 </div>
 <p>Pandas implements this pattern with the <code>groupby</code> method. For example, we can compute the mean of the numeric columns as a function of species using</p>
-<div id="e9b754d9" class="cell" data-execution_count="15">
+<div id="2a05a277" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">"Species"</span>).mean(numeric_only<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="15">
 <div>
@@ -1572,7 +1580,7 @@ Name: Species, Length: 344, dtype: object</code></pre>
 </div>
 </div>
 <p>Compare these values to the overall means. We now readily observe that Adelie penguins have much shorter bills (“Culmen length (mm)”) than Chinstrap and Gentoo penguins.</p>
-<div id="e7b1ddce" class="cell" data-execution_count="16">
+<div id="feb6f94a" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df.mean(numeric_only<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
 <pre><code>Sample Number            63.151163
@@ -1588,7 +1596,7 @@ dtype: float64</code></pre>
 </div>
 <p>Conceptually Pandas collected or “grouped” together all the data into subsets of rows with same value for the specified variable(s), then applied the aggregation function to each subset. We can think of the <code>groupby</code> method as returning a special “view” of the <code>DataFrame</code>, such that any aggregation functions used will by applied to each of the individual “groups” (i.e.&nbsp;species).</p>
 <p>Split-Apply-Combine enables sophisticated aggregations with very little code. Consider computing multiple statistics for all combinations of Species and Island. Note that we use a different approach to efficiently perform different aggregation operation on the same subsets (instead repeating the grouping operation). The <code>aggregate</code> method is a general approach to apply multiple functions to each group. It does not have a <code>numeric_only</code> argument, so we subset the groups to just the column(s) of interest.</p>
-<div id="00674af1" class="cell" data-execution_count="17">
+<div id="960f4c2e" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> df.groupby([<span class="st">"Species"</span>, <span class="st">"Island"</span>])[[<span class="st">"Culmen Length (mm)"</span>,<span class="st">"Culmen Depth (mm)"</span>]].aggregate([<span class="st">"mean"</span>, <span class="st">"std"</span>])</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>summary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1667,7 +1675,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <p>If there isn’t a <a href="https://pandas.pydata.org/docs/user_guide/groupby.html#built-in-aggregation-methods">built-in function</a> for the particular aggregation you want to perform, you can provide your own function to <code>aggregate</code>, or even more flexibly using the <a href="https://pandas.pydata.org/docs/user_guide/groupby.html#flexible-apply"><code>apply</code> method</a>. <code>.apply</code> will work for aggregating, filtering or transforming groups. It can be a helpful tool for performing multiple operations on the same group. For example here, we supply an anonymous function (a <code>lambda</code> function) to both compute the mean culmen length and convert it to centimeters.</p>
-<div id="1c5f93c2" class="cell" data-execution_count="18">
+<div id="28e1d876" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The Python lambda keyword creates an anonymous function with the specified arguments and body (here a single argument `g`). `apply`</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># calls that function for each group, passing the group `DataFrame` as the argument.</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>df.groupby([<span class="st">"Species"</span>, <span class="st">"Island"</span>]).<span class="bu">apply</span>(<span class="kw">lambda</span> g: g[<span class="st">"Culmen Length (mm)"</span>].mean() <span class="op">/</span> <span class="dv">10</span>, include_groups<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1684,7 +1692,7 @@ dtype: float64</code></pre>
 <section id="hierarchical-indexing" class="level3">
 <h3 class="anchored" data-anchor-id="hierarchical-indexing">Hierarchical indexing</h3>
 <p>Complex data summary tables like the one above are useful and powerful, but it is also non-obvious how we can extract specific data of interest. For example, how can I get the mean culmen (bill) length for Chinstrap penguins on Dream island? To extract this kind of data, we leverage Pandas’ hierarchical indices, in which we pass multiple keys to the <code>.loc</code> attribute as a tuple.</p>
-<div id="ee59ab25" class="cell" data-execution_count="19">
+<div id="dddcce1e" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Provide tuples for row and column index</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>summary.loc[(<span class="st">"Chinstrap"</span>, <span class="st">"Dream"</span>),(<span class="st">"Culmen Length (mm)"</span>, <span class="st">"mean"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1693,7 +1701,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <p>More generally, we can think of each value provided for an index drops us one level in the hierarchy. For example, the following returns a <code>DataFrame</code> with row indices for just island and column indices for just the aggregates of the “Culmen Length (mm)” column.</p>
-<div id="8f69fe69" class="cell" data-execution_count="20">
+<div id="1597dd50" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tuple literals are created with parentheses, but parentheses with a single element (no comma) are interpreted</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># as a grouping (in the PEMDAS sense), not a tuple. To create a single element tuple we add a trailing comma.</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1732,7 +1740,7 @@ dtype: float64</code></pre>
 <section id="apply-split-apply-combine" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="apply-split-apply-combine">Apply split-apply-combine</h2>
 <p>The following data is birth weight data (in ounces) for a cohort of babies along with other data about the baby and mother, including whether the mother smoked during pregnancy<span class="citation" data-cites="adhikariInferentialThinking2022">(<a href="#ref-adhikariInferentialThinking2022" role="doc-biblioref">Adhikari, DeNero, and Wagner 2022</a>)</span>. Our hypothesis is that birth weight is negatively associated with whether the mother smoked during pregnancy (i.e., that babies born to mothers who smoked will be smaller on average).</p>
-<div id="6865305d" class="cell" data-execution_count="21">
+<div id="43ffbdf5" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>baby <span class="op">=</span> pd.read_csv(<span class="st">"https://www.inferentialthinking.com/data/baby.csv"</span>)</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>baby</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="21">
@@ -1859,7 +1867,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <p>Here we see a sample of the data (1174 observations total). We are most interested in the “Birth Weight” and “Maternal Smoker” columns. We can use split-apply-combine technique, via the <code>groupby</code> method, to quickly figure out how many smokers and non-smokers are in the data. That helps us answer the question “Do we have enough data to do a meaningful analysis of that variable?”. Fortunately it appears we do!</p>
-<div id="3d8295fa" class="cell" data-execution_count="22">
+<div id="254254e8" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>baby.groupby(<span class="st">"Maternal Smoker"</span>).size()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="22">
 <pre><code>Maternal Smoker
@@ -1869,7 +1877,7 @@ dtype: int64</code></pre>
 </div>
 </div>
 <p>Let’s check out the means for smokers and non-smokers. Again we can use <code>groupby</code>.</p>
-<div id="c896c42d" class="cell" data-execution_count="23">
+<div id="36926365" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>means <span class="op">=</span> baby.groupby(<span class="st">"Maternal Smoker"</span>)[<span class="st">"Birth Weight"</span>].mean()</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>means</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1881,7 +1889,7 @@ Name: Birth Weight, dtype: float64</code></pre>
 </div>
 </div>
 <p>Notice the over 9 ounce difference in average birth weight! That is suggestive of a significant difference. Specifically:</p>
-<div id="695955e9" class="cell" data-execution_count="24">
+<div id="465bd9ea" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the difference to the previous value. We expect the first to have NaN (not a number)</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># since there is not previous value.</span></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>means.diff()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1893,7 +1901,7 @@ Name: Birth Weight, dtype: float64</code></pre>
 </div>
 </div>
 <p>In contrast, the other attributes seem similar between the two groups.</p>
-<div id="f629b024" class="cell" data-execution_count="25">
+<div id="ed7fe027" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>baby.groupby(<span class="st">"Maternal Smoker"</span>).mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="25">
@@ -1972,7 +1980,7 @@ Name: Birth Weight, dtype: float64</code></pre>
 </div>
 </div>
 <p>A possible approach to computing a distribution of birth weight differences for permuted labels:</p>
-<div id="4a97bb05" class="cell" data-execution_count="26">
+<div id="f0396a8a" class="cell" data-execution_count="26">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-25"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-25-1"><a href="#annotated-cell-25-1" aria-hidden="true" tabindex="-1"></a>n_permutations <span class="op">=</span> <span class="dv">5000</span></span>
 <span id="annotated-cell-25-2"><a href="#annotated-cell-25-2" aria-hidden="true" tabindex="-1"></a>permuted_diffs <span class="op">=</span> []</span>
 <span id="annotated-cell-25-3"><a href="#annotated-cell-25-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2015,7 +2023,7 @@ Name: Birth Weight, dtype: float64</code></pre>
 </div>
 </div>
 <p>That sure looks significant, and indeed we don’t observe any examples with larger effect. That would imply an empirical p-value, the probability of observing a more extreme test statistic assuming the null model, of <span class="math inline">\(p&lt;\)</span> 0.0002.</p>
-<div id="76e7edde" class="cell" data-execution_count="28">
+<div id="7594a973" class="cell" data-execution_count="28">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>(np.<span class="bu">abs</span>(permuted_diffs) <span class="op">&gt;=</span> <span class="bu">abs</span>(means.diff().iloc[<span class="op">-</span><span class="dv">1</span>])).<span class="bu">sum</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="28">

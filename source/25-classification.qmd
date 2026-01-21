@@ -91,7 +91,16 @@ To check that these meteorological conditions are predictive of rain tomorrow, w
 #| fig-height: 4
 
 fig, ax = plt.subplots(figsize = (6,3))
-sns.histplot(data=df, hue="RainTomorrow", x = "Humidity3pm", bins=30, element="step", stat="density", common_norm=False, ax = ax)
+sns.histplot(
+    data=df, 
+    hue="RainTomorrow", 
+    x = "Humidity3pm", 
+    bins=30, 
+    element="step", 
+    stat="density", 
+    common_norm=False, 
+    ax = ax
+    )
 ```
 
 So, days with higher afternoon humidity appear more likely to be followed by rain the next day. 

@@ -1,6 +1,6 @@
 ---
 jupyter: python3
-title: Markov Models for Text Generation
+title: "LLM Building Blocks: Tokenization and Markov Models"
 subtitle: A First Generative Model From Scratch
 wrap: none
 ---
@@ -8,8 +8,6 @@ wrap: none
 In this set of notes, we'll take our first peak "under the hood" into a  model for text generation which is simple enough for us to code from scratch and train almost instantly. This model is called a *Markov model*. 
 
 We'll also introduce *tokenization*, which prepares text data for use in machine learning models by breaking it down into smaller units. 
-
-
 
 Here's a simple piece of text for us to consider: 
 
@@ -31,7 +29,7 @@ print(text[0:193])
 
 We'd like to build a model that can generate text which is "similar to this." The idea of "similarity" here requires specification, and the task of operationalizing the idea of "similarity" is one of the core parts of language modeling. 
 
-## Tokenization
+## Byte-Pair Tokenization
 
 Before we get into our first concept of "similarity," we need to grapple with our *units*. One of the fundamental aspects of human language is that it is composed by arranging many small units into larger structures. But what are the units? One reasonable answer to this question, at least in the context of written language, is that the units are *characters*. Python makes it very direct to split a given piece of text into its constituent characters:
 
@@ -105,13 +103,56 @@ decoded = tokenizer.decode(encoded)
 print(decoded)
 ```
 
-It's also possible to instead use complete words as tokens, rather than characters. Modern tokenizers used in practice often use *subword* units, which are somewhere between characters and words in size. For example, here's a popular subword tokenizer implemented in the `tokenizers` library called *Byte-Pair Encoding* (BPE). BPE builds its vocabulary by iteratively merging the most common pairs of characters or subwords in the training text, which typically results in extremely common words, roots, and affixes being represented as single tokens.
+It's also possible to instead use complete words as tokens, rather than characters. Modern tokenizers used in practice often use *subword* units, which are somewhere between characters and words in size. As one important example, we'll consider *Byte-Pair Encoding* (BPE) tokenization, which is widely used in practice. The BPE training algorithm begins with each character in the training text as its own token. It then repeatedly finds the most common pair of adjacent tokens in the training text and merges them, creating a new token. This process repeats until some specified criterion is reached. In the example above, we specified that only pairs which appear at least 10 times in the training text should be merged; once no more pairs meet this criterion, the algorithm stops. 
+
+Here's a complete example of BPE in action on the following piece of text. 
+
+```
+do dogs like dogs?  
+```
+
+The most common pair of tokens in this text is `do`, which appears 3 times. To start BPE, we replace `do` with a new token, which we'll call `Z`. The new string now reads
+
+```
+Z Zgs like Zgs?
+```
+
+The next most common pair of tokens is `Zg`, which appears twice. We replace `Zg` with a new token, which we'll call `Y`. The new string now reads 
+
+```
+Z Ys like Ys?
+```
+
+The next most common pair of tokens is `Ys`, which also appears twice. We replace `Ys` with a new token, which we'll call `X`. The new string now reads
+
+```
+Z X like X?
+```
+
+There are no more  pairs of tokens which appear multiple times in the text, so we stop here. The final token vocabulary can be represented in the following lookup table: 
+
+```python
+{
+    "dogs" : "X",
+    "do"   : "Z",
+    "l" : "l", 
+    "i" : "i",
+    "k" : "k",
+    "e" : "e",
+    " " : " ",
+    "?" : "?"
+}
+```
+
+In practice, we would assign an integer id to each of these tokens; the integer ids would be the actual objects manipulated by a language model. 
+
+HuggingFace implements BPE and many other tokenization algorithms in their `tokenizers` library, which we'll now demonstrate: 
 
 ```{python}
 from tokenizers import Tokenizer
 from tokenizers.models import BPE
 from tokenizers.trainers import BpeTrainer
-# from tokenizers.pre_tokenizers import Whitespace
+
 #---
 tokenizer = Tokenizer(BPE())
 trainer   = BpeTrainer(min_frequency=10)
@@ -125,7 +166,6 @@ Let's take a look at the vocabulary learned by this tokenizer:
 #---
 vocab = tokenizer.get_vocab()
 #---
-
 # visualize the first 20 tokens in the vocabulary
 pd.DataFrame(vocab.items(), columns=['token', 'id']).head(20)
 ```
@@ -136,8 +176,10 @@ Now that we've trained the tokenizer, we can encode our text into integer ids:
 #---
 encoded = tokenizer.encode(text).ids
 #---
+print(encoded[0:20])
 len(encoded) # number of distinct tokens in the text
 ```
+
 
 ## A First Language Model: Markov Models
 
@@ -152,13 +194,14 @@ $$
 \end{aligned}
 $$
 
-As written, the $k$th token depends on *all* previous tokens. This is a very general formulation, but it's also very difficult to work with in practice: storing a table containing all possible combinations of previous tokens of arbitrary length is infeasible. Fortunately, it's also not really necessary: we might reasonably assume that the next token doesn't depend, or depends only very weakly, on a token thousands of positions back. 
+As written, the $k$th token depends on *all* previous tokens. This is a very general formulation, but it's also very difficult to work with in practice: for example, storing a table containing all possible combinations of previous tokens of arbitrary length is infeasible. Fortunately, it's also not really necessary: we might reasonably assume that the next token doesn't depend, or depends only very weakly, on a token thousands of positions back. 
 
 To create a Markov model, we make the simplifying assumption that the next token depends only on the previous $n$ tokens, where $n$ is a fixed integer called the *context length*. This gives us the following simplified conditional probability distribution:
 
 $$
 \begin{aligned}
-    \mathbb{P}(T_k = t\mid T_{k-1} = t_{k-1}, T_{k-2} = t_{k-2}, \ldots , T_1 = t_1)= \mathbb{P}(T_k = t\mid T_{k-1} = t_{k-1}, T_{k-2} = t_{k-2}, \ldots , T_{k-n} = t_{k-n})\;.
+    &\mathbb{P}(T_k = t\mid T_{k-1} = t_{k-1}, T_{k-2} = t_{k-2}, \ldots , T_1 = t_1)= \\
+    &\mathbb{P}(T_k = t\mid T_{k-1} = t_{k-1}, T_{k-2} = t_{k-2}, \ldots , T_{k-n} = t_{k-n})\;.
 \end{aligned}
 $$
 
@@ -167,10 +210,8 @@ The idea here is that we can now store a table of probabilities for each possibl
 Let's go ahead and begin considering our implementation. Suppose that, in our text, we have the sequence of tokens 
 
 ```{python}
-#---
 ids = tokenizer.encode("you will ").ids
 ids
-#---
 ```
 
 Suppose further that our context length is $n = 2$. We now need to figure out a table of probabilities of the form 
@@ -258,15 +299,15 @@ The internal state `transitions` is a nested dictionary which maps from context 
 The `train` method of the Markov model simply takes a list of tokens, loops through them, and updates the internal states. Each time we see a sequence of `n` tokens, we look at the next token and increment its count in the `transitions` dictionary. We also increment the count of how many times we've seen that context in the `context_counts` dictionary. Here's the code:
 
 ```{python}
-#---
 def train(self, tokens):
 
     for i in range(len(tokens) - self.n): #<1>
         context = tuple() if self.n == 0 else tuple(tokens[i:i + self.n]) #<2>
         next_token = tokens[i + self.n] 
+        #---
         self.transitions[context][next_token] += 1 #<3>
         self.context_counts[context] += 1
-#---
+        #---
 ```
 1. Loop through the entire list of tokens, stopping `n` tokens before the end to avoid indexing errors.
 2. Set the `context` equal to the current sequence of `n` tokens. If `n` is zero, the context is the empty tuple. 
@@ -276,7 +317,7 @@ def train(self, tokens):
 
 The implementation of the `generate` method requires the most complicated code, but it is just an automated loop through the manual sampling approach that we followed above. Our implementation below allows the user to specify a starting context; if none is provided, we sample one from the `context_counts` dictionary. We then repeatedly sample new tokens based on the previous $n$ tokens until we've generated the desired length of text. Here's the code:
 
-```python
+```{python}
 def generate(self, start_context = None, n_to_generate = 100):
 
     # randomly sample a starting context if none is provided
@@ -296,7 +337,7 @@ def generate(self, start_context = None, n_to_generate = 100):
         next_token = sample_from_counter(self.transitions[context])
         result.append(next_token)
 
-        # update the context
+        # update the context: most recent n tokens
         context = tuple(result[-self.n:]) if self.n > 0 else tuple()
     return result
 ```
@@ -364,11 +405,16 @@ def generation_experiment(n, n_to_generate=200):
     print("-"*40)
 ```
 
+Let's go ahead and try generating some text with different context lengths. We can first try a context length of $n = 0$, which corresponds to simply sampling tokens according to their overall frequency in the training text:
+
 ```{python}
 generation_experiment(n=0, n_to_generate=200)
 ```
 
-Well, "readability" here is a bit of a stretch. The reason this output looks so incomprehensible is that we set the context length `n` to zero, meaning that the model has no memory of previous tokens and is therefore just choosing random tokens according to their overall frequency in the training text. Let's try increasing the context length to 1:
+We can  see some common sequences of English characters in here, but overall this is not very readable.
+
+
+Let's try increasing the context length to 1:
 
 ```{python}
 generation_experiment(n=1, n_to_generate=200)
@@ -398,7 +444,7 @@ generation_experiment(n=15, n_to_generate=200)
 
 This text is quite quite coherent and could perhaps have been written by Dr. Seuss himself. 
 
-### The Problem of Memorization
+## The Problem of Memorization
 
 In fact, this text *was* written by Dr. Seuss himself -- it's an exact copy of a portion of the training text. When the context length is very large, the Markov model simply memorizes long sequences of tokens from the training text and reproduces them verbatim. This is another example of *overfitting* -- the model has fit to the fine details in the data, not the overall picture. 
 

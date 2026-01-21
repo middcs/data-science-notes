@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -94,7 +94,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-da5d8d89f6dce618f5587771a6e0de62.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -181,7 +181,9 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../index.html" class="sidebar-logo-link">
+      </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Applied Data Science</a> 
     </div>
@@ -285,6 +287,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Prediction to Generation</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../source/31-markov-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">LLM Building Blocks: Tokenization and Markov Models</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -359,7 +367,7 @@ window.Quarto = {
 <div class="cell-output cell-output-display page-columns page-full">
 <div id="true-linear-relationship" class="quarto-figure quarto-figure-center anchored page-columns page-full">
 <figure class="figure page-columns page-full">
-<p><img src="20-introduction-prediction_files/figure-html/true-linear-relationship-output-1.png" class="figure-img" width="522" height="373"></p>
+<p><img src="20-introduction-prediction_files/figure-html/true-linear-relationship-output-1.png" class="figure-img" width="521" height="373"></p>
 <figcaption class="margin-caption">Example of a true linear relationship between an input feature <span class="math inline">\(x\)</span> and an output target <span class="math inline">\(y\)</span>.</figcaption>
 </figure>
 </div>
@@ -403,7 +411,7 @@ window.Quarto = {
 <div class="cell-output cell-output-display page-columns page-full">
 <div id="noisy-linear-relationship" class="quarto-figure quarto-figure-center anchored page-columns page-full">
 <figure class="figure page-columns page-full">
-<p><img src="20-introduction-prediction_files/figure-html/noisy-linear-relationship-output-1.png" class="figure-img" width="515" height="373"></p>
+<p><img src="20-introduction-prediction_files/figure-html/noisy-linear-relationship-output-1.png" class="figure-img" width="513" height="373"></p>
 <figcaption class="margin-caption">Simulated data points generated from a linear relationship with added noise.</figcaption>
 </figure>
 </div>
@@ -420,7 +428,7 @@ window.Quarto = {
 \]</span></p>
 <p>Here, <span class="math inline">\(\hat{y}\)</span> is the name that we’ll give to our model’s <em>predicted</em> output, which is hopefully close to the true output <span class="math inline">\(y\)</span>. The predicted output is a linear function of the input <span class="math inline">\(x\)</span>. In this function, <span class="math inline">\(w\)</span> is the slope of the line and <span class="math inline">\(b\)</span> is the intercept. We call <span class="math inline">\(w\)</span> and <span class="math inline">\(b\)</span> the <em>model parameters</em>. The task of <em>fitting</em> the model is the task of finding values of <span class="math inline">\(w\)</span> and <span class="math inline">\(b\)</span> that make the model’s predictions <span class="math inline">\(\hat{y}\)</span> as close as possible to the observed outputs <span class="math inline">\(y\)</span> in the training data.</p>
 <p>Let’s construct a data frame with several candidate examples of model parameters <span class="math inline">\(w\)</span> and <span class="math inline">\(b\)</span>:</p>
-<div id="98d021ac" class="cell" data-execution_count="5">
+<div id="7632f7d1" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>k_params <span class="op">=</span> <span class="dv">5</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>model_df <span class="op">=</span> pd.DataFrame({</span>
@@ -444,28 +452,28 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>1.224033</td>
-<td>0.473654</td>
+<td>2.874998</td>
+<td>0.958963</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>2.347439</td>
-<td>1.727926</td>
+<td>2.227174</td>
+<td>1.274089</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>2.036013</td>
-<td>0.848874</td>
+<td>2.642792</td>
+<td>0.395158</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
-<td>1.987037</td>
-<td>1.310512</td>
+<td>2.881587</td>
+<td>1.795253</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
-<td>2.824492</td>
-<td>1.135054</td>
+<td>1.959578</td>
+<td>0.105769</td>
 </tr>
 </tbody>
 </table>
@@ -522,14 +530,14 @@ window.Quarto = {
 <div class="cell-output cell-output-display page-columns page-full">
 <div id="residuals" class="quarto-figure quarto-figure-center anchored page-columns page-full">
 <figure class="figure page-columns page-full">
-<p><img src="20-introduction-prediction_files/figure-html/residuals-output-1.png" class="figure-img" width="512" height="354"></p>
+<p><img src="20-introduction-prediction_files/figure-html/residuals-output-1.png" class="figure-img" width="511" height="354"></p>
 <figcaption class="margin-caption">Residuals for a candidate linear regression model.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Let’s quantify the idea of closeness using these residuals. The following function accepts three arguments: the <code>model_df</code> containing coefficients, the data <code>df</code> containing <code>x</code> and <code>y</code>, and a <code>metric</code> function that quantifies the closeness between <code>y</code> and predicted <code>y_pred</code>. The result is a column of scores computed according to <code>metric</code>.</p>
-<div id="79f5d696" class="cell" data-execution_count="8">
+<div id="db8903c1" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> score_model(model_df, df, metric):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> model_df.<span class="bu">apply</span>(<span class="kw">lambda</span> row: metric(df[<span class="st">"y"</span>], row[<span class="st">'w'</span>] <span class="op">*</span> df[<span class="st">"x"</span>] <span class="op">+</span> row[<span class="st">'b'</span>]), axis<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -540,7 +548,7 @@ window.Quarto = {
 \end{aligned}
 \]</span></p>
 <p>Let’s try it out:</p>
-<div id="21a95745" class="cell" data-execution_count="9">
+<div id="6d6b06e7" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mean_residuals(y, y_pred):</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (y_pred <span class="op">-</span> y).mean()</span>
@@ -562,34 +570,34 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>1.224033</td>
-<td>0.473654</td>
-<td>-0.901108</td>
+<th data-quarto-table-cell-role="th">4</th>
+<td>1.959578</td>
+<td>0.105769</td>
+<td>-0.940831</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">2</th>
-<td>2.036013</td>
-<td>0.848874</td>
-<td>-0.131865</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">3</th>
-<td>1.987037</td>
-<td>1.310512</td>
-<td>0.306007</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">4</th>
-<td>2.824492</td>
-<td>1.135054</td>
-<td>0.536935</td>
+<td>2.642792</td>
+<td>0.395158</td>
+<td>-0.303222</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">1</th>
-<td>2.347439</td>
-<td>1.727926</td>
-<td>0.898310</td>
+<td>2.227174</td>
+<td>1.274089</td>
+<td>0.363878</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">0</th>
+<td>2.874998</td>
+<td>0.958963</td>
+<td>0.378934</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">3</th>
+<td>2.881587</td>
+<td>1.795253</td>
+<td>1.218582</td>
 </tr>
 </tbody>
 </table>
@@ -605,13 +613,13 @@ window.Quarto = {
 \end{aligned}
 \]</span></p>
 <p>We can implement this metric in Python as follows:</p>
-<div id="a7910b3c" class="cell" data-execution_count="10">
+<div id="21afe72b" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mse(y, y_pred):</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ((y_pred <span class="op">-</span> y) <span class="op">**</span> <span class="dv">2</span>).mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now let’s use the MSE to score our candidate models:</p>
-<div id="be5722cd" class="cell" data-execution_count="11">
+<div id="f9a03e01" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>model_df[<span class="st">"mse"</span>] <span class="op">=</span> score_model(model_df, df, mse)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>model_df.sort_values(<span class="st">"mse"</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
@@ -633,38 +641,38 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>2.036013</td>
-<td>0.848874</td>
-<td>-0.131865</td>
-<td>0.072166</td>
+<td>2.642792</td>
+<td>0.395158</td>
+<td>-0.303222</td>
+<td>0.152085</td>
 </tr>
 <tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>1.987037</td>
-<td>1.310512</td>
-<td>0.306007</td>
-<td>0.145775</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">4</th>
-<td>2.824492</td>
-<td>1.135054</td>
-<td>0.536935</td>
-<td>0.450740</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">0</th>
-<td>1.224033</td>
-<td>0.473654</td>
-<td>-0.901108</td>
-<td>0.884077</td>
-</tr>
-<tr class="odd">
 <th data-quarto-table-cell-role="th">1</th>
-<td>2.347439</td>
-<td>1.727926</td>
-<td>0.898310</td>
-<td>0.889609</td>
+<td>2.227174</td>
+<td>1.274089</td>
+<td>0.363878</td>
+<td>0.171190</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>2.874998</td>
+<td>0.958963</td>
+<td>0.378934</td>
+<td>0.227875</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">4</th>
+<td>1.959578</td>
+<td>0.105769</td>
+<td>-0.940831</td>
+<td>0.925034</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">3</th>
+<td>2.881587</td>
+<td>1.795253</td>
+<td>1.218582</td>
+<td>1.570039</td>
 </tr>
 </tbody>
 </table>
@@ -686,12 +694,12 @@ window.Quarto = {
 </figure>
 </div>
 </div></div><p>Determining the age of an abalone is an important task for sustainably managing the population. The age of an abalone can be determined by counting the number of rings on its shell, but this is very time-consuming relative to measuring other physical characteristics of the abalone like its size and weight. It would be helpful if we could reliably predict the age (number of rings) of an abalone from these other physical characteristics. Let’s download a data set to help us do this:</p>
-<div id="d10f6cb6" class="cell" data-execution_count="12">
+<div id="c42f4718" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/middcs/data-science-notes/refs/heads/main/data/abalone/abalone.csv"</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(url)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="page-columns page-full"><p>The <code>abalone</code> data set <span class="citation" data-cites="abalone_1">(<a href="#ref-abalone_1" role="doc-biblioref">Nash and Ford 1994</a>)</span> contains measurements for 4177 individual abalones. Here’s how the data looks: </p><div class="no-row-height column-margin column-container"><span class="margin-aside">We have unscaled the numerical columns back to their original units.</span></div></div>
-<div id="e0d5f566" class="cell" data-execution_count="13">
+<div id="12d7b920" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
@@ -790,7 +798,7 @@ window.Quarto = {
 <div class="cell-output cell-output-display page-columns page-full">
 <div id="abalone-pairplot" class="quarto-figure quarto-figure-center anchored page-columns page-full">
 <figure class="figure page-columns page-full">
-<p><img src="20-introduction-prediction_files/figure-html/abalone-pairplot-output-1.png" class="figure-img" width="710" height="241"></p>
+<p><img src="20-introduction-prediction_files/figure-html/abalone-pairplot-output-1.png" class="figure-img" width="711" height="241"></p>
 <figcaption class="margin-caption">Pairplot showing relationships between several physical characteristics of abalones and their age (number of rings).</figcaption>
 </figure>
 </div>
@@ -814,7 +822,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Let’s therefore drop the <code>whole_weight</code> column to avoid redundancy:</p>
-<div id="48c210e1" class="cell" data-execution_count="16">
+<div id="4d0da77e" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df.drop(columns<span class="op">=</span>[<span class="st">"whole_weight (g)"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now we can try building linear regression models to predict <code>rings</code> in terms of the other features. Here’s an example of doing this by hand: we’ll try out the model</p>
@@ -823,7 +831,7 @@ window.Quarto = {
     \text{rings} \approx  15 \times \text{diameter} + 4 \times \text{shucked weight} + 1.5
 \end{aligned}
 \]</span></p>
-<div id="05778113" class="cell" data-execution_count="17">
+<div id="e2fc664b" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>w_1_guess <span class="op">=</span> <span class="dv">15</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>w_2_guess <span class="op">=</span> <span class="dv">4</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>b_guess <span class="op">=</span> <span class="fl">1.5</span></span>
@@ -833,7 +841,7 @@ window.Quarto = {
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>mse_value <span class="op">=</span> mse(df[<span class="st">'rings'</span>], df[<span class="st">'rings_pred'</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This model has an MSE of mse_value=2.5e+06. Now that we’re done with the <code>rings_pred</code> column, let’s drop it and the <code>summed_weight</code> column we created earlier:</p>
-<div id="572ed816" class="cell" data-execution_count="18">
+<div id="9c28aa5c" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df.drop(columns<span class="op">=</span>[<span class="st">'rings_pred'</span>, <span class="st">'summed_weight (g)'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We could imagine trying to loop through different values of the parameters to find a better model, but this would be cumbersome, <em>especially</em> if we wanted to use more than two features. To address this, we’ll introduce the idea of <em>model training</em> as an optimization problem, and take a look at the <code>scikit-learn</code> library for automating this process.</p>
@@ -864,12 +872,12 @@ window.Quarto = {
 <section id="scikit-learn-for-linear-regression" class="level2">
 <h2 class="anchored" data-anchor-id="scikit-learn-for-linear-regression"><code>scikit-learn</code> for Linear Regression</h2>
 <p>The <code>scikit-learn</code> package in Python, also called <code>sklearn</code>, is one such package.</p>
-<div id="1acb3b13" class="cell" data-execution_count="19">
+<div id="59e97e35" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We’ll use this model to fit a linear regression model to predict <code>rings</code> from <em>all</em> the other features in the abalone data set. First, we need to convert the qualitative <code>sex</code> column into numerical columns using one-hot encoding:</p>
-<div id="82a14261" class="cell" data-execution_count="20">
+<div id="505edf9e" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.get_dummies(df, columns<span class="op">=</span>[<span class="st">'sex'</span>], drop_first<span class="op">=</span><span class="va">True</span>, dtype<span class="op">=</span><span class="bu">int</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -882,24 +890,24 @@ window.Quarto = {
 </div>
 <p>Now instead of a single column for <code>sex</code>, we have two binary columns: <code>sex_I</code> and <code>sex_M</code>, indicating with a 1 whether the abalone is an infant or male. If both colummns are zero, then the abalone is female instead.</p>
 <p>The <code>scikit-learn</code> API expects that we pass in a data frame <code>X</code> containing the features (inputs) and a series <code>y</code> containing the target (output). Let’s create these now:</p>
-<div id="64452d79" class="cell" data-execution_count="21">
+<div id="766ada19" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop(columns<span class="op">=</span>[<span class="st">'rings'</span>])</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">'rings'</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now, finally, we are ready to fit the linear regression model. Finding the model that has the best values of the parameters is as simple as calling the <code>fit</code> method on a <code>LinearRegression</code> object:</p>
-<div id="923871ea" class="cell" data-execution_count="22">
+<div id="6b62dae1" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>LR <span class="op">=</span> LinearRegression()</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>fit <span class="op">=</span> LR.fit(X, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We can extract <em>predictions</em> for the model using the <code>predict</code> method:</p>
-<div id="061c5f31" class="cell" data-execution_count="23">
+<div id="c29a2de4" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> LR.predict(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Once we have the predictions, we can also extract the MSE for the model:</p>
-<div id="5368ae90" class="cell" data-execution_count="24">
+<div id="5f54e287" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>mse(y, y_pred)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="24">
@@ -908,7 +916,7 @@ window.Quarto = {
 </div>
 <p>This MSE is considerably smaller than the MSE we made with our by-hand model earlier!</p>
 <p>It can also be helpful to look at the coefficients that the model learned for each feature:</p>
-<div id="58a58149" class="cell" data-execution_count="25">
+<div id="8559488b" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'feature'</span>: LR.feature_names_in_,</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'coefficient'</span>: LR.coef_</span>

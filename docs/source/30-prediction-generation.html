@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -85,6 +85,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../source/31-markov-models.html" rel="next">
 <link href="../source/27-neural-prediction.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -93,7 +94,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-da5d8d89f6dce618f5587771a6e0de62.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -180,7 +181,9 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../index.html" class="sidebar-logo-link">
+      </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Applied Data Science</a> 
     </div>
@@ -284,6 +287,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Prediction to Generation</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../source/31-markov-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">LLM Building Blocks: Tokenization and Markov Models</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -330,7 +339,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="prediction-to-generation">Prediction to generation</h2>
 <div class="page-columns page-full"><p>Let’s start today by loading a “small” pre-trained language model. We will use the HuggingFace <code>transformers</code> library which provides model definitions and associated tools for a wide variety of transformer models. The library makes it (relatively) easy to load and work with pre-trained models. Here will we use the <a href="https://huggingface.co/openai-community/gpt2">GPT2 model</a>, the smallest variant of the GPT2 family of models released by OpenAI <span class="citation" data-cites="radfordGPT22019">(<a href="#ref-radfordGPT22019" role="doc-biblioref">Radford et al. 2019</a>)</span>.  The original <a href="https://arxiv.org/abs/1810.03993">model card</a> is available <a href="https://github.com/openai/gpt-2/blob/master/model_card.md">here</a>. We chose this model because because it just trained for next-token prediction without the chat interface (and because it is small and fast to work with).</p><div class="no-row-height column-margin column-container"><span class="margin-aside">Note that small still means 124 million parameters!</span></div></div>
 <p><em>Note that the initial model loading may take a few minutes as the model weights are downloaded from HuggingFace’s model repository.</em></p>
-<div id="d0e62333" class="cell" data-execution_count="2">
+<div id="2b225550" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch <span class="co"># Common imports for Pytorch</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -339,24 +348,28 @@ window.Quarto = {
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(checkpoint)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> AutoModelForCausalLM.from_pretrained(checkpoint)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()<span class="op">;</span>  <span class="co"># Put model in evaluation mode</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/philchodrow/opt/anaconda3/envs/cs1010/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm</code></pre>
+</div>
 </div>
 <div class="page-columns page-full"><p>We downloaded two components: the model itself and a tokenizer. The tokenizer is responsible for converting text into the integer token IDs that form the model’s vocabulary. This tokenizer has a vocabulary size of 50257 tokens, a sample of which is shown below. </p><div class="no-row-height column-margin column-container"><span class="margin-aside">The ‘Ġ’ character is how a space is encoded with this tokenizer, i.e., many of the tokens include a preceding space.</span></div></div>
-<div id="ed89b6ef" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> itertools</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract first 10 tokens in vocabulary (without creating intermediate data structures)</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="bu">dict</span>(itertools.islice(tokenizer.vocab.items(), <span class="dv">10</span>))  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="f880cfef" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> itertools</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract first 10 tokens in vocabulary (without creating intermediate data structures)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">dict</span>(itertools.islice(tokenizer.vocab.items(), <span class="dv">10</span>))  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
-<pre><code>{'ĠKaty': 36715,
- 'ĠMubarak': 46544,
- 'Ġslash': 24632,
- 'Said': 47638,
- 'ĠResults': 15691,
- 'Ġapex': 40167,
- 'Ġbandwidth': 19484,
- 'Inst': 6310,
- 'Ġcommod': 13088,
- 'Ġsuspicion': 15123}</code></pre>
+<pre><code>{'OME': 13649,
+ 'Ġuprising': 26312,
+ 'Ġmac': 8352,
+ 'ĠJay': 9180,
+ 'Ġsweater': 35685,
+ 'Ġpriorities': 15369,
+ 'ĠAdamant': 42565,
+ 'minded': 14543,
+ 'ĠLEGO': 29108,
+ 'ĠGentle': 25066}</code></pre>
 </div>
 </div>
 <div class="callout callout-style-simple callout-note callout-titled">
@@ -370,10 +383,10 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <p>We will learn more about tokenization as shortly, but for now, let’s just think of the tokens as the model’s vocabulary. Tokens are not always whole words, and purposely so. The GPT2 tokenizer uses a byte-based encoding scheme that includes all possible bytes, e.g., individual letters, <em>and</em> common “merges” of those bytes into larger tokens, e.g., common word fragments or whole words. For example, the word “alligator” is broken into the following tokens. The ability to break words into sub-word tokens, including individual letters, allows the model to represent (both as input and generated output) any possible text, even if it includes words that were not observed during training.</p>
-<div id="9a1b7af1" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>example_tokens <span class="op">=</span> tokenizer(<span class="st">"alligator"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>tokenizer.convert_ids_to_tokens(example_tokens[<span class="st">"input_ids"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="21c45e16" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>example_tokens <span class="op">=</span> tokenizer(<span class="st">"alligator"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>tokenizer.convert_ids_to_tokens(example_tokens[<span class="st">"input_ids"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>['all', 'igator']</code></pre>
 </div>
@@ -382,69 +395,69 @@ window.Quarto = {
 </div>
 <div class="page-columns page-full"><p>The GPT2 model was trained to predict the next token in a sequence given the previous tokens. The version we are using here includes the base GPT2 model, and a causal language modeling “head” that maps the base model’s outputs to a probability distribution over the vocabulary, i.e., <span class="math inline">\(p(t_i|t_1, \ldots, t_{i-1})\)</span>, the conditional probability of each token in the vocabulary being the next token given the previous tokens. </p><div class="no-row-height column-margin column-container"><span class="margin-aside">A conditional probability distribution, <span class="math inline">\(p(X|Y)\)</span>, is the probability of one event given another event(s), shown on the right side of the <span class="math inline">\(|\)</span>, has occurred.</span></div></div>
 <div class="page-columns page-full"><p>Let’s consider the input text “See you”. What words (tokens) would you expect to come next? We can ask the model the same question. We tokenize the input (as PyTorch tensors) and pass those token IDs as the inputs to the model. Among the outputs are the <em>logits</em>, the unnormalized log-probabilities for each token in the vocabulary being the next token. </p><div class="no-row-height column-margin column-container"><span class="margin-aside">In statistics, <em>logits</em> are formally defined as the log-odds. In this context and with neural networks generally, the term is used more loosely to refer to the unnormalized outputs of a layer prior to applying a normalization function like <code>softmax</code> to convert them to a probability distribution.</span></div></div>
-<div id="23298fa2" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> tokenizer(<span class="st">"See you"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>logits <span class="op">=</span> model(inputs[<span class="st">"input_ids"</span>]).logits  <span class="co"># Run model's forward pass with input IDs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="c5dd16cd" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> tokenizer(<span class="st">"See you"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>logits <span class="op">=</span> model(inputs[<span class="st">"input_ids"</span>]).logits  <span class="co"># Run model's forward pass with input IDs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The shape of the <code>logits</code> tensor is <code>(batch_size, sequence_length, vocab_size)</code>, that is we get a prediction for each “next token” in our sequence, i.e., after “See” and after “See you”, for each input in the batch (here just one), over the entire vocabulary.</p>
-<div id="7fe11dfb" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>logits.shape</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="880925cb" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>logits.shape</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>torch.Size([1, 2, 50257])</code></pre>
 </div>
 </div>
 <div class="page-columns page-full"><p>The last index in the sequence dimension corresponds to the prediction after the full input sequence, i.e., after “See you”. We can extract those logits and convert them to a probability distribution using the <code>softmax</code> function.</p><div class="no-row-height column-margin column-container"><span class="margin-aside"><code>softmax</code>, <span class="math inline">\(\text{Softmax}(x_i) = \frac{\exp(x_i)}{\sum_j \exp(x_j)}\)</span>, converts unnormalized log-probabilities (logits) to a probability distribution by computing the exponential of each value and normalizing by the sum of all exponentials.</span></div></div>
-<div id="695aa118" class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract last logits in the 'sequence' dimension, recall -1 is the last index in Python</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>next_token_logits <span class="op">=</span> logits[:, <span class="op">-</span><span class="dv">1</span>, :] </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>probs <span class="op">=</span> F.softmax(next_token_logits, dim<span class="op">=-</span><span class="dv">1</span>)  <span class="co"># Convert logits to (batch_size, vocab_size) probabilities</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="8e4fdffb" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract last logits in the 'sequence' dimension, recall -1 is the last index in Python</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>next_token_logits <span class="op">=</span> logits[:, <span class="op">-</span><span class="dv">1</span>, :] </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>probs <span class="op">=</span> F.softmax(next_token_logits, dim<span class="op">=-</span><span class="dv">1</span>)  <span class="co"># Convert logits to (batch_size, vocab_size) probabilities</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The largest of these probabilities corresponds to the most likely next token according to the model. We can find that token and convert it back to text using the tokenizer. Seems like a pretty reasonable prediction!</p>
-<div id="1ab81b82" class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>next_token_id <span class="op">=</span> torch.argmax(probs, dim<span class="op">=-</span><span class="dv">1</span>)  <span class="co"># argmax returns the index, i.e., token ID, of the largest value</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>tokenizer.decode(next_token_id)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="01c56662" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>next_token_id <span class="op">=</span> torch.argmax(probs, dim<span class="op">=-</span><span class="dv">1</span>)  <span class="co"># argmax returns the index, i.e., token ID, of the largest value</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>tokenizer.decode(next_token_id)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>' soon'</code></pre>
 </div>
 </div>
 <p>The next-token prediction is the “heart” of the generative process. We can use this predictor to generate new text auto-regressively, i.e., we append each predicted token to the input sequence to be used to predict the next token, repeating this process for the desired number of tokens. By incorporating the generated tokens into the input sequence, each next-token prediction incorporates both the original input, e.g., “See you”, and the subsequently generated text.</p>
-<div id="b7a5b4ae" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>input_ids <span class="op">=</span> tokenizer(<span class="st">"See you"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">20</span>):  <span class="co"># Predict 20 tokens</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> model(input_ids).logits</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    next_token_logits <span class="op">=</span> logits[:, <span class="op">-</span><span class="dv">1</span>, :]</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    next_token_id <span class="op">=</span> torch.argmax(next_token_logits, dim<span class="op">=-</span><span class="dv">1</span>)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Append predicted token to input_ids to auto-regressively generate the next token.</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># next_token_id[:, None] makes 1-D tensor of shape (batch_size,) (batch_size, 1) so</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we can concatenate it to the input_ids</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    input_ids <span class="op">=</span> torch.cat((input_ids, next_token_id[:, <span class="va">None</span>]), dim<span class="op">=-</span><span class="dv">1</span>)</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>input_ids</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="ea34d1f4" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>input_ids <span class="op">=</span> tokenizer(<span class="st">"See you"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">20</span>):  <span class="co"># Predict 20 tokens</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> model(input_ids).logits</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    next_token_logits <span class="op">=</span> logits[:, <span class="op">-</span><span class="dv">1</span>, :]</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    next_token_id <span class="op">=</span> torch.argmax(next_token_logits, dim<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Append predicted token to input_ids to auto-regressively generate the next token.</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># next_token_id[:, None] makes 1-D tensor of shape (batch_size,) (batch_size, 1) so</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we can concatenate it to the input_ids</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    input_ids <span class="op">=</span> torch.cat((input_ids, next_token_id[:, <span class="va">None</span>]), dim<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>input_ids</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>tensor([[ 6214,   345,  2582,    11,   198,   198,   464,  4453,   286,   262,
          26028,   198,   198,   464,  4453,   286,   262, 26028,    25,   383,
           5172,  3776]])</code></pre>
 </div>
 </div>
-<div id="d08c763a" class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Decode entire batch (i.e., don't need to strip the outer batch dimension)</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>tokenizer.batch_decode(input_ids)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="d2b1899c" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Decode entire batch (i.e., don't need to strip the outer batch dimension)</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>tokenizer.batch_decode(input_ids)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>['See you soon,\n\nThe Lord of the Rings\n\nThe Lord of the Rings: The Card Game']</code></pre>
 </div>
 </div>
 <p>I suspect you find the results a little underwhelming. The algorithm we just implemented is named “greedy decoding” because at each step it deterministically picks the most likely next token. This approach often leads to repetitive and not-very-interesting text. Recall that the output of the model is not a single word, but actually a probability distribution over all possible next tokens. For example:</p>
-<div id="1ba84ad7" class="cell" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>(values, indices) <span class="op">=</span> torch.topk(probs, k<span class="op">=</span><span class="dv">10</span>)  <span class="co"># Find top 10 most probable next tokens</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"token"</span>: [tokenizer.decode(t) <span class="cf">for</span> t <span class="kw">in</span> indices[<span class="dv">0</span>]],</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"probability"</span>: values[<span class="dv">0</span>].detach().numpy(), <span class="co"># Detach from gradient tracking graph to convert to numpy</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="8f5844a9" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>(values, indices) <span class="op">=</span> torch.topk(probs, k<span class="op">=</span><span class="dv">10</span>)  <span class="co"># Find top 10 most probable next tokens</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"token"</span>: [tokenizer.decode(t) <span class="cf">for</span> t <span class="kw">in</span> indices[<span class="dv">0</span>]],</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"probability"</span>: values[<span class="dv">0</span>].detach().numpy(), <span class="co"># Detach from gradient tracking graph to convert to numpy</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <div>
 
@@ -461,37 +474,37 @@ window.Quarto = {
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
 <td>soon</td>
-<td>0.084681</td>
+<td>0.084679</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
 <td>there</td>
-<td>0.073554</td>
+<td>0.073552</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
 <td>all</td>
-<td>0.072775</td>
+<td>0.072773</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
 <td>next</td>
-<td>0.072505</td>
+<td>0.072507</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
 <td>guys</td>
-<td>0.061731</td>
+<td>0.061733</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">5</th>
 <td>in</td>
-<td>0.055900</td>
+<td>0.055901</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">6</th>
 <td>out</td>
-<td>0.053875</td>
+<td>0.053873</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">7</th>
@@ -501,7 +514,7 @@ window.Quarto = {
 <tr class="odd">
 <th data-quarto-table-cell-role="th">8</th>
 <td>later</td>
-<td>0.028322</td>
+<td>0.028321</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">9</th>
@@ -515,62 +528,62 @@ window.Quarto = {
 </div>
 </div>
 <div class="page-columns page-full"><p>How might be we use this distribution to generate more interesting text? One approach is to sample from the distribution rather than deterministically taking the most likely token. This approach is called “sampling decoding”. We can think of sampling from the multinomial token distribution as a “raffle” in which each token gets a number of tickets proportional to its probability. We then randomly draw one ticket from the raffle to select the next token.  Thus while the mostly likely token is still the most likely sample, all other tokens also have a chance of being selected, leading to more diverse and interesting text. Notice that highly probably next token like “soon”, “later”, “guys”, etc. are still likely to be selected, but we observe some other interesting options as well.</p><div class="no-row-height column-margin column-container"><span class="margin-aside">Alternately you could think of multinomial sampling as rolling a biased <span class="math inline">\(n\)</span>-sided die, where the probability of each side is determined by the distribution.</span></div></div>
-<div id="a24bb100" class="cell" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>next_token_ids <span class="op">=</span> torch.multinomial(probs, num_samples<span class="op">=</span><span class="dv">20</span>, replacement<span class="op">=</span><span class="va">True</span>)  <span class="co"># Sample from the distribution</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token_id <span class="kw">in</span> next_token_ids[<span class="dv">0</span>]:</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(tokenizer.decode(token_id))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="0bd74c7d" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>next_token_ids <span class="op">=</span> torch.multinomial(probs, num_samples<span class="op">=</span><span class="dv">20</span>, replacement<span class="op">=</span><span class="va">True</span>)  <span class="co"># Sample from the distribution</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token_id <span class="kw">in</span> next_token_ids[<span class="dv">0</span>]:</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(tokenizer.decode(token_id))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> out
- all
- out
- everybody
- next
+<pre><code> all
+ by
+ soon
+ always
+ guys
  here
  soon
- guys
- in
- all
- next
- out
  a
- play
- next
+ get
  there
- very
- on
- like
- later</code></pre>
+ out
+ each
+ all
+ all
+ guys
+ Monday
+ Friday
+ there
+ exploring
+ soon</code></pre>
 </div>
 </div>
 <p>We can now update our generation loop to use sampling decoding rather than greedy decoding.</p>
-<div id="7f48b5ac" class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>input_ids <span class="op">=</span> tokenizer(<span class="st">"See you"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">20</span>):  <span class="co"># Predict 20 tokens</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> model(input_ids).logits</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    next_token_logits <span class="op">=</span> logits[:, <span class="op">-</span><span class="dv">1</span>, :]</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    next_token_ids <span class="op">=</span> torch.multinomial(F.softmax(next_token_logits, dim<span class="op">=-</span><span class="dv">1</span>), num_samples<span class="op">=</span><span class="dv">1</span>)  <span class="co"># Sample one token ID</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    input_ids <span class="op">=</span> torch.cat((input_ids, next_token_ids), dim<span class="op">=-</span><span class="dv">1</span>) <span class="co"># next_token_ids is already (batch_size, 1)</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>input_ids</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="7e671ab2" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>input_ids <span class="op">=</span> tokenizer(<span class="st">"See you"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">20</span>):  <span class="co"># Predict 20 tokens</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> model(input_ids).logits</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    next_token_logits <span class="op">=</span> logits[:, <span class="op">-</span><span class="dv">1</span>, :]</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    next_token_ids <span class="op">=</span> torch.multinomial(F.softmax(next_token_logits, dim<span class="op">=-</span><span class="dv">1</span>), num_samples<span class="op">=</span><span class="dv">1</span>)  <span class="co"># Sample one token ID</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    input_ids <span class="op">=</span> torch.cat((input_ids, next_token_ids), dim<span class="op">=-</span><span class="dv">1</span>) <span class="co"># next_token_ids is already (batch_size, 1)</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>input_ids</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
-<pre><code>tensor([[ 6214,   345,   503,   612,   851,   673,   338, 21500,   319,   534,
-          3420,   826,   783,    13,   198,   198,  4500,   960,  1906, 22814,
-         12861, 20958]])</code></pre>
+<pre><code>tensor([[ 6214,   345,    11,  1310,   582,  8133,   198,   198,     1, 22017,
+           644,   257,  3621, 30615,     0,   314,  1842,   534, 40309,  4518,
+          2474,   198]])</code></pre>
 </div>
 </div>
-<div id="095c74fd" class="cell" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>tokenizer.batch_decode(input_ids)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="a9fd3e2e" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>tokenizer.batch_decode(input_ids)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
-<pre><code>["See you out there — she's knocking on your door right now.\n\n———– PREVIOUS"]</code></pre>
+<pre><code>['See you, little man!)\n\n"Wow what a nice veil! I love your demeanor Blue!"\n']</code></pre>
 </div>
 </div>
 <p>As a practical matter, the <code>transformers</code> library provides higher-level APIs for generating text, including additional decoding procedures, options to generate multiple sequences and more. As an example:</p>
-<div id="877ab61d" class="cell" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> tokenizer(<span class="st">"See you"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> model.generate(<span class="op">**</span>inputs, max_new_tokens<span class="op">=</span><span class="dv">20</span>, do_sample<span class="op">=</span><span class="va">True</span>, num_return_sequences<span class="op">=</span><span class="dv">5</span>, pad_token_id<span class="op">=</span>tokenizer.eos_token_id)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>tokenizer.batch_decode(output, skip_special_tokens<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="7ba8f5d9" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> tokenizer(<span class="st">"See you"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> model.generate(<span class="op">**</span>inputs, max_new_tokens<span class="op">=</span><span class="dv">20</span>, do_sample<span class="op">=</span><span class="va">True</span>, num_return_sequences<span class="op">=</span><span class="dv">5</span>, pad_token_id<span class="op">=</span>tokenizer.eos_token_id)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>tokenizer.batch_decode(output, skip_special_tokens<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="callout callout-style-simple callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -610,39 +623,39 @@ p(Y|X) = \frac{p(X,Y)}{p(X)}
 </ul>
 <p>Both are valid English sentences, but the first is a common slang phrase (with “in a while, crocodile” is a common response), while the second is not. Let’s see what the GPT2 model thinks. We can estimate the probability of each sequence by computing the product of the probability of each token given the previous tokens, i.e., apply the chain rule <span class="math inline">\(P(t_1, t_2, \ldots) = \prod_i P(t_i | t_1, \ldots, t_{i-1})\)</span>. This is also described as the product of the <a href="https://huggingface.co/docs/transformers/main/en/main_classes/text_generation#transformers.GenerationMixin.compute_transition_scores">transition scores</a>.</p>
 <div class="page-columns page-full"><p>Because these probabilities are often very small, we will compute the log-probability of each sequence (so values close to 0 become large negative numbers) by computing the log-probability of each token given the previous tokens and computing the sum of those log probabilities over all tokens.</p><div class="no-row-height column-margin column-container"><span class="margin-aside">Recall that <span class="math inline">\(log(a\cdot b) = log(a) + log(b)\)</span></span></div></div>
-<div id="88d74a8e" class="cell" data-execution_count="16">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Insert the "beginning-of-sequence" and "end-of-sequence" tokens to create a "complete" input</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>alligator_ids <span class="op">=</span> tokenizer(<span class="ss">f"</span><span class="sc">{</span>tokenizer<span class="sc">.</span>bos_token<span class="sc">}</span><span class="ss">See you later, alligator.</span><span class="sc">{</span>tokenizer<span class="sc">.</span>eos_token<span class="sc">}</span><span class="ss">"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>crocodile_ids <span class="op">=</span> tokenizer(<span class="ss">f"</span><span class="sc">{</span>tokenizer<span class="sc">.</span>bos_token<span class="sc">}</span><span class="ss">See you later, crocodile.</span><span class="sc">{</span>tokenizer<span class="sc">.</span>eos_token<span class="sc">}</span><span class="ss">"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sequence_log_prob(token_ids):</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Compute the log-probability of a sequence given the model logits."""</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> model(token_ids).logits</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Log-encoded probability distribution over vocabulary with shape (batch_size, seq_length, vocab_size)</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    probs <span class="op">=</span> F.log_softmax(logits, dim<span class="op">=-</span><span class="dv">1</span>)  </span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># prob[:, i, :] is the log-probabilities of transitioning to token[i+1] given token[:i]. Use gather</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to get the log-probabilities of the actual tokens in the sequence. We skip the first token since it</span></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># does not have preceding tokens. </span></span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We need to add an extra dimension to token_ids for gather, i.e., (batch_size, seq_length) -&gt; (batch_size, seq_length, 1)</span></span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to gather the values at the token indices in dim=2, the vocab_size dimension.</span></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    token_log_probs <span class="op">=</span> torch.gather(probs, <span class="dv">2</span>, token_ids[:, <span class="dv">1</span>:, <span class="va">None</span>]).squeeze(<span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> token_log_probs.<span class="bu">sum</span>(dim<span class="op">=-</span><span class="dv">1</span>)  <span class="co"># Sum log-probabilities over sequence length</span></span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"'See you later, alligator.' log-probability:"</span>, sequence_log_prob(alligator_ids).item())</span>
-<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"'See you later, crocodile.' log-probability:"</span>, sequence_log_prob(crocodile_ids).item())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="c9231511" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Insert the "beginning-of-sequence" and "end-of-sequence" tokens to create a "complete" input</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>alligator_ids <span class="op">=</span> tokenizer(<span class="ss">f"</span><span class="sc">{</span>tokenizer<span class="sc">.</span>bos_token<span class="sc">}</span><span class="ss">See you later, alligator.</span><span class="sc">{</span>tokenizer<span class="sc">.</span>eos_token<span class="sc">}</span><span class="ss">"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>crocodile_ids <span class="op">=</span> tokenizer(<span class="ss">f"</span><span class="sc">{</span>tokenizer<span class="sc">.</span>bos_token<span class="sc">}</span><span class="ss">See you later, crocodile.</span><span class="sc">{</span>tokenizer<span class="sc">.</span>eos_token<span class="sc">}</span><span class="ss">"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sequence_log_prob(token_ids):</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Compute the log-probability of a sequence given the model logits."""</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> model(token_ids).logits</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Log-encoded probability distribution over vocabulary with shape (batch_size, seq_length, vocab_size)</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    probs <span class="op">=</span> F.log_softmax(logits, dim<span class="op">=-</span><span class="dv">1</span>)  </span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># prob[:, i, :] is the log-probabilities of transitioning to token[i+1] given token[:i]. Use gather</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to get the log-probabilities of the actual tokens in the sequence. We skip the first token since it</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># does not have preceding tokens. </span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We need to add an extra dimension to token_ids for gather, i.e., (batch_size, seq_length) -&gt; (batch_size, seq_length, 1)</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to gather the values at the token indices in dim=2, the vocab_size dimension.</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    token_log_probs <span class="op">=</span> torch.gather(probs, <span class="dv">2</span>, token_ids[:, <span class="dv">1</span>:, <span class="va">None</span>]).squeeze(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> token_log_probs.<span class="bu">sum</span>(dim<span class="op">=-</span><span class="dv">1</span>)  <span class="co"># Sum log-probabilities over sequence length</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"'See you later, alligator.' log-probability:"</span>, sequence_log_prob(alligator_ids).item())</span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"'See you later, crocodile.' log-probability:"</span>, sequence_log_prob(crocodile_ids).item())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>'See you later, alligator.' log-probability: -31.038818359375
-'See you later, crocodile.' log-probability: -35.54851531982422</code></pre>
+<pre><code>'See you later, alligator.' log-probability: -31.038843154907227
+'See you later, crocodile.' log-probability: -35.548519134521484</code></pre>
 </div>
 </div>
 <p>As we expected, the model assigns a higher probability to the more common saying (it has a less negative log-probability). And compared to gibberish, both of the actual sentences are more likely!</p>
-<div id="8cc47b99" class="cell" data-execution_count="17">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>gibberish_ids <span class="op">=</span> tokenizer(<span class="ss">f"</span><span class="sc">{</span>tokenizer<span class="sc">.</span>bos_token<span class="sc">}</span><span class="ss">See you later, asdf.</span><span class="sc">{</span>tokenizer<span class="sc">.</span>eos_token<span class="sc">}</span><span class="ss">"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"'See you later, asdf.' log-probability:"</span>, sequence_log_prob(gibberish_ids).item())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="9667fc56" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>gibberish_ids <span class="op">=</span> tokenizer(<span class="ss">f"</span><span class="sc">{</span>tokenizer<span class="sc">.</span>bos_token<span class="sc">}</span><span class="ss">See you later, asdf.</span><span class="sc">{</span>tokenizer<span class="sc">.</span>eos_token<span class="sc">}</span><span class="ss">"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>]</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"'See you later, asdf.' log-probability:"</span>, sequence_log_prob(gibberish_ids).item())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>'See you later, asdf.' log-probability: -42.26846694946289</code></pre>
+<pre><code>'See you later, asdf.' log-probability: -42.2685432434082</code></pre>
 </div>
 </div>
 <p>The ability to compare sequences this way is a key feature of generative models. It is also key part of some more sophisticated decoding strategies such as beam search. Instead of “committing” to the next token at each step (whether via greedy or sample decoding), beam search keeps track of the <span class="math inline">\(k\)</span> most likely <em>sequences</em> at each step, expanding each of those sequences with all possible next tokens, and then selecting the <span class="math inline">\(k\)</span> most likely resulting sequences. Beam search can improve generation quality by not requiring the decoding to “commit” to a token choice until it has seen more (or all) of the generated sequence.</p>
@@ -1066,6 +1079,9 @@ Radford, Alec, Jeff Wu, Rewon Child, David Luan, Dario Amodei, and Ilya Sutskeve
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../source/31-markov-models.html" class="pagination-link" aria-label="LLM Building Blocks: Tokenization and Markov Models">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">LLM Building Blocks: Tokenization and Markov Models</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
