@@ -9,8 +9,7 @@ wrap: none
 
 ## Prediction to generation
 
-Let's start today by loading a "small" pre-trained language model. We will use the HuggingFace `transformers` library which provides model definitions and associated tools for a wide variety of transformer models. The library makes it (relatively) easy to load and work with pre-trained models. Here will we use the [GPT2 model](https://huggingface.co/openai-community/gpt2), the smallest variant of the GPT2 family of models released by OpenAI [@radfordGPT22019]. [Note that small still means 124 million parameters!]{.aside} The original [model card](https://arxiv.org/abs/1810.03993) is available [here](https://github.com/openai/gpt-2/blob/master/model_card.md). We chose this model because because it just trained for next-token prediction without the chat interface (and because it is small and fast to work with).
-
+Let's start today by loading a "small" pre-trained language model. We will use the HuggingFace `transformers` library which provides model definitions and associated tools for a wide variety of transformer models. The library makes it (relatively) easy to load and work with pre-trained models. Here will we use the [GPT2 model](https://huggingface.co/openai-community/gpt2), the smallest variant of the GPT2 family of models released by OpenAI [@radfordGPT22019]. [Note that small still means 124 million parameters in the core model!]{.aside} The original [model card](https://arxiv.org/abs/1810.03993) is available [here](https://github.com/openai/gpt-2/blob/master/model_card.md). We chose this model because because it just trained for next-token prediction without the chat interface (and because it is small and fast to work with).
 
 *Note that the initial model loading may take a few minutes as the model weights are downloaded from HuggingFace's model repository.*
 

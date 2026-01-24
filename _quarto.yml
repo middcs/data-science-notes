@@ -30,6 +30,7 @@ book:
       chapters:
         - source/30-prediction-generation.qmd
         - source/31-markov-models.qmd
+        - source/32-generative-nn.qmd
 
 bibliography: refs.bib
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -65,6 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../source/32-generative-nn.html" rel="next">
 <link href="../source/30-prediction-generation.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -73,7 +74,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-da5d8d89f6dce618f5587771a6e0de62.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -160,9 +161,7 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="../index.html" class="sidebar-logo-link">
-      </a>
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Applied Data Science</a> 
     </div>
@@ -272,6 +271,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">LLM Building Blocks: Tokenization and Markov Models</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../source/32-generative-nn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generative Neural Networks</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -321,7 +326,7 @@ window.Quarto = {
 <p>In this set of notes, we’ll take our first peak “under the hood” into a model for text generation which is simple enough for us to code from scratch and train almost instantly. This model is called a <em>Markov model</em>.</p>
 <p>We’ll also introduce <em>tokenization</em>, which prepares text data for use in machine learning models by breaking it down into smaller units.</p>
 <p>Here’s a simple piece of text for us to consider:</p>
-<div id="93d95aa1" class="cell" data-execution_count="2">
+<div id="cf21f283" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
@@ -331,7 +336,7 @@ window.Quarto = {
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join([line.decode(<span class="st">'utf-8'</span>).strip() <span class="cf">for</span> line <span class="kw">in</span> urllib.request.urlopen(url)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This is the complete text of Dr.&nbsp;Seuss’s <em>Oh, the Places You’ll Go!</em>. Here’s the first tidbit.</p>
-<div id="872523f9" class="cell" data-execution_count="3">
+<div id="6b4cb805" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text[<span class="dv">0</span>:<span class="dv">193</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Congratulations!
@@ -349,7 +354,7 @@ any direction you choose.</code></pre>
 <section id="byte-pair-tokenization" class="level2">
 <h2 class="anchored" data-anchor-id="byte-pair-tokenization">Byte-Pair Tokenization</h2>
 <p>Before we get into our first concept of “similarity,” we need to grapple with our <em>units</em>. One of the fundamental aspects of human language is that it is composed by arranging many small units into larger structures. But what are the units? One reasonable answer to this question, at least in the context of written language, is that the units are <em>characters</em>. Python makes it very direct to split a given piece of text into its constituent characters:</p>
-<div id="e08391ec" class="cell" data-execution_count="4">
+<div id="0929aa84" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>char_tokens <span class="op">=</span> <span class="bu">list</span>(text)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -359,7 +364,7 @@ any direction you choose.</code></pre>
 </div>
 </div>
 <p>Another reasonable choice is to split the text into words:</p>
-<div id="16a0a703" class="cell" data-execution_count="5">
+<div id="f48ef766" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>word_tokens <span class="op">=</span> text.split() <span class="co"># split on the space \s character</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -374,7 +379,7 @@ any direction you choose.</code></pre>
 <li>Capitalization is preserved (e.g., “You” and “you” are different tokens)</li>
 </ul>
 <p>Modern tokenizers implement complex pipelines for breaking text into tokens. A typical API for a tokenizer includes a <em>vocabulary</em> (the set of all tokens the tokenizer can produce), a mapping of the vocabulary to a set of integer <em>ids</em>, and methods for <em>encoding</em> text into tokens/ids and <em>decoding</em> tokens/ids back into text. Here is a simple example of a character-level tokenizer that implements this API:</p>
-<div id="f6f79eb8" class="cell" data-execution_count="6">
+<div id="319bda58" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CharTokenizer: </span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
@@ -393,14 +398,14 @@ any direction you choose.</code></pre>
 <span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">''</span>.join([<span class="va">self</span>.id_to_token[idx] <span class="cf">for</span> idx <span class="kw">in</span> ids])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Here’s this tokenizer in action:</p>
-<div id="672d3f6f" class="cell" data-execution_count="7">
+<div id="5861b87d" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>small_text <span class="op">=</span> <span class="st">"Character tokens!"</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> CharTokenizer()</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>tokenizer.train(small_text)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The association between integer ids and characters is stored in the tokenizer’s vocabulary:</p>
-<div id="37142103" class="cell" data-execution_count="8">
+<div id="1ba946e5" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>vocab <span class="op">=</span> tokenizer.token_to_id</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vocab)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -408,7 +413,7 @@ any direction you choose.</code></pre>
 </div>
 </div>
 <p>We can encode small_text into integer ids:</p>
-<div id="0bbab427" class="cell" data-execution_count="9">
+<div id="7501dba5" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>encoded <span class="op">=</span> tokenizer.encode(small_text)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(encoded)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -416,7 +421,7 @@ any direction you choose.</code></pre>
 </div>
 </div>
 <p>And decode the text back from the ids:</p>
-<div id="f5875868" class="cell" data-execution_count="10">
+<div id="85a00910" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>decoded <span class="op">=</span> tokenizer.decode(encoded)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(decoded)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -445,7 +450,7 @@ any direction you choose.</code></pre>
 <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>In practice, we would assign an integer id to each of these tokens; the integer ids would be the actual objects manipulated by a language model.</p>
 <p>HuggingFace implements BPE and many other tokenization algorithms in their <code>tokenizers</code> library, which we’ll now demonstrate:</p>
-<div id="cfc84af0" class="cell" data-execution_count="11">
+<div id="b9c35afa" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tokenizers <span class="im">import</span> Tokenizer</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tokenizers.models <span class="im">import</span> BPE</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tokenizers.trainers <span class="im">import</span> BpeTrainer</span>
@@ -461,7 +466,7 @@ any direction you choose.</code></pre>
 </div>
 </div>
 <p>Let’s take a look at the vocabulary learned by this tokenizer:</p>
-<div id="23e3f36a" class="cell" data-execution_count="12">
+<div id="87161e7f" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>vocab <span class="op">=</span> tokenizer.get_vocab()</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -482,103 +487,103 @@ any direction you choose.</code></pre>
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>on</td>
-<td>78</td>
+<td>th</td>
+<td>132</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>you</td>
-<td>80</td>
+<td>.</td>
+<td>9</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>g</td>
-<td>45</td>
+<td>n</td>
+<td>96</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
-<td>.\n</td>
-<td>71</td>
+<td>ait</td>
+<td>119</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
-<td>e</td>
-<td>65</td>
+<td>in</td>
+<td>107</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">5</th>
-<td>F</td>
-<td>21</td>
+<td>la</td>
+<td>113</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">6</th>
-<td>gh</td>
-<td>97</td>
+<td>T</td>
+<td>34</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">7</th>
-<td>ing</td>
-<td>84</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">8</th>
-<td>ll</td>
-<td>75</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">9</th>
 <td>can</td>
 <td>135</td>
 </tr>
 <tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>H</td>
+<td>23</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>R</td>
+<td>32</td>
+</tr>
+<tr class="odd">
 <th data-quarto-table-cell-role="th">10</th>
-<td>n</td>
-<td>52</td>
+<td>g</td>
+<td>45</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">11</th>
-<td>ing</td>
-<td>103</td>
+<td>ea</td>
+<td>94</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">12</th>
-<td>,</td>
-<td>7</td>
+<td>F</td>
+<td>21</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">13</th>
-<td>4</td>
-<td>12</td>
+<td>o</td>
+<td>76</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">14</th>
-<td>O</td>
-<td>30</td>
+<td>ow</td>
+<td>93</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">15</th>
-<td>And</td>
-<td>115</td>
+<td>3</td>
+<td>11</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">16</th>
-<td>'</td>
-<td>4</td>
+<td>k</td>
+<td>49</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">17</th>
-<td>(</td>
-<td>5</td>
+<td>st</td>
+<td>102</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">18</th>
-<td>us</td>
-<td>126</td>
+<td>l</td>
+<td>50</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">19</th>
-<td>st</td>
-<td>102</td>
+<td>(</td>
+<td>5</td>
 </tr>
 </tbody>
 </table>
@@ -587,7 +592,7 @@ any direction you choose.</code></pre>
 </div>
 </div>
 <p>Now that we’ve trained the tokenizer, we can encode our text into integer ids:</p>
-<div id="4a3716a8" class="cell" data-execution_count="13">
+<div id="a9b1e885" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>encoded <span class="op">=</span> tokenizer.encode(text).ids</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -620,7 +625,7 @@ any direction you choose.</code></pre>
 \]</span></p>
 <p>The idea here is that we can now store a table of probabilities for each possible sequence of <span class="math inline">\(n\)</span> tokens, rather than for every possible sequence of arbitrary length.</p>
 <p>Let’s go ahead and begin considering our implementation. Suppose that, in our text, we have the sequence of tokens</p>
-<div id="ef46141f" class="cell" data-execution_count="14">
+<div id="fc138e94" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ids <span class="op">=</span> tokenizer.encode(<span class="st">"you will "</span>).ids</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>ids</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
@@ -634,7 +639,7 @@ any direction you choose.</code></pre>
 \end{aligned}
 \]</span></p>
 <p>The simplest way to construct this table of probabilities is to look through the training text and inspect what happens after the sequence “you will” in the text. Here’s a simple manual loop which does exactly this:</p>
-<div id="73b08282" class="cell" data-execution_count="15">
+<div id="b7148855" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>context_length <span class="op">=</span> <span class="bu">len</span>(ids)</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>following_ids <span class="op">=</span> [encoded[ix <span class="op">+</span> context_length] </span>
@@ -648,7 +653,7 @@ any direction you choose.</code></pre>
 </div>
 </div>
 <p>We can then <em>sample</em> from these possible following tokens to generate a new one. To sample, we just select a given following token with probability equal to the fraction of times it appears in the list of following tokens. In our working example, we can compute the counts and probabilities of each possible following token like so. To match our upcoming implementation, we’ll collect each of the following tokens in a dictionary that maps from token to count:</p>
-<div id="cd7d1e61" class="cell" data-execution_count="16">
+<div id="5d715bfd" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>following_counts <span class="op">=</span> defaultdict(<span class="bu">int</span>)</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> token <span class="kw">in</span> following_tokens:</span>
@@ -661,21 +666,21 @@ any direction you choose.</code></pre>
 </div>
 <p>This dictionary collects facts like, for example, the token “go” followed “you will” 3 times in the training text, while the token “h” followed once.</p>
 <p>The following function samples from such a dictionary proportional to the number of counts for each token:</p>
-<div id="b898ad3b" class="cell" data-execution_count="17">
+<div id="5e94767d" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sample_from_counter(counter):</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> <span class="bu">sum</span>(counter.values())</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    probabilities <span class="op">=</span> [count <span class="op">/</span> total <span class="cf">for</span> count <span class="kw">in</span> counter.values()]</span>
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> random.choices(<span class="bu">list</span>(counter.keys()), probabilities)[<span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Rerunning this function will give us different samples of tokens which could follow our input sequence:</p>
-<div id="dd96ae4c" class="cell" data-execution_count="18">
+<div id="6e86f0d8" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"you will "</span> <span class="op">+</span>  sample_from_counter(following_counts))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>you will f
-you will go
+<pre><code>you will go
 you will go
 you will t
+you will s
 you will go</code></pre>
 </div>
 </div>
@@ -693,7 +698,7 @@ you will go</code></pre>
 <section id="internal-states" class="level4">
 <h4 class="anchored" data-anchor-id="internal-states">Internal States</h4>
 <p>Our implementation of a Markov model will keep track of three internal states: the context length <span class="math inline">\(n\)</span>, a mapping from contexts (tuples of <span class="math inline">\(n\)</span> tokens) to possible next tokens and their counts, and a count of how many times each context appears in the training text.</p>
-<div id="87333158" class="cell" data-execution_count="19">
+<div id="0a001d3c" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MarkovModel:</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n):</span>
@@ -706,7 +711,7 @@ you will go</code></pre>
 <section id="training" class="level4">
 <h4 class="anchored" data-anchor-id="training">Training</h4>
 <p>The <code>train</code> method of the Markov model simply takes a list of tokens, loops through them, and updates the internal states. Each time we see a sequence of <code>n</code> tokens, we look at the next token and increment its count in the <code>transitions</code> dictionary. We also increment the count of how many times we’ve seen that context in the <code>context_counts</code> dictionary. Here’s the code:</p>
-<div id="04e16044" class="cell" data-execution_count="20">
+<div id="9a43ea61" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-24"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-24-1"><a href="#annotated-cell-24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train(<span class="va">self</span>, tokens):</span>
 <span id="annotated-cell-24-2"><a href="#annotated-cell-24-2" aria-hidden="true" tabindex="-1"></a></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-24" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-24-3" class="code-annotation-target"><a href="#annotated-cell-24-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(tokens) <span class="op">-</span> <span class="va">self</span>.n):</span>
@@ -737,7 +742,7 @@ you will go</code></pre>
 <section id="generation" class="level4">
 <h4 class="anchored" data-anchor-id="generation">Generation</h4>
 <p>The implementation of the <code>generate</code> method requires the most complicated code, but it is just an automated loop through the manual sampling approach that we followed above. Our implementation below allows the user to specify a starting context; if none is provided, we sample one from the <code>context_counts</code> dictionary. We then repeatedly sample new tokens based on the previous <span class="math inline">\(n\)</span> tokens until we’ve generated the desired length of text. Here’s the code:</p>
-<div id="d6aff861" class="cell" data-execution_count="21">
+<div id="b4804166" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate(<span class="va">self</span>, start_context <span class="op">=</span> <span class="va">None</span>, n_to_generate <span class="op">=</span> <span class="dv">100</span>):</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># randomly sample a starting context if none is provided</span></span>
@@ -765,7 +770,7 @@ you will go</code></pre>
 <section id="putting-it-all-together" class="level4">
 <h4 class="anchored" data-anchor-id="putting-it-all-together">Putting It All Together</h4>
 <p>Here’s the complete implementation of the Markov model. The full implementation of <code>generate</code> includes error handling to deal with the case where the current context has never been seen in training; in that case, we simply resample a new context from the training data.</p>
-<div id="ca45cae8" class="cell" data-execution_count="22">
+<div id="af948faf" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MarkovModel:</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n):</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n <span class="op">=</span> n</span>
@@ -803,7 +808,7 @@ you will go</code></pre>
 <section id="training-and-generating-text" class="level3">
 <h3 class="anchored" data-anchor-id="training-and-generating-text">Training and Generating Text</h3>
 <p>We can build, train, and generate text with a Markov model like this. We’ve implemented a <code>format_seuss</code> function to clean up the generated text a bit for readability. We’ve also implemented a <code>generation_experiment</code> function which trains a Markov model with a given context length <code>n</code> and generates some text for convenient experimentation with many context lengths.</p>
-<div id="321b26e3" class="cell" data-execution_count="23">
+<div id="7727b6de" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re </span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> format_seuss(text):</span>
@@ -824,116 +829,105 @@ you will go</code></pre>
 <span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"-"</span><span class="op">*</span><span class="dv">40</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Let’s go ahead and try generating some text with different context lengths. We can first try a context length of <span class="math inline">\(n = 0\)</span>, which corresponds to simply sampling tokens according to their overall frequency in the training text:</p>
-<div id="b59f7794" class="cell" data-execution_count="24">
+<div id="58e5c11c" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>generation_experiment(n<span class="op">=</span><span class="dv">0</span>, n_to_generate<span class="op">=</span><span class="dv">200</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>----------------------------------------
- lca IWiorer n eeris, ld k.
-Uyahp.
-eer ytbgtthe s s s -you 're aed e .
-n  hwill stYwhs hra)thyou , agoglet .
 
-cetsy y ndhadtlamethtf.
-d  And ina arwill  to a you ussowfwhstst ncpe no oaMows rlFr.
-uthl.meber erthe to wdmw.
-the V 
-nthe waititthat ,
-And or eo r.
-cer fcewaitgoe' you'll ingAanYou'll you'll s inbe 'be othe tto eeshs ,
-hmo'o 8a ter'ull g!
-. a
+!
+ldnos and er that Ppr stA,
+ Oq'os mcan  you'll whesoLch ler i'ingt, hdydger  will der e pcBiuslAefn n 
+eerawill youlaerEo ferof eing as onterLwee ry erbe rralOyouuthto fh /aemilaknthinIo thto 
+.lathe pdsingonyou'll nd 
+ga rt ee oyoud You'll hingivraand rin , the cmmo upbe are w kruptcyou s cewaitAc 
+tns s aabyou raaitanmcks s onony oning you'll aneaSmy rat a
 ----------------------------------------</code></pre>
 </div>
 </div>
 <p>We can see some common sequences of English characters in here, but overall this is not very readable.</p>
 <p>Let’s try increasing the context length to 1:</p>
-<div id="6e93b694" class="cell" data-execution_count="25">
+<div id="de708cd1" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>generation_experiment(n<span class="op">=</span><span class="dv">1</span>, n_to_generate<span class="op">=</span><span class="dv">200</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>----------------------------------------
-ff the blilfe or the mapry 
-a Grigh!
-You Mo 
-And will gooopen.... kethed on somemure whept or a YO!
-( 9 8 your ple g and ybous you d, not wintoore what a ve Braces just ft or waiting, you st.
-Exbreede to goomard ant's not onguch.
-On the buexe, down things to rownown to g you go 
-'togo mout tif 
-Somes not.
+ber wid.
+And the mpair ge!
+( 9 8 your st waiting 
+d. you will m in balon You'll be on'LLums afum ther will 
+there joflonfoly is stacike will go or the me whe,
+dene, down ance 
+aust to strs, pings are the waitings to be s, somest amuch.
+Waiting PLod bet waiting t.
+Juse to sect.
 
-Ever of a keredone? 
-that coutsestas not
+And I can go soonecograilbecoth your ows are and ff to go 
+and Haly not for a LAcknteccepratik
 ----------------------------------------</code></pre>
 </div>
 </div>
 <p>Still pretty difficult to read, although we can see the “words” becoming slightly more reminiscent of English. Let’s try increasing the context length to 2:</p>
-<div id="840d2f40" class="cell" data-execution_count="26">
+<div id="2f0b9989" class="cell" data-execution_count="26">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>generation_experiment(n<span class="op">=</span><span class="dv">2</span>, n_to_generate<span class="op">=</span><span class="dv">200</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>----------------------------------------
-be deck and snow you'll ess the whole as famous and your sh with an ung be, therever therever therever with the whole wide high hike the leasil, or a pair of pants.
-You can get to growl.
-Onward a moss prow.
-You'll get things that scare you right play leakers magainst you.
+d a mostly then they won't.
 
-And will you so confuse, sometimes, you won.
-You'll start to go in? 
-Simp.
-And YOUNTAINS!
- 
-Oh, 
+And you make up your rightsy as fun to you.
+
+You will fly gainst of toward a mindeed!
+( 9 8 and down any do 
+to peoplancing Act 
+and your shoes place.
+There 
+and re 
+that Bands at a bus to comehow you'll est you.
+
+You can stew.
+Just waiting.
+So be sure when you dare to stay nighte or waiting and stay, "I fe's toot to both your head streets. And you kn
 ----------------------------------------</code></pre>
 </div>
 </div>
 <p>At context length <span class="math inline">\(n = 2\)</span>, observe that the generated text begins to consist largely of real English words, although none of the grammar works even for Dr.&nbsp;Seuss.</p>
 <p>When we dial up to <span class="math inline">\(n = 4\)</span>, suddenly the text looks correctly structured, with approximately the right line lengths, and many comprehensible phrases. Most of the sentences are still nonsense, but some of them are quite close to real English.</p>
-<div id="56a7d5c6" class="cell" data-execution_count="27">
+<div id="3a10ea71" class="cell" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>generation_experiment(n<span class="op">=</span><span class="dv">4</span>, n_to_generate<span class="op">=</span><span class="dv">200</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>----------------------------------------
-'s true 
-that Bang -ups 
-can happen,
-don't want to go on.
-
-But on you will go 
-though your arms may get sore 
-and your sneakers may leak.
-
-On and on you will hike,
-And I know you'll hike far 
-and face up to your problems 
+ms 
 whatever they are.
 
-You'll get mixed up 
-with many strange birds as you go.
-So be sure when you step.
-Step with curls, or Another Chance.
-Ever
+You'll get mixed up, of course,
+you'll head straight out of town.
+
+It's opener there 
+in the wide open air.
+
+Out there things can happen to you.
+
+You can get so confused 
+that you'll start in to race 
+down long wiggled roads at a break -necking pace 
+and grind on for miles cross weirdish wild sprain both your elbow and chin!
+Do you dare to sta
 ----------------------------------------</code></pre>
 </div>
 </div>
 <p>When we increase the context length sufficiently, something interesting happens:</p>
-<div id="e2969282" class="cell" data-execution_count="28">
+<div id="5ce3a6f8" class="cell" data-execution_count="28">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>generation_experiment(n<span class="op">=</span><span class="dv">15</span>, n_to_generate<span class="op">=</span><span class="dv">200</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>----------------------------------------
-t stew.
-Just go right along.
-You'll start happening too.
-
-OH!
-THE PLACES YOU'LL GO!
+INS!
  
-You'll be on y our way up!
-You'll be seeing great sights!
-You'll join the high fliers 
-who soar to high heights.
+So...
+be your name Buxbaum or Bixby or Bray or Mordecai Ali Van Allen O'Shea,
+You're off the Great Places!
+Today is your day!
+Your mountain is waiting.
+So...get on your way!ern sgycAnd noslsfsminarpekriCy ouaefto ort You'll .
 
-You won't lag behind, because you'll have the speed.
-You'll pass the whole gang and you'll soon take the lead.
-Wherever you fly, you'll be best of the best.
-Wherever you go, you will top all the re
+are fe'yout x e aauowks for ag
 ----------------------------------------</code></pre>
 </div>
 </div>
@@ -1357,6 +1351,9 @@ Wherever you go, you will top all the re
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../source/32-generative-nn.html" class="pagination-link" aria-label="Generative Neural Networks">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generative Neural Networks</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
