@@ -53,7 +53,7 @@ The original application was for machine translation, and so "Attention is All Y
 We encourage you to check out [Transformer Explainer](https://poloclub.github.io/transformer-explainer/), a fantastic interactive visualization of the entire GPT2 model architecture, including embeddings, positional encodings, multi-head self-attention, feed-forward layers, etc., and the ["Illustrated Transformer"](https://jalammar.github.io/illustrated-transformer/) and ["Illustrated GPT2"](https://jalammar.github.io/illustrated-gpt2/) blog posts.
 :::
 
-![Block diagram of decoder-only LLM, like GPT2, with multiple transformer blocks](../assets/img/gpt-block-diagram.excalidraw.png){#fig-gpt-block-diagram}
+![Block diagram of decoder-only LLM, like GPT2, with multiple transformer blocks]({{< meta site-url >}}/assets/img/gpt-block-diagram.excalidraw.png){#fig-gpt-block-diagram}
 
 @fig-gpt-block-diagram, above, shows a block diagram of the GPT2 architecture. Notice that tokens are processed in parallel, i.e., the entire input sequence is processed at once, rather than sequentially as in RNNs. This is a key feature of Transformer architectures that enables efficient training and inference on modern compute hardware. Let's follow the data flow through the model:
 
@@ -95,7 +95,7 @@ An alternate analogy suggested by Claude: Imagine you're at a party listening to
 
 ### Interlude: Multi-Head Attention
 
-We would describe the above as a single attention "head". To enable more expressive power, the Transformer architecture often uses multiple attention heads in parallel, each with its own set of learned transformations for queries, keys, and values. This allows the model to capture different types of relationships and interactions between tokens simultaneously. For example, one "head" might focus on grammatical structure (subject-verb agreement), another on semantic meaning (what entities are related), another on sentiment (is this positive or negative?), and another on temporal relationships (what happened when?). The outputs of all attention heads are concatenated and linearly transformed to produce the final output representation.
+We would describe the above as a single attention "head". To enable more expressive power, the Transformer architecture often uses multiple attention heads in parallel, each with its own set of learned transformations for queries, keys, and values. This allows the model to capture different types of relationships and interactions between tokens simultaneously. For example, one "head" might focus on grammatical structure (subject-verb agreement), another on semantic meaning (what entities are related), another on sentiment (is this positive or negative?), and another on temporal relationships (what happened when?). The outputs of all the attention heads are concatenated and linearly transformed to produce the final output representation.
 
 $$
 \begin{align*}
@@ -139,9 +139,13 @@ plot_attention(output.attentions, inputs, layer=5, head=10)
 plt.show()
 ```
 
+::: {.content-hidden}
+Slide 2
+::: 
+
 Let's trace through the attention calculation for the token "She" in this attention head. "She" is the query, i.e., $q_8$. Each element in that corresponding row of the attention weights (row at index 8 in the heatmap) corresponds to the dot product between the query vector for "She" and the key vectors for "She" and all preceding tokens in the sequence (e.g., $k_0$ for "The", $k_1$ for "girl", ...), scaled and normalized via softmax. The resulting distribution is used to compute a weighted sum of the value vectors to produce $z_8$, the output representation for "She" from this attention head. Specifically for this head, $z_8=0.25v_0 + 0.41v_1 + \ldots$, i.e., primarily incorporates information from $t_0$ and $t_1$, "The" and "girl".
 
-![Tracing attention calculation for a particular token](../assets/img/attention-qkv.excalidraw.png){#fig-attention-qkv}
+![Tracing attention calculation for a particular token]({{< meta site-url >}}/assets/img/attention-qkv.excalidraw.png){#fig-attention-qkv}
 
 ```{python}
 output.attentions[5][0, 10, 8, :].detach()
@@ -191,9 +195,13 @@ One noticeable pattern is that in many heads, tokens attend strongly to the very
 
 Recall we expressed the Attention operation in terms of matrices. All transformations are computed in parallel for all tokens in the sequence via matrix multiplication. Consider for example, computing $\boldsymbol{V}=\boldsymbol{x} \times \boldsymbol{W_v}$. Here $\boldsymbol{x}$ is a matrix of size $n \times d_{\text{model}}$ where $n$ is the number of tokens, i.e., each row corresponds to the embedding (or output of the previous layer) for a single token. $\boldsymbol{W_v}$ is a matrix of size $d_{\text{model}} \times d_v$, where $d_v$ is the dimensionality of the value vectors. The resulting matrix $\boldsymbol{V}$ is of size $n \times d_v$, i.e., each row corresponds to the value vector for a single token. These matrix operations are efficient to compute, in parallel, on modern hardware (e.g., GPUs, TPUs), especially hardware with dedicated "tensor" cores (i.e., dedicated functional units for matrix multiplications).
 
-![Attention as a matrix computation](../assets/img/attention-matrix.excalidraw.png)
+![Attention as a matrix computation. Adapted from [Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/).]({{< meta site-url >}}/assets/img/attention-matrix.excalidraw.png)
 
 These matrix operations also point to one of the key challenges for scaling Transformers. Computing $QK^T$ requires computing the dot product between all pairs of tokens in the sequence, i.e., has a computational complexity that scales quadratically with the sequence length (specifically $\mathcal{O}(n^2d_k)$). Memory consumptions similarly scales quadratically with sequencing length for training and linearly for inference. While GPT2 has a context length (maximum sequence length) of 1024 tokens, more recent models have context lengths on the order of 100,000 to even 2 million tokens. Scaling to such long contexts requires specialized architectures and optimizations.
+
+::: {.content-hidden}
+PI: Slides 3-5
+:::
 
 ### ❓ We made a big deal about non-linearity before, where is it here?
 
@@ -202,6 +210,10 @@ We noted before that non-linear activation functions are essential for neural ne
 ### Causal Masking (or why the upper triangle is zero)
 
 Careful observers might have noticed that the upper right triangle of the attention weights are 0, i.e., tokens can only attend to themselves and preceding tokens, not future tokens. Those entries are purposely masked, termed *causal masking*. Doing so is essential for training autoregressive models like GPT2 that generate text one token at a time. Causal masking ensures that the model does not have access to future tokens when predicting the next token. During training, the model receives the full sequence as input, and simultaneously predicts each token, i.e., $p(t_1|\text{The})$, $p(t_2|\text{The},\text{girl})$, etc., We can then compute the loss over all tokens in the sequence in parallel, i.e., compute the error between $p(t_1|\text{The})$ and "girl", between $p(t_2|\text{The},\text{girl})$ and "and", and so on.  Causal masking ensures that the model cannot "cheat" by looking ahead at future tokens when making predictions.
+
+::: {.content-hidden}
+PI: Slides 6
+:::
 
 ## What is encoded in the model parameters? 
 
