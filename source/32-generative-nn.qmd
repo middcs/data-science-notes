@@ -10,11 +10,10 @@ wrap: none
 When experimenting with Markov models, we observed the trade-off between the context length, i.e., how many tokens we "looked back", and the ability to generate novel text. Longer context lengths allowed for more coherent text generation, but at some point the model was just recreating the training data verbatim (there was only one "next token" for any given context). Today we will explore *Transformers*, a neural network architecture designed to capture the long-range dependencies so important to semantic understanding, while still generating novel sequences.
 
 ```{python}
-#| echo: false
-# Install bertviz if (and only if) running in Google Colab
+# Install needed packages iff running in Google Colab
 import sys
 if "google.colab" in sys.modules:
-    !pip install bertviz
+    !pip install bertviz torchinfo
 ```
 
 Let's load the GPT2 model with the ability to output attention weights so we can visualize its inner workings.
