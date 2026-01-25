@@ -39,20 +39,15 @@ def create_notebook(src_path: Path, out_path: Path, site_url: str):
         ValueError: If the file type is unsupported
     """
     if src_path.suffix == ".qmd":
-        # Use absolute paths to avoid issues when changin working directories
+        # Use absolute paths to avoid issues when changing working directories
         with temporary_softlink(src_path.absolute(), src_path.with_name(f"_{src_path.name}").absolute()) as link_path:
             # Render to create notebook (instead of convert) to ensure any quarto-specific content is handled (stripped). The lua filter
             # removes solution blocks with '.hide .solution' classes.
             subprocess.run(
-                ["quarto", "render", str(link_path), "--profile", "notebook", "--output", out_path.name, "--no-execute", "--to", "ipynb", "--metadata", f"site-url:{site_url} wrap: none", "--lua-filter", f"{Path.cwd()}/scripts/remove-solution.lua"], 
+                ["quarto", "render", str(link_path), "--profile", "notebook", "--output", out_path.name, "--no-execute", "--to", "ipynb", "--metadata", f"site-url:{site_url}", "--lua-filter", f"{Path.cwd()}/scripts/remove-solution.lua"], 
                 cwd=out_path.parent,
                 check=True,
             )
-            # subprocess.run(
-            #     ["quarto", "convert", str(link_path), "--output", out_path.name], 
-            #     cwd=out_path.parent,
-            #     check=True,
-            # )
     elif src_path.suffix == ".ipynb":
         shutil.copyfile(src_path, out_path)
     else:
@@ -97,8 +92,9 @@ def main():
     for src_path in Path("source").glob("*"):
         if not src_path.name.startswith("_") and src_path.suffix in {".qmd", ".ipynb"}:
             out_path = args.output_dir / src_path.with_suffix(".ipynb").name
-            create_notebook(src_path, out_path, args.site_url)
-            clean_notebook(out_path)
+            if not out_path.exists() or out_path.stat().st_mtime < src_path.stat().st_mtime:
+                create_notebook(src_path, out_path, args.site_url)
+                clean_notebook(out_path)
 
 if __name__ == "__main__":
     main()

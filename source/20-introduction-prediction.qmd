@@ -316,7 +316,7 @@ df.drop(columns=['rings_pred', 'summed_weight (g)'], inplace=True)
 
 We could imagine trying to loop through different values of the parameters to find a better model, but this would be cumbersome, *especially* if we wanted to use more than two features. To address this, we'll introduce the idea of *model training* as an optimization problem, and take a look at the `scikit-learn` library for automating this process.
 
-## Sidebar:  Training as Optimization
+## Sidebar: Training as Optimization
 
 A general version of a linear regression model with many features can be written as follows:
 
@@ -337,9 +337,8 @@ $$
 To train the model, we'll *choose parameters* $w_1, w_2, \ldots, w_p, b$ to *minimize* the MSE; that is, we'll find these parameters to make the MSE as small as possible. Formally, we often write this as 
 
 $$
-\DeclareMathOperator*{\argmin}{argmin}
 \begin{aligned}
-    \hat{w}_1, \hat{w}_2,\ldots, \hat{w}_p, \hat{b} = \argmin_{w_1, w_2, \ldots, w_p, b} \text{MSE}(w_1, w_2, \ldots, w_p, b)\;.
+    \hat{w}_1, \hat{w}_2,\ldots, \hat{w}_p, \hat{b} = \operatorname*{argmin}_{w_1, w_2, \ldots, w_p, b} \text{MSE}(w_1, w_2, \ldots, w_p, b)\;.
 \end{aligned}
 $$
 
@@ -413,5 +412,3 @@ pd.DataFrame({
 ```
 
 These coefficients can be quite helpful, although the interpretation is often subtle. It's tempting to believe that larger coefficients mean that a given feature is "more important" for predicting the target, but things are not usually this simple. For example, notice that two of the `weight` features actually have negative coefficients, suggesting, for example, that a larger value of `shucked_weight (g)` should correspond to a younger abalone! This comes from the fact that `shucked_weight` is strongly correlated with `shell_weight (g)` and `viscera_weight (g)`. This phenomenon, called *multicollinearity* in the statistics literature, can make interpreting coefficients quite tricky. We'll revisit this issue later in the course. In the context of prediction, it's often not necessary to interpret these coefficients at all. 
-
-## References

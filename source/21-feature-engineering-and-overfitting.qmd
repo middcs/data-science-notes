@@ -75,18 +75,15 @@ t = ax.set_title(
 ```
 
 One common paradigm for modeling nonlinear relationships is to *engineer new features* from the original data. This can be done by applying any nonlinear transformation to the original features. For example, we might define a set of *feature maps* $\phi_d:\mathbb{R} \rightarrow \mathbb{R}$ which accept an input $x$ and raise it to a power: 
+
 $$
-\begin{aligned}
-    \phi_d(x) = x^d\;.
-\end{aligned}
+\phi_d(x) = x^d\;.
 $$
 
 We can define as many of these as we like! Once we've computed these features, we can form a linear regression model using the expanded feature set: 
 
 $$
-\begin{aligned}
-    \hat{y} = w_D\phi_D(x) + w_{D-1}\phi_{D-1}(x) + \cdots + w_1 \phi_1(x) + w_0 \phi_0(x) = \sum_{d=0}^D w_d \phi_d(x)\;.
-\end{aligned}
+\hat{y} = w_D\phi_D(x) + w_{D-1}\phi_{D-1}(x) + \cdots + w_1 \phi_1(x) + w_0 \phi_0(x) = \sum_{d=0}^D w_d \phi_d(x)\;.
 $$
 
 Note that $\phi_0(x) = x^0 = 1$, so here $w_0$ is playing the role of the bias term which we previously labeled $b$. This combination of linear regression with a polynomial feature map is often called *polynomial regression*. 
@@ -434,5 +431,3 @@ feature_coefficients.sort_values(by='coefficient', ascending=True).head(5)
 ```
 
 It appears our model has learned some reasonable associations about which words correspond to well-scored reviews, although much could be done to improve performance here. 
-
-## References
