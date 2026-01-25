@@ -1,7 +1,7 @@
 ---
 jupyter: python3
 title: Generative Neural Networks
-subtitle: Model architectures underlying LLMs
+subtitle: The Transformer model architecture underlying LLMs
 wrap: none
 ---
 
