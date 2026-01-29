@@ -7,8 +7,11 @@ book:
   title: "Applied Data Science"
   author: "Michael Linderman and Phil Chodrow"
   date: "01/05/2026"
-  body-footer: |
-        <br> <br> <span style="color:grey;">&#169; Michael Linderman and Phil Chodrow, 2025-2026</span>
+  license: "CC BY-NC 4.0"
+  page-footer:
+    center:
+      - text: "&#169; Michael Linderman, Phil Chodrow, 2025-2026. Openly licensed via CC BY-NC 4.0. <img src='https://mirrors.creativecommons.org/presskit/icons/cc.svg' alt='' style='max-width: 1em;max-height:1em;margin-left: .2em;'><img src='https://mirrors.creativecommons.org/presskit/icons/by.svg' alt='' style='max-width: 1em;max-height:1em;margin-left: .2em;'><img src='https://mirrors.creativecommons.org/presskit/icons/nc.svg' alt='' style='max-width: 1em;max-height:1em;margin-left: .2em;'>"
+        href: https://creativecommons.org/licenses/by-nc/4.0/
   sidebar: 
     search: false
   chapters:

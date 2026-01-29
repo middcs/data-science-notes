@@ -11,7 +11,7 @@ These notes are explicitly designed for undergraduate instruction. For this reas
 
 ## Use and Reuse
 
-These notes were written by [Michael Linderman](https://go.middlebury.edu/linderman) and [Phil Chodrow](www.philchodrow.prof) for the course CSCI 1010: Applied Data Science at Middlebury College. All are welcome to use them for educational purposes. Attribution is appreciated but not expected. 
+These notes were written by [Michael Linderman](https://go.middlebury.edu/linderman) and [Phil Chodrow](www.philchodrow.prof) for the course CSCI 1010: Applied Data Science at Middlebury College. This work is openly licensed via [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
 
 ## Source Texts
 
